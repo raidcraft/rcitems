@@ -1,0 +1,9 @@
+main: de.raidcraft.items.ItemsPlugin
+name: RCItems
+version: ${project.version}#${build.number}
+description: API for creating and using custom items.
+author: Silthus
+website: http://www.raid-craft.de
+depend: [RaidCraft-API]
+softdepend: []
+database: true
