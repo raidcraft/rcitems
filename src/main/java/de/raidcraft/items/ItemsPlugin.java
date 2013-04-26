@@ -36,6 +36,7 @@ public class ItemsPlugin extends BasePlugin {
                     try {
                         ConfiguredWeapon weapon = new ConfiguredWeapon(item.getEquipment().getWeapon());
                         component.registerCustomItem(weapon);
+                        loadedCustomItems.add(weapon.getId());
                         getLogger().info("loaded weapon: [" + weapon.getId() + "]" + weapon.getName());
                     } catch (DuplicateCustomItemException e) {
                         getLogger().warning(e.getMessage());
