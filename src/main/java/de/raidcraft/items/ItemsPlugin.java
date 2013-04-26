@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.DuplicateCustomItemException;
+import de.raidcraft.items.commands.ItemCommands;
 import de.raidcraft.items.tables.TCustomEquipment;
 import de.raidcraft.items.tables.TCustomItem;
 import de.raidcraft.items.tables.TCustomWeapon;
@@ -25,6 +26,7 @@ public class ItemsPlugin extends BasePlugin {
     @Override
     public void enable() {
 
+        registerCommands(ItemCommands.class);
         // lets load all custom items that are defined in the database
         CustomItemManager component = RaidCraft.getComponent(CustomItemManager.class);
         Set<TCustomItem> customItems = getDatabase().find(TCustomItem.class).findSet();
