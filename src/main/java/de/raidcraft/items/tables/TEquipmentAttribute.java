@@ -4,7 +4,7 @@ import com.avaje.ebean.validation.NotNull;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -16,7 +16,7 @@ public class TEquipmentAttribute {
 
     @Id
     private int id;
-    @OneToMany
+    @ManyToOne
     private TCustomEquipment equipment;
     @NotNull
     private String attributeName;
