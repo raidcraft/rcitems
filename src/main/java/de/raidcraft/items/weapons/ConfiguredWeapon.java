@@ -33,19 +33,19 @@ public class ConfiguredWeapon extends BaseEquipment implements CustomWeapon {
     protected ItemMeta modifiyItemMeta(ItemMeta item) {
 
         List<String> lore = item.getLore();
-        lore.add(getWeaponType().getEquipmentSlot().getGermanName() + "\t\t\t\t\t" + getWeaponType().getGermanName());
-        lore.add(getMinDamage() + " - " + getMaxDamage() + " Schaden\t\t\t\t" + "Tempo " + getSwingTime());
-        lore.add("(" + getDamagePerSecond() + " Schaden pro Sekunde)");
+        lore.add(ChatColor.WHITE + getWeaponType().getEquipmentSlot().getGermanName() + "          " + getWeaponType().getGermanName());
+        lore.add(ChatColor.WHITE + "" + getMinDamage() + " - " + getMaxDamage() + " Schaden         " + "Tempo " + getSwingTime());
+        lore.add(ChatColor.WHITE + "(" + getDamagePerSecond() + " Schaden pro Sekunde)");
         for (Attribute attribute : getAttributes()) {
-            String str = "+";
+            String str = ChatColor.WHITE + "+";
             if (attribute.getValue() < 0) {
                 str = ChatColor.RED + "-";
             }
-            str += attribute.getValue() + " " + attribute.getValue();
+            str += attribute.getValue() + " " + attribute.getName();
             lore.add(str);
         }
-        lore.add("");
-        lore.add("Haltbarkeit " + getDurability() + "/" + getDurability());
+        lore.add(ChatColor.WHITE + "");
+        lore.add(ChatColor.WHITE + "Haltbarkeit " + getDurability() + "/" + getDurability());
         item.setLore(lore);
         return item;
     }
