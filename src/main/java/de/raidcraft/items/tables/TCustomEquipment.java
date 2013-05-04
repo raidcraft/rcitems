@@ -37,7 +37,6 @@ public class TCustomEquipment {
     private List<TEquipmentAttribute> attributes = new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name = "equipment_id")
     private TCustomWeapon weapon;
 
     public int getId() {
