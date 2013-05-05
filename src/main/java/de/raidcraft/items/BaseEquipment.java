@@ -5,6 +5,9 @@ import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.items.tables.TCustomEquipment;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,5 +43,12 @@ public abstract class BaseEquipment extends BaseItem implements CustomEquipment 
     public Set<Attribute> getAttributes() {
 
         return attributes;
+    }
+
+    protected List<Attribute> getSortedAttributes() {
+
+        ArrayList<Attribute> list = new ArrayList<>(attributes);
+        Collections.sort(list);
+        return list;
     }
 }

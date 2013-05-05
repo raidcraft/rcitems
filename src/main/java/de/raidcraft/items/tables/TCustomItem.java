@@ -22,6 +22,7 @@ public class TCustomItem {
     @NotNull
     @Column(unique = true)
     private String name;
+    private String lore;
     @NotNull
     private int minecraftId;
     @NotNull
@@ -53,6 +54,16 @@ public class TCustomItem {
     public void setName(String name) {
 
         this.name = name;
+    }
+
+    public String getLore() {
+
+        return lore;
+    }
+
+    public void setLore(String lore) {
+
+        this.lore = lore;
     }
 
     public int getMinecraftId() {
