@@ -110,6 +110,16 @@ public abstract class BaseItem implements CustomItem {
         return false;
     }
 
+    @Override
+    public boolean rebuild(ItemStack itemStack) {
+
+        if (!matches(itemStack)) {
+            return false;
+        }
+        setItemMeta(itemStack);
+        return true;
+    }
+
     protected abstract List<String> getCustomTooltipLines();
 
     private List<String> getTooltipLines() {
@@ -203,6 +213,11 @@ public abstract class BaseItem implements CustomItem {
     public final CustomItemStack createNewItem() {
 
         ItemStack itemStack = new ItemStack(getMinecraftId(), 1, getMinecraftDataValue());
+        setItemMeta(itemStack);
+        return RaidCraft.getCustomItem(itemStack);
+    }
+
+    private void setItemMeta(ItemStack itemStack) {
 
         List<String> lines = getTooltipLines();
         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -210,7 +225,5 @@ public abstract class BaseItem implements CustomItem {
         lines.remove(0);
         itemMeta.setLore(lines);
         itemStack.setItemMeta(itemMeta);
-
-        return RaidCraft.getCustomItem(itemStack);
     }
 }
