@@ -5,10 +5,12 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.items.commands.ItemCommands;
+import de.raidcraft.items.tables.TCustomArmor;
 import de.raidcraft.items.tables.TCustomEquipment;
 import de.raidcraft.items.tables.TCustomItem;
 import de.raidcraft.items.tables.TCustomWeapon;
 import de.raidcraft.items.tables.TEquipmentAttribute;
+import de.raidcraft.items.weapons.ConfiguredArmor;
 import de.raidcraft.items.weapons.ConfiguredWeapon;
 
 import java.util.ArrayList;
@@ -41,6 +43,15 @@ public class ItemsPlugin extends BasePlugin {
                     } catch (DuplicateCustomItemException e) {
                         getLogger().warning(e.getMessage());
                     }
+                } else if (item.getEquipment().getArmor() != null) {
+                    try {
+                        ConfiguredArmor armor = new ConfiguredArmor(item.getEquipment().getArmor());
+                        component.registerCustomItem(armor);
+                        loadedCustomItems.add(armor.getId());
+                        getLogger().info("loaded armor: [" + armor.getId() + "]" + armor.getName());
+                    } catch (DuplicateCustomItemException e) {
+                        getLogger().warning(e.getMessage());
+                    }
                 }
                 // TODO: load other item types here
             }
@@ -65,6 +76,7 @@ public class ItemsPlugin extends BasePlugin {
         tables.add(TCustomEquipment.class);
         tables.add(TEquipmentAttribute.class);
         tables.add(TCustomWeapon.class);
+        tables.add(TCustomArmor.class);
         return tables;
     }
 }

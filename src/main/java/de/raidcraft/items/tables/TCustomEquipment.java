@@ -38,6 +38,8 @@ public class TCustomEquipment {
 
     @OneToOne
     private TCustomWeapon weapon;
+    @OneToOne
+    private TCustomArmor armor;
 
     public int getId() {
 
@@ -106,5 +108,15 @@ public class TCustomEquipment {
     public void setWeapon(TCustomWeapon weapon) {
 
         this.weapon = weapon;
+    }
+
+    public TCustomArmor getArmor() {
+
+        return armor;
+    }
+
+    public void setArmor(TCustomArmor armor) {
+
+        this.armor = armor;
     }
 }
