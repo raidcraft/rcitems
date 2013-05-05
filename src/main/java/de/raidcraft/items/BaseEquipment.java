@@ -1,6 +1,6 @@
 package de.raidcraft.items;
 
-import de.raidcraft.api.items.Attribute;
+import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.items.tables.TCustomEquipment;
@@ -17,7 +17,7 @@ public abstract class BaseEquipment extends BaseItem implements CustomEquipment 
 
     private final EquipmentSlot equipmentSlot;
     private final int durability;
-    private final Set<Attribute> attributes;
+    private final Set<ItemAttribute> attributes;
 
     public BaseEquipment(TCustomEquipment equipment) {
 
@@ -40,14 +40,14 @@ public abstract class BaseEquipment extends BaseItem implements CustomEquipment 
     }
 
     @Override
-    public Set<Attribute> getAttributes() {
+    public Set<ItemAttribute> getAttributes() {
 
         return attributes;
     }
 
-    protected List<Attribute> getSortedAttributes() {
+    protected List<ItemAttribute> getSortedAttributes() {
 
-        ArrayList<Attribute> list = new ArrayList<>(attributes);
+        ArrayList<ItemAttribute> list = new ArrayList<>(attributes);
         Collections.sort(list);
         return list;
     }

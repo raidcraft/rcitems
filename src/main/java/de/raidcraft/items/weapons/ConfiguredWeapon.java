@@ -1,6 +1,6 @@
 package de.raidcraft.items.weapons;
 
-import de.raidcraft.api.items.Attribute;
+import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.items.BaseEquipment;
@@ -49,12 +49,12 @@ public class ConfiguredWeapon extends BaseEquipment implements CustomWeapon {
             output.add(damageStr);
             output.add("(" + getDamagePerSecond() + " Schaden pro Sekunde)");
         }
-        for (Attribute attribute : getSortedAttributes()) {
+        for (ItemAttribute attribute : getSortedAttributes()) {
             String str = "+";
             if (attribute.getValue() < 0) {
                 str = ChatColor.RED + "-";
             }
-            str += attribute.getValue() + " " + attribute.getName();
+            str += attribute.getValue() + " " + attribute.getDisplayName();
             output.add(str);
         }
         return output;

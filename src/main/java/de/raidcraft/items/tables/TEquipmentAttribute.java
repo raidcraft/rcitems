@@ -18,8 +18,8 @@ public class TEquipmentAttribute {
     private int id;
     @ManyToOne
     private TCustomEquipment equipment;
-    @NotNull
-    private String attributeName;
+    @ManyToOne
+    private TAttribute attribute;
     @NotNull
     private int attributeValue;
 
@@ -33,14 +33,24 @@ public class TEquipmentAttribute {
         this.id = id;
     }
 
-    public String getAttributeName() {
+    public TCustomEquipment getEquipment() {
 
-        return attributeName;
+        return equipment;
     }
 
-    public void setAttributeName(String attributeName) {
+    public void setEquipment(TCustomEquipment equipment) {
 
-        this.attributeName = attributeName;
+        this.equipment = equipment;
+    }
+
+    public TAttribute getAttribute() {
+
+        return attribute;
+    }
+
+    public void setAttribute(TAttribute attribute) {
+
+        this.attribute = attribute;
     }
 
     public int getAttributeValue() {
@@ -51,15 +61,5 @@ public class TEquipmentAttribute {
     public void setAttributeValue(int attributeValue) {
 
         this.attributeValue = attributeValue;
-    }
-
-    public TCustomEquipment getEquipment() {
-
-        return equipment;
-    }
-
-    public void setEquipment(TCustomEquipment equipment) {
-
-        this.equipment = equipment;
     }
 }

@@ -5,6 +5,7 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.items.commands.ItemCommands;
+import de.raidcraft.items.tables.TAttribute;
 import de.raidcraft.items.tables.TCustomArmor;
 import de.raidcraft.items.tables.TCustomEquipment;
 import de.raidcraft.items.tables.TCustomItem;
@@ -74,6 +75,7 @@ public class ItemsPlugin extends BasePlugin {
         ArrayList<Class<?>> tables = new ArrayList<>();
         tables.add(TCustomItem.class);
         tables.add(TCustomEquipment.class);
+        tables.add(TAttribute.class);
         tables.add(TEquipmentAttribute.class);
         tables.add(TCustomWeapon.class);
         tables.add(TCustomArmor.class);

@@ -1,6 +1,6 @@
 package de.raidcraft.items.tables;
 
-import de.raidcraft.api.items.Attribute;
+import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.EquipmentSlot;
 
 import javax.persistence.CascadeType;
@@ -91,11 +91,17 @@ public class TCustomEquipment {
         this.attributes = attributes;
     }
 
-    public Set<Attribute> createAttributes() {
+    public Set<ItemAttribute> createAttributes() {
 
-        Set<Attribute> attributes = new HashSet<>();
+        Set<ItemAttribute> attributes = new HashSet<>();
         for (TEquipmentAttribute attribute : getAttributes()) {
-            attributes.add(new Attribute(attribute.getAttributeName(), attribute.getAttributeValue()));
+            attributes.add(
+                    new ItemAttribute(
+                            attribute.getAttribute().getName(),
+                            attribute.getAttribute().getDisplayName(),
+                            attribute.getAttributeValue()
+                    )
+            );
         }
         return attributes;
     }

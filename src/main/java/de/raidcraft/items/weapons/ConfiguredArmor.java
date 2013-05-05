@@ -1,7 +1,7 @@
 package de.raidcraft.items.weapons;
 
 import de.raidcraft.api.items.ArmorType;
-import de.raidcraft.api.items.Attribute;
+import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.items.BaseEquipment;
 import de.raidcraft.items.BaseItem;
@@ -44,12 +44,12 @@ public class ConfiguredArmor extends BaseEquipment implements CustomArmor {
         output.add(getArmorType().getEquipmentSlot(getMinecraftId()).getGermanName() + BaseItem.LINE_SEPARATOR + getArmorType().getGermanName());
         output.add(getArmorValue() + " Rüstung");
 
-        for (Attribute attribute : getSortedAttributes()) {
+        for (ItemAttribute attribute : getSortedAttributes()) {
             String str = "+";
             if (attribute.getValue() < 0) {
                 str = ChatColor.RED + "-";
             }
-            str += attribute.getValue() + " " + attribute.getName();
+            str += attribute.getValue() + " " + attribute.getDisplayName();
             output.add(str);
         }
         return output;
