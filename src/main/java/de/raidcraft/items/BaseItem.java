@@ -5,6 +5,7 @@ import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemQuality;
+import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.items.tables.TCustomItem;
 import de.raidcraft.items.util.CustomItemUtil;
 import de.raidcraft.items.util.Font;
@@ -33,6 +34,7 @@ public abstract class BaseItem implements CustomItem {
     private final int itemLevel;
     private final ItemQuality quality;
     private final double sellPrice;
+    private final List<Requirement> requirements = new ArrayList<>();
 
     public BaseItem(TCustomItem item) {
 
@@ -118,6 +120,34 @@ public abstract class BaseItem implements CustomItem {
         }
         setItemMeta(itemStack);
         return true;
+    }
+
+    @Override
+    public List<Requirement> getRequirements() {
+
+        return requirements;
+    }
+
+    @Override
+    public boolean isMeetingAllRequirements() {
+
+        for (Requirement requirement : requirements) {
+            if (!requirement.isMet()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String getResolveReason() {
+
+        for (Requirement requirement : requirements) {
+            if (!requirement.isMet()) {
+                return requirement.getLongReason();
+            }
+        }
+        return "All requirements are met!";
     }
 
     protected abstract List<String> getCustomTooltipLines();
