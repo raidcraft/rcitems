@@ -11,6 +11,7 @@ import de.raidcraft.items.util.CustomItemUtil;
 import de.raidcraft.items.util.Font;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -34,7 +35,7 @@ public abstract class BaseItem implements CustomItem {
     private final int itemLevel;
     private final ItemQuality quality;
     private final double sellPrice;
-    private final List<Requirement> requirements = new ArrayList<>();
+    private final List<Requirement<Player>> requirements = new ArrayList<>();
 
     public BaseItem(TCustomItem item) {
 
@@ -123,16 +124,16 @@ public abstract class BaseItem implements CustomItem {
     }
 
     @Override
-    public List<Requirement> getRequirements() {
+    public List<Requirement<Player>> getRequirements() {
 
         return requirements;
     }
 
     @Override
-    public boolean isMeetingAllRequirements() {
+    public boolean isMeetingAllRequirements(Player object) {
 
-        for (Requirement requirement : requirements) {
-            if (!requirement.isMet()) {
+        for (Requirement<Player> requirement : requirements) {
+            if (!requirement.isMet(object)) {
                 return false;
             }
         }
@@ -140,10 +141,10 @@ public abstract class BaseItem implements CustomItem {
     }
 
     @Override
-    public String getResolveReason() {
+    public String getResolveReason(Player object) {
 
-        for (Requirement requirement : requirements) {
-            if (!requirement.isMet()) {
+        for (Requirement<Player> requirement : requirements) {
+            if (!requirement.isMet(object)) {
                 return requirement.getLongReason();
             }
         }
