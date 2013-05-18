@@ -30,31 +30,41 @@ public class ItemsPlugin extends BasePlugin {
     public void enable() {
 
         registerCommands(ItemCommands.class);
+        loadCustomItems();
+    }
+
+    private void loadCustomItems() {
+
         // lets load all custom items that are defined in the database
         CustomItemManager component = RaidCraft.getComponent(CustomItemManager.class);
         Set<TCustomItem> customItems = getDatabase().find(TCustomItem.class).findSet();
         for (TCustomItem item : customItems) {
-            if (item.getEquipment() != null) {
-                if (item.getEquipment().getWeapon() != null) {
-                    try {
-                        ConfiguredWeapon weapon = new ConfiguredWeapon(item.getEquipment().getWeapon());
-                        component.registerCustomItem(weapon);
-                        loadedCustomItems.add(weapon.getId());
-                        getLogger().info("loaded weapon: [" + weapon.getId() + "]" + weapon.getName());
-                    } catch (DuplicateCustomItemException e) {
-                        getLogger().warning(e.getMessage());
-                    }
-                } else if (item.getEquipment().getArmor() != null) {
-                    try {
-                        ConfiguredArmor armor = new ConfiguredArmor(item.getEquipment().getArmor());
-                        component.registerCustomItem(armor);
-                        loadedCustomItems.add(armor.getId());
-                        getLogger().info("loaded armor: [" + armor.getId() + "]" + armor.getName());
-                    } catch (DuplicateCustomItemException e) {
-                        getLogger().warning(e.getMessage());
-                    }
+
+            TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
+            if (equipment == null) continue;
+
+            try {
+                switch (item.getItemType()) {
+
+                    case WEAPON:
+                        TCustomWeapon weapon = getDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findUnique();
+                        if (weapon == null) continue;
+                        ConfiguredWeapon configuredWeapon = new ConfiguredWeapon(weapon);
+                        component.registerCustomItem(configuredWeapon);
+                        loadedCustomItems.add(configuredWeapon.getId());
+                        getLogger().info("loaded weapon: [" + configuredWeapon.getId() + "]" + configuredWeapon.getName());
+                        break;
+                    case ARMOR:
+                        TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findUnique();
+                        if (armor == null) continue;
+                        ConfiguredArmor configuredArmor = new ConfiguredArmor(armor);
+                        component.registerCustomItem(configuredArmor);
+                        loadedCustomItems.add(configuredArmor.getId());
+                        getLogger().info("loaded armor: [" + configuredArmor.getId() + "]" + configuredArmor.getName());
+                        break;
                 }
-                // TODO: load other item types here
+            } catch (DuplicateCustomItemException e) {
+                getLogger().warning(e.getMessage());
             }
         }
     }

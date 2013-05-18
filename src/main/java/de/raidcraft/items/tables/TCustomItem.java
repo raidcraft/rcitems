@@ -2,12 +2,11 @@ package de.raidcraft.items.tables;
 
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.items.ItemQuality;
+import de.raidcraft.api.items.ItemType;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -32,9 +31,8 @@ public class TCustomItem {
     @NotNull
     private ItemQuality quality;
     private double sellPrice;
-
-    @OneToOne(cascade = CascadeType.REMOVE)
-    public TCustomEquipment equipment;
+    @NotNull
+    private ItemType itemType;
 
     public int getId() {
 
@@ -116,13 +114,13 @@ public class TCustomItem {
         this.sellPrice = sellPrice;
     }
 
-    public TCustomEquipment getEquipment() {
+    public ItemType getItemType() {
 
-        return equipment;
+        return itemType;
     }
 
-    public void setEquipment(TCustomEquipment equipment) {
+    public void setItemType(ItemType itemType) {
 
-        this.equipment = equipment;
+        this.itemType = itemType;
     }
 }

@@ -36,11 +36,6 @@ public class TCustomEquipment {
     @JoinColumn(name = "equipment_id")
     private List<TEquipmentAttribute> attributes = new ArrayList<>();
 
-    @OneToOne
-    private TCustomWeapon weapon;
-    @OneToOne
-    private TCustomArmor armor;
-
     public int getId() {
 
         return id;
@@ -104,25 +99,5 @@ public class TCustomEquipment {
             );
         }
         return attributes;
-    }
-
-    public TCustomWeapon getWeapon() {
-
-        return weapon;
-    }
-
-    public void setWeapon(TCustomWeapon weapon) {
-
-        this.weapon = weapon;
-    }
-
-    public TCustomArmor getArmor() {
-
-        return armor;
-    }
-
-    public void setArmor(TCustomArmor armor) {
-
-        this.armor = armor;
     }
 }
