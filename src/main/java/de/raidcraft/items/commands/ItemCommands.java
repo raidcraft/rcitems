@@ -24,16 +24,14 @@ public class ItemCommands {
     }
 
     @Command(
-            aliases = "rci",
-            desc = "Gives a custom item to the player",
+            aliases = {"rci", "item", "rcitems"},
+            desc = "Custom Item Commands",
             min = 1
     )
-    @CommandPermissions("rcitems.give")
-    @NestedCommand(value = SubCommands.class, executeBody = true)
+
+    @NestedCommand(value = SubCommands.class)
     public void giveItem(CommandContext args, CommandSender sender) {
 
-        CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getInteger(0));
-        ((Player) sender).getInventory().addItem(itemStack.getHandle());
     }
 
     public static class SubCommands {
@@ -43,6 +41,18 @@ public class ItemCommands {
         public SubCommands(ItemsPlugin plugin) {
 
             this.plugin = plugin;
+        }
+
+        @Command(
+                aliases = {"give", "i", "g"},
+                desc = "Gives a custom item to the player",
+                min = 1
+        )
+        @CommandPermissions("rcitems.give")
+        public void give(CommandContext args, CommandSender sender) {
+
+            CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getInteger(0));
+            ((Player) sender).getInventory().addItem(itemStack.getHandle());
         }
 
         @Command(
