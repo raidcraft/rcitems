@@ -36,7 +36,14 @@ public class ItemCommands {
         ((Player) sender).getInventory().addItem(itemStack.getHandle());
     }
 
-    public class SubCommands {
+    public static class SubCommands {
+
+        private final ItemsPlugin plugin;
+
+        public SubCommands(ItemsPlugin plugin) {
+
+            this.plugin = plugin;
+        }
 
         @Command(
                 aliases = {"wizard", "config", "new", "create"},
