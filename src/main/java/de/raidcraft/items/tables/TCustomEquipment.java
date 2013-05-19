@@ -31,7 +31,6 @@ public class TCustomEquipment {
     @Column(unique = true)
     private TCustomItem item;
     @NotNull
-    @Column(unique = true)
     private EquipmentSlot equipmentSlot;
     @NotNull
     private int durability;
