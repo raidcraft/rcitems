@@ -124,6 +124,12 @@ public abstract class BaseItem implements CustomItem {
     }
 
     @Override
+    public Player getObject() {
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public List<Requirement<Player>> getRequirements() {
 
         return requirements;
