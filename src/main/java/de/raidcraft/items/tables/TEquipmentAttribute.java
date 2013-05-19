@@ -1,6 +1,7 @@
 package de.raidcraft.items.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.api.items.AttributeType;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,7 +20,7 @@ public class TEquipmentAttribute {
     @ManyToOne
     private TCustomEquipment equipment;
     @ManyToOne
-    private TAttribute attribute;
+    private AttributeType attribute;
     @NotNull
     private int attributeValue;
 
@@ -43,12 +44,12 @@ public class TEquipmentAttribute {
         this.equipment = equipment;
     }
 
-    public TAttribute getAttribute() {
+    public AttributeType getAttribute() {
 
         return attribute;
     }
 
-    public void setAttribute(TAttribute attribute) {
+    public void setAttribute(AttributeType attribute) {
 
         this.attribute = attribute;
     }
