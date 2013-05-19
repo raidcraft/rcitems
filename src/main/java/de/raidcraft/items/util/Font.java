@@ -24,14 +24,13 @@ import java.io.InputStream;
 
 public class Font {
 
-    public static int[] WIDTHS;
+    public final static int[] WIDTHS;
 
-    public static void init()  {
-
+    static  {
         WIDTHS = new int[0xFFFF];
 
         try {
-            InputStream in = RaidCraft.getComponent(ItemsPlugin.class).getResource("font.bin");
+            InputStream in = RaidCraft.getComponent(ItemsPlugin.class).getResource("defaults/font.bin");
             for (int i = 0; i < WIDTHS.length; i++) {
                 WIDTHS[i] = in.read();
             }
