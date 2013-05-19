@@ -92,8 +92,7 @@ public class TCustomEquipment {
         for (TEquipmentAttribute attribute : getAttributes()) {
             attributes.add(
                     new ItemAttribute(
-                            attribute.getAttribute().getName(),
-                            attribute.getAttribute().getDisplayName(),
+                            attribute.getAttribute(),
                             attribute.getAttributeValue()
                     )
             );
