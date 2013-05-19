@@ -97,6 +97,7 @@ public final class CustomItemUtil {
 
     public static String getSwingTimeString(double time) {
 
-        return Double.toString(time).substring(0, 4);
+        time = (int)(time * 100) / 100.0;
+        return Double.toString(time);
     }
 }
