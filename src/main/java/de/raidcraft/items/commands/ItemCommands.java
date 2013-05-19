@@ -44,6 +44,16 @@ public class ItemCommands {
         }
 
         @Command(
+                aliases = "reload",
+                desc = "Reloads the items plugin and all configs"
+        )
+        @CommandPermissions("rcitems.reload")
+        public void reload(CommandContext args, CommandSender sender) {
+
+            plugin.reload();
+        }
+
+        @Command(
                 aliases = {"give", "i", "g"},
                 desc = "Gives a custom item to the player",
                 min = 1

@@ -32,6 +32,29 @@ public class ItemsPlugin extends BasePlugin {
         loadCustomItems();
     }
 
+    @Override
+    public void disable() {
+
+        // lets unload all of our custom items
+        unloadRegisteredItems();
+    }
+
+    private void unloadRegisteredItems() {
+
+        CustomItemManager component = RaidCraft.getComponent(CustomItemManager.class);
+        for (int id : loadedCustomItems) {
+            component.unregisterCustomItem(id);
+        }
+        loadedCustomItems.clear();
+    }
+
+    @Override
+    public void reload() {
+
+        unloadRegisteredItems();
+        loadCustomItems();
+    }
+
     private void loadCustomItems() {
 
         // lets load all custom items that are defined in the database
@@ -65,16 +88,6 @@ public class ItemsPlugin extends BasePlugin {
             } catch (DuplicateCustomItemException e) {
                 getLogger().warning(e.getMessage());
             }
-        }
-    }
-
-    @Override
-    public void disable() {
-
-        CustomItemManager component = RaidCraft.getComponent(CustomItemManager.class);
-        // lets unload all of our custom items
-        for (int id : loadedCustomItems) {
-            component.unregisterCustomItem(id);
         }
     }
 
