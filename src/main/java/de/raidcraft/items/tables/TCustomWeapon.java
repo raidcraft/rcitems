@@ -19,12 +19,16 @@ public class TCustomWeapon {
     @Id
     private int id;
     @OneToOne
+    @NotNull
     @Column(unique = true)
     private TCustomEquipment equipment;
     @NotNull
     private WeaponType weaponType;
+    @NotNull
     private int minDamage;
+    @NotNull
     private int maxDamage;
+    @NotNull
     private double swingTime;
 
     public int getId() {

@@ -5,9 +5,11 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.items.ItemsPlugin;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -61,8 +63,13 @@ public class ItemCommands {
         @CommandPermissions("rcitems.give")
         public void give(CommandContext args, CommandSender sender) {
 
-            CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getInteger(0));
-            ((Player) sender).getInventory().addItem(itemStack.getHandle());
+            try {
+                CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getInteger(0));
+                ((Player) sender).getInventory().addItem(itemStack.getHandle());
+            } catch (CustomItemException e) {
+                sender.sendMessage(ChatColor.RED + e.getMessage());
+                plugin.getLogger().warning(e.getMessage());
+            }
         }
 
         @Command(

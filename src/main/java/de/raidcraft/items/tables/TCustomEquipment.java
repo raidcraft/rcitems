@@ -1,5 +1,6 @@
 package de.raidcraft.items.tables;
 
+import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.EquipmentSlot;
 
@@ -26,10 +27,13 @@ public class TCustomEquipment {
     @Id
     private int id;
     @OneToOne
+    @NotNull
     @Column(unique = true)
     private TCustomItem item;
+    @NotNull
     @Column(unique = true)
     private EquipmentSlot equipmentSlot;
+    @NotNull
     private int durability;
 
     @OneToMany(cascade = CascadeType.REMOVE)

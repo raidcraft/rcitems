@@ -17,8 +17,10 @@ public class TEquipmentAttribute {
 
     @Id
     private int id;
+    @NotNull
     @ManyToOne
     private TCustomEquipment equipment;
+    @NotNull
     @ManyToOne
     private AttributeType attribute;
     @NotNull

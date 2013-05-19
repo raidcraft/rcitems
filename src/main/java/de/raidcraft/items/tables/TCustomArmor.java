@@ -23,6 +23,7 @@ public class TCustomArmor {
     private TCustomEquipment equipment;
     @NotNull
     private ArmorType armorType;
+    @NotNull
     private int armorValue;
 
     public int getId() {

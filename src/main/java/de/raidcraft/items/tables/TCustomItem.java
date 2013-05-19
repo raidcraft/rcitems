@@ -30,7 +30,8 @@ public class TCustomItem {
     private int itemLevel;
     @NotNull
     private ItemQuality quality;
-    private double sellPrice;
+    @NotNull
+    private double sellPrice = 0.0;
     @NotNull
     private ItemType itemType;
 
