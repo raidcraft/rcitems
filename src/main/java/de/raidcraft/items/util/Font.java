@@ -24,9 +24,10 @@ import java.io.InputStream;
 
 public class Font {
 
-    public final static int[] WIDTHS;
+    public static int[] WIDTHS;
 
-    static  {
+    public static void init()  {
+
         WIDTHS = new int[0xFFFF];
 
         try {
