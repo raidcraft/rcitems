@@ -23,6 +23,7 @@ public final class CustomItemUtil {
 
     public static boolean isCustomItem(ItemStack itemStack) {
 
+        if (itemStack == null) return false;
         try {
             decodeItemId(itemStack.getItemMeta());
             return true;
