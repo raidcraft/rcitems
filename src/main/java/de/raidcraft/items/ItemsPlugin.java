@@ -2,6 +2,7 @@ package de.raidcraft.items;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.items.commands.ItemCommands;
@@ -10,8 +11,15 @@ import de.raidcraft.items.tables.TCustomEquipment;
 import de.raidcraft.items.tables.TCustomItem;
 import de.raidcraft.items.tables.TCustomWeapon;
 import de.raidcraft.items.tables.TEquipmentAttribute;
+import de.raidcraft.items.util.CustomItemUtil;
 import de.raidcraft.items.weapons.ConfiguredArmor;
 import de.raidcraft.items.weapons.ConfiguredWeapon;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,13 +29,16 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public class ItemsPlugin extends BasePlugin {
+public class ItemsPlugin extends BasePlugin implements Listener {
 
     private final Set<Integer> loadedCustomItems = new HashSet<>();
+    private LocalConfiguration config;
 
     @Override
     public void enable() {
 
+        config = configure(new LocalConfiguration(this));
+        registerEvents(this);
         registerCommands(ItemCommands.class);
         loadCustomItems();
     }
@@ -102,4 +113,37 @@ public class ItemsPlugin extends BasePlugin {
         tables.add(TCustomArmor.class);
         return tables;
     }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onItemPickup(PlayerPickupItemEvent event) {
+
+        ItemStack itemStack = event.getItem().getItemStack();
+        if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
+            RaidCraft.getCustomItem(itemStack).rebuild();
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onInventoryClose(InventoryCloseEvent event) {
+
+        for (ItemStack itemStack : event.getInventory().getContents()) {
+            if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
+                RaidCraft.getCustomItem(itemStack).rebuild();
+            }
+        }
+    }
+
+    public static class LocalConfiguration extends ConfigurationBase<ItemsPlugin> {
+
+        public LocalConfiguration(ItemsPlugin plugin) {
+
+            super(plugin, "config.yml");
+        }
+
+        public int getDefaultCustomItem(int minecraftId) {
+
+            return getInt("defaults." + minecraftId, 0);
+        }
+    }
+
 }

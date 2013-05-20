@@ -2,6 +2,7 @@ package de.raidcraft.items.util;
 
 import de.raidcraft.api.items.CustomItemException;
 import org.bukkit.ChatColor;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /**
@@ -18,6 +19,16 @@ public final class CustomItemUtil {
             out.append(h);
         }
         return out.toString();
+    }
+
+    public static boolean isCustomItem(ItemStack itemStack) {
+
+        try {
+            decodeItemId(itemStack.getItemMeta());
+            return true;
+        } catch (CustomItemException ignored) {
+        }
+        return false;
     }
 
     public static int decodeItemId(ItemMeta itemMeta) throws CustomItemException {
