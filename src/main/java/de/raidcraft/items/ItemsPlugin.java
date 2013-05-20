@@ -119,7 +119,7 @@ public class ItemsPlugin extends BasePlugin implements Listener {
 
         ItemStack itemStack = event.getItem().getItemStack();
         if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-            RaidCraft.getCustomItem(itemStack).rebuild();
+            RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
         }
     }
 
@@ -128,7 +128,7 @@ public class ItemsPlugin extends BasePlugin implements Listener {
 
         for (ItemStack itemStack : event.getInventory().getContents()) {
             if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-                RaidCraft.getCustomItem(itemStack).rebuild();
+                RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
             }
         }
     }
