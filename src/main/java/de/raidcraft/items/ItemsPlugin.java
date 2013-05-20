@@ -120,6 +120,9 @@ public class ItemsPlugin extends BasePlugin implements Listener {
     public void onItemCraft(PrepareItemCraftEvent event) {
 
         ItemStack result = event.getRecipe().getResult();
+        if (result == null || result.getTypeId() == 0) {
+            return;
+        }
         if (CustomItemUtil.isCustomItem(result)) {
             RaidCraft.getCustomItem(result).rebuild();
         }
@@ -129,6 +132,9 @@ public class ItemsPlugin extends BasePlugin implements Listener {
     public void onItemPickup(PlayerPickupItemEvent event) {
 
         ItemStack itemStack = event.getItem().getItemStack();
+        if (itemStack == null || itemStack.getTypeId() == 0) {
+            return;
+        }
         if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
             RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
         } else if (CustomItemUtil.isCustomItem(itemStack)) {
@@ -140,6 +146,9 @@ public class ItemsPlugin extends BasePlugin implements Listener {
     public void onHeldItemChange(PlayerItemHeldEvent event) {
 
         ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getNewSlot());
+        if (itemStack == null || itemStack.getTypeId() == 0) {
+            return;
+        }
         if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
             RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
         } else if (CustomItemUtil.isCustomItem(itemStack)) {
