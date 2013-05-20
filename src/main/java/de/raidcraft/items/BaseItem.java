@@ -114,13 +114,9 @@ public abstract class BaseItem implements CustomItem {
     }
 
     @Override
-    public boolean rebuild(ItemStack itemStack) {
+    public void rebuild(ItemStack itemStack) {
 
-        if (!matches(itemStack)) {
-            return false;
-        }
         setItemMeta(itemStack);
-        return true;
     }
 
     @Override
