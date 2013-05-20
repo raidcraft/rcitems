@@ -160,7 +160,7 @@ public abstract class BaseItem implements CustomItem {
         ArrayList<String> output = new ArrayList<>();
         int maxWidth = calculateMaxWidth();
         // we always add the first and last two lines, the rest is parsed by subclasses
-        output.add(encodedId + getQuality().getColor() + getName());
+        output.add(encodedId + getQuality().getColor() + ChatColor.BOLD + getName());
         output.add(ChatColor.GOLD + "Gegenstandsstufe " + getItemLevel());
         // a "->" means we need to replace the line width the width
         for (String line : getCustomTooltipLines()) {
