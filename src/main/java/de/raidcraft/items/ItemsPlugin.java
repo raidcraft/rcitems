@@ -18,6 +18,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -114,6 +116,15 @@ public class ItemsPlugin extends BasePlugin implements Listener {
         return tables;
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onItemCraft(PrepareItemCraftEvent event) {
+
+        ItemStack result = event.getRecipe().getResult();
+        if (CustomItemUtil.isCustomItem(result)) {
+            RaidCraft.getCustomItem(result).rebuild();
+        }
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onItemPickup(PlayerPickupItemEvent event) {
 
@@ -125,10 +136,21 @@ public class ItemsPlugin extends BasePlugin implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onHeldItemChange(PlayerItemHeldEvent event) {
+
+        ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getNewSlot());
+        if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
+            RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
+        } else if (CustomItemUtil.isCustomItem(itemStack)) {
+            RaidCraft.getCustomItem(itemStack).rebuild();
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
-        for (ItemStack itemStack : event.getInventory().getContents()) {
+        for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
             if (itemStack == null || itemStack.getTypeId() == 0) {
                 continue;
             }
