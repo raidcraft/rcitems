@@ -17,8 +17,8 @@ import de.raidcraft.items.weapons.ConfiguredWeapon;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -117,14 +117,11 @@ public class ItemsPlugin extends BasePlugin implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onItemCraft(PrepareItemCraftEvent event) {
+    public void onEnchant(EnchantItemEvent event) {
 
-        ItemStack result = event.getRecipe().getResult();
-        if (result == null || result.getTypeId() == 0) {
-            return;
-        }
-        if (CustomItemUtil.isCustomItem(result)) {
-            RaidCraft.getCustomItem(result).rebuild();
+        ItemStack item = event.getItem();
+        if (item != null && item.getTypeId() != 0 && CustomItemUtil.isCustomItem(item)) {
+            RaidCraft.getCustomItem(item).rebuild();
         }
     }
 
