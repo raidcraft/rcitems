@@ -53,6 +53,7 @@ public class ItemCommands {
         public void reload(CommandContext args, CommandSender sender) {
 
             plugin.reload();
+            sender.sendMessage(ChatColor.GREEN + "Es wurden alle custom items erfolgreich neugeladen.");
         }
 
         @Command(
