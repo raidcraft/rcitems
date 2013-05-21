@@ -41,7 +41,7 @@ public class ConfiguredArmor extends BaseEquipment implements CustomArmor {
 
         ArrayList<String> output = new ArrayList<>();
 
-        output.add(getArmorType().getEquipmentSlot(getMinecraftId()).getGermanName() + BaseItem.LINE_SEPARATOR + getArmorType().getGermanName());
+        output.add(getEquipmentSlot().getGermanName() + BaseItem.LINE_SEPARATOR + getArmorType().getGermanName());
         output.add(getArmorValue() + " Rüstung");
 
         for (ItemAttribute attribute : getSortedAttributes()) {
