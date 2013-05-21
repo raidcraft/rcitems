@@ -11,7 +11,7 @@ import de.raidcraft.items.tables.TCustomEquipment;
 import de.raidcraft.items.tables.TCustomItem;
 import de.raidcraft.items.tables.TCustomWeapon;
 import de.raidcraft.items.tables.TEquipmentAttribute;
-import de.raidcraft.items.util.CustomItemUtil;
+import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.items.weapons.ConfiguredArmor;
 import de.raidcraft.items.weapons.ConfiguredWeapon;
 import org.bukkit.event.EventHandler;
