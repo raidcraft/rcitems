@@ -1,6 +1,7 @@
 package de.raidcraft.items;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
@@ -160,7 +161,7 @@ public abstract class BaseItem implements CustomItem {
         ArrayList<String> output = new ArrayList<>();
         int maxWidth = calculateMaxWidth();
         // we always add the first and last two lines, the rest is parsed by subclasses
-        output.add(encodedId + getQuality().getColor() + ChatColor.BOLD + getName());
+        output.add(encodedId + getQuality().getColor() + (this instanceof CustomEquipment ? ChatColor.BOLD : "") + getName());
         output.add(ChatColor.GOLD + "Gegenstandsstufe " + getItemLevel());
         // a "->" means we need to replace the line width the width
         for (String line : getCustomTooltipLines()) {
