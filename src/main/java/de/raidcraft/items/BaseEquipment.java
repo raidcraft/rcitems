@@ -15,15 +15,16 @@ import java.util.Set;
  */
 public abstract class BaseEquipment extends BaseItem implements CustomEquipment {
 
+
     private final EquipmentSlot equipmentSlot;
-    private final int durability;
+    private final int maxDurability;
     private final Set<ItemAttribute> attributes;
 
     public BaseEquipment(TCustomEquipment equipment) {
 
         super(equipment.getItem());
         this.equipmentSlot = equipment.getEquipmentSlot();
-        this.durability = equipment.getDurability();
+        this.maxDurability = equipment.getDurability();
         this.attributes = equipment.createAttributes();
     }
 
@@ -34,9 +35,9 @@ public abstract class BaseEquipment extends BaseItem implements CustomEquipment 
     }
 
     @Override
-    public int getDurability() {
+    public int getMaxDurability() {
 
-        return durability;
+        return maxDurability;
     }
 
     @Override
