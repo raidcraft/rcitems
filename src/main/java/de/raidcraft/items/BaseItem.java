@@ -221,9 +221,8 @@ public abstract class BaseItem implements CustomItem {
             output.add(out.toString());
         }
         // and add the sell price last
-        String priceString = CustomItemUtil.getSellPriceString(getSellPrice());
-        if (priceString != null) {
-            output.add(ChatColor.WHITE + "Verkaufspreis: " + priceString);
+        if (getSellPrice() > 0.0) {
+            output.add(ChatColor.WHITE + "Verkaufspreis: " + CustomItemUtil.getSellPriceString(getSellPrice()));
         }
         return output;
     }
