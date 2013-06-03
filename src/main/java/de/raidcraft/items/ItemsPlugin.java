@@ -177,6 +177,9 @@ public class ItemsPlugin extends BasePlugin implements Listener {
 
         public int getDefaultCustomItem(int minecraftId) {
 
+            if (!isSet("defaults." + minecraftId)) {
+                return 0;
+            }
             return getInt("defaults." + minecraftId, 0);
         }
     }
