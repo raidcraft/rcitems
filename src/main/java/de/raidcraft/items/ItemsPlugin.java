@@ -144,6 +144,9 @@ public class ItemsPlugin extends BasePlugin implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
 
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
         // lets check the durability loss and negate it by using our own durability if it is a custom item
         for (ItemStack itemStack : ((Player) event.getEntity()).getEquipment().getArmorContents()) {
             applyDurabilityLoss(itemStack, config.durabilityLossChanceOnDamage);
