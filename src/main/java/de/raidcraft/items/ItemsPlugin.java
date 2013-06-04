@@ -16,7 +16,7 @@ import de.raidcraft.items.tables.TEquipmentAttribute;
 import de.raidcraft.items.weapons.ConfiguredArmor;
 import de.raidcraft.items.weapons.ConfiguredWeapon;
 import de.raidcraft.util.CustomItemUtil;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -144,11 +144,11 @@ public class ItemsPlugin extends BasePlugin implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
 
-        if (!(event.getEntity() instanceof Player)) {
+        if (!(event.getEntity() instanceof LivingEntity)) {
             return;
         }
         // lets check the durability loss and negate it by using our own durability if it is a custom item
-        for (ItemStack itemStack : ((Player) event.getEntity()).getEquipment().getArmorContents()) {
+        for (ItemStack itemStack : ((LivingEntity) event.getEntity()).getEquipment().getArmorContents()) {
             applyDurabilityLoss(itemStack, config.durabilityLossChanceOnDamage);
         }
     }
