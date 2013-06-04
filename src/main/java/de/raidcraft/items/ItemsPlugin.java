@@ -3,7 +3,9 @@ package de.raidcraft.items;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.items.CustomItemManager;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.items.commands.ItemCommands;
 import de.raidcraft.items.tables.TCustomArmor;
@@ -11,14 +13,17 @@ import de.raidcraft.items.tables.TCustomEquipment;
 import de.raidcraft.items.tables.TCustomItem;
 import de.raidcraft.items.tables.TCustomWeapon;
 import de.raidcraft.items.tables.TEquipmentAttribute;
-import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.items.weapons.ConfiguredArmor;
 import de.raidcraft.items.weapons.ConfiguredWeapon;
+import de.raidcraft.util.CustomItemUtil;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +44,7 @@ public class ItemsPlugin extends BasePlugin implements Listener {
     @Override
     public void enable() {
 
-        config = configure(new LocalConfiguration(this));
+        config = configure(new LocalConfiguration(this), true);
         registerEvents(this);
         registerCommands(ItemCommands.class);
         loadCustomItems();
@@ -116,6 +121,35 @@ public class ItemsPlugin extends BasePlugin implements Listener {
         return tables;
     }
 
+    private void applyDurabilityLoss(ItemStack item, double chance) {
+
+        // lets check the durability loss and negate it by using our own durability if it is a custom item
+        if (!CustomItemUtil.isEquipment(item)) {
+            return;
+        }
+        // on each interact with the item the player has a chance of 0.1% chance to loose one durability point
+        if (Math.random() < chance) {
+            CustomItemStack customItem = RaidCraft.getCustomItem(item);
+            customItem.setDurability(customItem.getDurability() - 1);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerInteract(PlayerInteractEvent event) {
+
+        // lets check the durability loss and negate it by using our own durability if it is a custom item
+        applyDurabilityLoss(event.getItem(), config.durabilityLossChanceOnUse);
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
+
+        // lets check the durability loss and negate it by using our own durability if it is a custom item
+        for (ItemStack itemStack : ((Player) event.getEntity()).getEquipment().getArmorContents()) {
+            applyDurabilityLoss(itemStack, config.durabilityLossChanceOnDamage);
+        }
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEnchant(EnchantItemEvent event) {
 
@@ -174,6 +208,11 @@ public class ItemsPlugin extends BasePlugin implements Listener {
 
             super(plugin, "config.yml");
         }
+
+        @Setting("durability-loss-chance-on-use")
+        public double durabilityLossChanceOnUse = 0.001;
+        @Setting("durability-loss-chance-on-damage")
+        public double durabilityLossChanceOnDamage = 0.0001;
 
         public int getDefaultCustomItem(int minecraftId) {
 
