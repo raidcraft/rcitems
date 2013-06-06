@@ -16,16 +16,7 @@ import de.raidcraft.items.tables.TEquipmentAttribute;
 import de.raidcraft.items.weapons.ConfiguredArmor;
 import de.raidcraft.items.weapons.ConfiguredWeapon;
 import de.raidcraft.util.CustomItemUtil;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -71,6 +62,11 @@ public class ItemsPlugin extends BasePlugin implements Listener {
 
         unloadRegisteredItems();
         loadCustomItems();
+    }
+
+    public LocalConfiguration getConfig() {
+
+        return config;
     }
 
     private void loadCustomItems() {
@@ -121,7 +117,7 @@ public class ItemsPlugin extends BasePlugin implements Listener {
         return tables;
     }
 
-    private void applyDurabilityLoss(ItemStack item, double chance) {
+    public void applyDurabilityLoss(ItemStack item, double chance) {
 
         // lets check the durability loss and negate it by using our own durability if it is a custom item
         if (!CustomItemUtil.isEquipment(item)) {
@@ -131,77 +127,6 @@ public class ItemsPlugin extends BasePlugin implements Listener {
         if (Math.random() < chance) {
             CustomItemStack customItem = RaidCraft.getCustomItem(item);
             customItem.setDurability(customItem.getDurability() - 1);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onPlayerInteract(PlayerInteractEvent event) {
-
-        // lets check the durability loss and negate it by using our own durability if it is a custom item
-        applyDurabilityLoss(event.getItem(), config.durabilityLossChanceOnUse);
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
-
-        if (!(event.getEntity() instanceof LivingEntity)) {
-            return;
-        }
-        // lets check the durability loss and negate it by using our own durability if it is a custom item
-        for (ItemStack itemStack : ((LivingEntity) event.getEntity()).getEquipment().getArmorContents()) {
-            applyDurabilityLoss(itemStack, config.durabilityLossChanceOnDamage);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onEnchant(EnchantItemEvent event) {
-
-        ItemStack item = event.getItem();
-        if (item != null && item.getTypeId() != 0 && CustomItemUtil.isCustomItem(item)) {
-            RaidCraft.getCustomItem(item).rebuild();
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onItemPickup(PlayerPickupItemEvent event) {
-
-        ItemStack itemStack = event.getItem().getItemStack();
-        if (itemStack == null || itemStack.getTypeId() == 0) {
-            return;
-        }
-        if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-            RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
-        } else if (CustomItemUtil.isCustomItem(itemStack)) {
-            RaidCraft.getCustomItem(itemStack).rebuild();
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onHeldItemChange(PlayerItemHeldEvent event) {
-
-        ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getNewSlot());
-        if (itemStack == null || itemStack.getTypeId() == 0) {
-            return;
-        }
-        if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-            RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
-        } else if (CustomItemUtil.isCustomItem(itemStack)) {
-            RaidCraft.getCustomItem(itemStack).rebuild();
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onInventoryClose(InventoryCloseEvent event) {
-
-        for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
-            if (itemStack == null || itemStack.getTypeId() == 0) {
-                continue;
-            }
-            if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-                RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
-            } else if (CustomItemUtil.isCustomItem(itemStack)) {
-                RaidCraft.getCustomItem(itemStack).rebuild();
-            }
         }
     }
 
