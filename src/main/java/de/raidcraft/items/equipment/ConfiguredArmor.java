@@ -1,8 +1,8 @@
-package de.raidcraft.items.weapons;
+package de.raidcraft.items.equipment;
 
 import de.raidcraft.api.items.ArmorType;
-import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.items.BaseEquipment;
 import de.raidcraft.items.BaseItem;
 import de.raidcraft.items.tables.TCustomArmor;
