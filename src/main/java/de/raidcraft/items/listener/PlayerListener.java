@@ -5,6 +5,7 @@ import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -16,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * @author Silthus
  */
-public class PlayerListener {
+public class PlayerListener implements Listener {
 
     private final ItemsPlugin plugin;
     private final ItemsPlugin.LocalConfiguration config;

@@ -10,13 +10,13 @@ import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.items.commands.ItemCommands;
 import de.raidcraft.items.equipment.ConfiguredArmor;
 import de.raidcraft.items.equipment.ConfiguredWeapon;
+import de.raidcraft.items.listener.PlayerListener;
 import de.raidcraft.items.tables.TCustomArmor;
 import de.raidcraft.items.tables.TCustomEquipment;
 import de.raidcraft.items.tables.TCustomItem;
 import de.raidcraft.items.tables.TCustomWeapon;
 import de.raidcraft.items.tables.TEquipmentAttribute;
 import de.raidcraft.util.CustomItemUtil;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public class ItemsPlugin extends BasePlugin implements Listener {
+public class ItemsPlugin extends BasePlugin {
 
     private final Set<Integer> loadedCustomItems = new HashSet<>();
     private LocalConfiguration config;
@@ -36,7 +36,7 @@ public class ItemsPlugin extends BasePlugin implements Listener {
     public void enable() {
 
         config = configure(new LocalConfiguration(this), true);
-        registerEvents(this);
+        registerEvents(new PlayerListener(this));
         registerCommands(ItemCommands.class);
         loadCustomItems();
     }
