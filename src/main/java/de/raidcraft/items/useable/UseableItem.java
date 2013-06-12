@@ -17,9 +17,9 @@ import java.util.List;
 /**
  * @author Silthus
  */
-public abstract class AbstractUseableItem extends BaseItem implements UseableCustomItem {
+public class UseableItem extends BaseItem implements UseableCustomItem {
 
-    public AbstractUseableItem(TCustomItem item) {
+    public UseableItem(TCustomItem item) {
 
         super(item);
     }

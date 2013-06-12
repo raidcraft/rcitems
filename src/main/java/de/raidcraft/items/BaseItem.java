@@ -183,60 +183,65 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         }
         // lets add the attachment information
         for (ConfigurationSection section : attachments.values()) {
-            output.add(ChatColor.GREEN + section.getString("description"));
+            output.add(buildMultiLine(section.getString("description"), output, maxWidth, false, false, ChatColor.GREEN));
         }
         // lets put one empty space between the main body and the rest
         output.add("");
         // now lets add the lore text
         if (getLore() != null && !getLore().equals("") && getLore().length() > 0) {
-            int cWidth = 0;
-            int tWidth = 0;
-            StringBuilder out = new StringBuilder();
-            StringBuilder temp = new StringBuilder();
-            out.append(ChatColor.YELLOW);
-            out.append(ChatColor.ITALIC);
-            String currentColour = ChatColor.YELLOW.toString();
-            String dMsg = "\"" + getLore() + "\"";
-            for (int i = 0; i < dMsg.length(); i++) {
-                char c = dMsg.charAt(i);
-                temp.append(c);
-                if (c == ChatColor.COLOR_CHAR || c == '&') {
-                    i += 1;
-                    temp.append(dMsg.charAt(i));
-                    currentColour = ChatColor.COLOR_CHAR + "" + dMsg.charAt(i);
-                    continue;
-                }
-                if (c == ' ')
-                    tWidth += 4;
-                else
-                    tWidth += Font.WIDTHS[c] + 1;
-                if (c == ' ' || i == dMsg.length() - 1) {
-                    if (cWidth + tWidth > maxWidth) {
-                        cWidth = 0;
-                        cWidth += tWidth;
-                        tWidth = 0;
-                        output.add(out.toString());
-                        out = new StringBuilder();
-                        out.append(currentColour);
-                        out.append(ChatColor.ITALIC);
-                        out.append(temp);
-                        temp = new StringBuilder();
-                    } else {
-                        out.append(temp);
-                        temp = new StringBuilder();
-                        cWidth += tWidth;
-                        tWidth = 0;
-                    }
-                }
-            }
-            out.append(temp);
-            output.add(out.toString());
+            output.add(buildMultiLine(getLore(), output, maxWidth, true, true, ChatColor.YELLOW));
         }
         // and add the sell price last
         if (getSellPrice() > 0.0) {
             output.add(ChatColor.WHITE + "Verkaufspreis: " + CustomItemUtil.getSellPriceString(getSellPrice()));
         }
         return output;
+    }
+
+    private String buildMultiLine(String original, List<String> output, int maxWidth, boolean quote, boolean italic, ChatColor color) {
+
+        StringBuilder out = new StringBuilder();
+        StringBuilder temp = new StringBuilder();
+        out.append(color);
+        if (italic) out.append(ChatColor.ITALIC);
+        int cWidth = 0;
+        int tWidth = 0;
+        String currentColour = color.toString();
+        String dMsg = quote ? "\"" + original + "\"" : original;
+        for (int i = 0; i < dMsg.length(); i++) {
+            char c = dMsg.charAt(i);
+            temp.append(c);
+            if (c == ChatColor.COLOR_CHAR || c == '&') {
+                i += 1;
+                temp.append(dMsg.charAt(i));
+                currentColour = ChatColor.COLOR_CHAR + "" + dMsg.charAt(i);
+                continue;
+            }
+            if (c == ' ')
+                tWidth += 4;
+            else
+                tWidth += Font.WIDTHS[c] + 1;
+            if (c == ' ' || i == dMsg.length() - 1) {
+                if (cWidth + tWidth > maxWidth) {
+                    cWidth = 0;
+                    cWidth += tWidth;
+                    tWidth = 0;
+                    output.add(out.toString());
+                    out = new StringBuilder();
+                    out.append(currentColour);
+                    if (italic) out.append(ChatColor.ITALIC);
+                    out.append(temp);
+                    temp = new StringBuilder();
+                } else {
+                    out.append(temp);
+                    temp = new StringBuilder();
+                    cWidth += tWidth;
+                    tWidth = 0;
+                }
+            }
+        }
+        out.append(temp);
+        return out.toString();
     }
 
     private int calculateMaxWidth() {

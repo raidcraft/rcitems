@@ -20,6 +20,7 @@ import de.raidcraft.items.tables.TCustomItem;
 import de.raidcraft.items.tables.TCustomItemAttachment;
 import de.raidcraft.items.tables.TCustomWeapon;
 import de.raidcraft.items.tables.TEquipmentAttribute;
+import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
 import org.bukkit.inventory.ItemStack;
@@ -85,7 +86,7 @@ public class ItemsPlugin extends BasePlugin {
     private void loadAttachments() {
 
         loadedAttachments.clear();
-        File dir = new File(getDataFolder(), "attachments");
+        File dir = new File(getDataFolder(), "attachments/");
         dir.mkdirs();
         loadAttachments(dir);
     }
@@ -113,25 +114,29 @@ public class ItemsPlugin extends BasePlugin {
         Set<TCustomItem> customItems = getDatabase().find(TCustomItem.class).findSet();
         for (TCustomItem item : customItems) {
 
-            TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
-            if (equipment == null) continue;
-
             try {
                 CustomItem customItem;
                 switch (item.getItemType()) {
-
                     case WEAPON:
+                        TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
+                        if (equipment == null) continue;
                         TCustomWeapon weapon = getDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findUnique();
                         if (weapon == null) continue;
                         customItem = new ConfiguredWeapon(weapon);
                         break;
                     case ARMOR:
+                        equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
+                        if (equipment == null) continue;
                         TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findUnique();
                         if (armor == null) continue;
                         customItem = new ConfiguredArmor(armor);
                         break;
+                    case USEABLE:
+                        customItem = new UseableItem(item);
+                        break;
                     default:
-                        continue;
+                        customItem = new SimpleItem(item);
+                        break;
                 }
                 // lets check for custom item attachments
                 if (item.getAttachments() != null && !item.getAttachments().isEmpty()) {
