@@ -11,6 +11,7 @@ import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -158,12 +159,16 @@ public class PlayerListener implements Listener {
             }
             try {
                 if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-                    RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
+                    CustomItem customItem = RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId()));
+                    if (customItem == null) return;
+                    customItem.rebuild(itemStack);
                 } else if (CustomItemUtil.isCustomItem(itemStack)) {
                     RaidCraft.getCustomItem(itemStack).rebuild();
                 }
-            } catch (CustomItemException ignored) {
-
+            } catch (CustomItemException e) {
+                if (event.getPlayer() instanceof Player) {
+                    ((Player) event.getPlayer()).sendMessage(ChatColor.RED + e.getMessage());
+                }
             }
         }
     }
