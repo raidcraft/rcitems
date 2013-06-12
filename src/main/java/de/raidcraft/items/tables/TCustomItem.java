@@ -4,10 +4,14 @@ import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -34,6 +38,9 @@ public class TCustomItem {
     private double sellPrice = 0.0;
     @NotNull
     private ItemType itemType;
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "item_id")
+    private List<TCustomItemAttachment> attachments;
 
     public int getId() {
 
@@ -123,5 +130,15 @@ public class TCustomItem {
     public void setItemType(ItemType itemType) {
 
         this.itemType = itemType;
+    }
+
+    public List<TCustomItemAttachment> getAttachments() {
+
+        return attachments;
+    }
+
+    public void setAttachments(List<TCustomItemAttachment> attachments) {
+
+        this.attachments = attachments;
     }
 }
