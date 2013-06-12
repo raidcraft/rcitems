@@ -86,22 +86,26 @@ public class PlayerListener implements Listener {
         if (itemStack == null || itemStack.getTypeId() == 0) {
             return;
         }
-        CustomItem customItem = null;
-        if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-            customItem = RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId()));
-            customItem.rebuild(itemStack);
-        } else if (CustomItemUtil.isCustomItem(itemStack)) {
-            CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
-            customItemStack.rebuild();
-            customItem = customItemStack.getItem();
-        }
-        if (customItem != null && customItem instanceof AttachableCustomItem) {
-            try {
-                ((AttachableCustomItem) customItem).apply(event.getPlayer());
-            } catch (CustomItemException e) {
-                event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
-                event.setCancelled(true);
+        try {
+            CustomItem customItem = null;
+            if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
+                customItem = RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId()));
+                customItem.rebuild(itemStack);
+            } else if (CustomItemUtil.isCustomItem(itemStack)) {
+                CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+                customItemStack.rebuild();
+                customItem = customItemStack.getItem();
             }
+            if (customItem != null && customItem instanceof AttachableCustomItem) {
+                try {
+                    ((AttachableCustomItem) customItem).apply(event.getPlayer());
+                } catch (CustomItemException e) {
+                    event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
+                    event.setCancelled(true);
+                }
+            }
+        } catch (CustomItemException e) {
+            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 
@@ -132,10 +136,14 @@ public class PlayerListener implements Listener {
         if (itemStack == null || itemStack.getTypeId() == 0) {
             return;
         }
-        if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-            RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
-        } else if (CustomItemUtil.isCustomItem(itemStack)) {
-            RaidCraft.getCustomItem(itemStack).rebuild();
+        try {
+            if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
+                RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
+            } else if (CustomItemUtil.isCustomItem(itemStack)) {
+                RaidCraft.getCustomItem(itemStack).rebuild();
+            }
+        } catch (CustomItemException e) {
+            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 
@@ -146,10 +154,14 @@ public class PlayerListener implements Listener {
             if (itemStack == null || itemStack.getTypeId() == 0) {
                 continue;
             }
-            if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-                RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
-            } else if (CustomItemUtil.isCustomItem(itemStack)) {
-                RaidCraft.getCustomItem(itemStack).rebuild();
+            try {
+                if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
+                    RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
+                } else if (CustomItemUtil.isCustomItem(itemStack)) {
+                    RaidCraft.getCustomItem(itemStack).rebuild();
+                }
+            } catch (CustomItemException ignored) {
+
             }
         }
     }
