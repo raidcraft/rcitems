@@ -65,7 +65,7 @@ public class ItemCommands {
         public void give(CommandContext args, CommandSender sender) {
 
             try {
-                CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getInteger(0));
+                CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getJoinedStrings(0));
                 ((Player) sender).getInventory().addItem(itemStack.getHandle());
             } catch (CustomItemException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
