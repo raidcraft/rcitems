@@ -140,7 +140,9 @@ public class PlayerListener implements Listener {
             if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
                 RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
             } else if (CustomItemUtil.isCustomItem(itemStack)) {
-                RaidCraft.getCustomItem(itemStack).rebuild();
+                CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
+                if (customItem == null) return;
+                customItem.rebuild();
             }
         } catch (CustomItemException e) {
             event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
