@@ -94,6 +94,9 @@ public class PlayerListener implements Listener {
                 customItem.rebuild(itemStack);
             } else if (CustomItemUtil.isCustomItem(itemStack)) {
                 CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+                if (customItemStack == null) {
+                    return;
+                }
                 customItemStack.rebuild();
                 customItem = customItemStack.getItem();
             }
