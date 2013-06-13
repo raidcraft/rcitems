@@ -2,6 +2,7 @@ package de.raidcraft.items.commands;
 
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
@@ -9,6 +10,7 @@ import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.items.ItemsPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -59,14 +61,25 @@ public class ItemCommands {
         @Command(
                 aliases = {"give", "i", "g"},
                 desc = "Gives a custom item to the player",
-                min = 1
+                min = 1,
+                flags = "p:"
         )
         @CommandPermissions("rcitems.give")
-        public void give(CommandContext args, CommandSender sender) {
+        public void give(CommandContext args, CommandSender sender) throws CommandException {
 
             try {
+                Player player;
+                if (args.hasFlag('p')) {
+                    player = Bukkit.getPlayer(args.getFlag('p'));
+                    if (player == null) {
+                        throw new CommandException("Es ist kein Spieler mit dem Namen " + args.hasFlag('p') + " online.");
+                    }
+                } else {
+                    player = (Player) sender;
+                }
                 CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getJoinedStrings(0));
-                ((Player) sender).getInventory().addItem(itemStack.getHandle());
+                player.getInventory().addItem(itemStack.getHandle());
+                player.sendMessage(ChatColor.GREEN + "Dir wurde das Custom Item " + ChatColor.AQUA + itemStack.getItem().getName() + ChatColor.GREEN + " gegeben.");
             } catch (CustomItemException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
                 plugin.getLogger().warning(e.getMessage());
