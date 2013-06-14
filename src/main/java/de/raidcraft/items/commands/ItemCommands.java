@@ -80,6 +80,10 @@ public class ItemCommands {
                 CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getJoinedStrings(0));
                 player.getInventory().addItem(itemStack.getHandle());
                 player.sendMessage(ChatColor.GREEN + "Dir wurde das Custom Item " + ChatColor.AQUA + itemStack.getItem().getName() + ChatColor.GREEN + " gegeben.");
+                if (!player.equals(sender)) {
+                    sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA + player.getName() + ChatColor.GREEN
+                            + " das Custom Item " + ChatColor.AQUA + itemStack.getItem().getName() + ChatColor.GREEN + " gegeben.");
+                }
             } catch (CustomItemException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
                 plugin.getLogger().warning(e.getMessage());
