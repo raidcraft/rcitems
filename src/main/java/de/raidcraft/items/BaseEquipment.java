@@ -6,6 +6,7 @@ import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.items.tables.TCustomEquipment;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,20 +67,23 @@ public abstract class BaseEquipment extends BaseItem implements CustomEquipment 
         short mcDurability = (short) ((itemStack.getType().getMaxDurability() * mcDurabilityPercent) - 1);
         itemStack.setDurability(mcDurability);
 
-        if (itemStack.getItemMeta().hasLore()) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta.hasLore()) {
             Matcher matcher;
-            List<String> lore = itemStack.getItemMeta().getLore();
+            List<String> lore = itemMeta.getLore();
             for (int i = 0; i < lore.size(); i++) {
                 matcher = DURABILITY_PATTERN.matcher(ChatColor.stripColor(lore.get(i)));
                 if (matcher.matches()) {
                     lore.set(i, color + "Haltbarkeit: " + durability + "/" + getMaxDurability());
-                    itemStack.getItemMeta().setLore(lore);
+                    itemMeta.setLore(lore);
+                    itemStack.setItemMeta(itemMeta);
                     return;
                 }
             }
             // if no line with the durablity was found set it in the last slot
             lore.add(color + "Haltbarkeit: " + durability + "/" + getMaxDurability());
-            itemStack.getItemMeta().setLore(lore);
+            itemMeta.setLore(lore);
+            itemStack.setItemMeta(itemMeta);
         }
     }
 
