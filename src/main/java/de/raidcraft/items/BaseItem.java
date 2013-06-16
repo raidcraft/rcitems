@@ -329,4 +329,28 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
             attachment.removeAttachment(this, player, section);
         }
     }
+
+    @Override
+    public String toString() {
+
+        return getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof BaseItem)) return false;
+
+        BaseItem baseItem = (BaseItem) o;
+
+        return id == baseItem.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+
+        return id;
+    }
 }
