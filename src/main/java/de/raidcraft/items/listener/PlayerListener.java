@@ -19,6 +19,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -39,12 +40,10 @@ public class PlayerListener implements Listener {
         this.config = plugin.getConfig();
     }
 
-    @EventHandler(ignoreCancelled = false)
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
         if (CustomItemUtil.isCustomItem(event.getItem())) {
-            // lets check the durability loss and negate it by using our own durability if it is a custom item
-            plugin.applyDurabilityLoss(event.getItem(), config.durabilityLossChanceOnUse);
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
                 // lets check for a custom useable item
                 CustomItemStack customItem = RaidCraft.getCustomItem(event.getItem());
@@ -60,6 +59,16 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = false)
+    public void useItemDurability(PlayerInteractEvent event) {
+
+        if (CustomItemUtil.isCustomItem(event.getItem())) {
+            // also update the item in hand
+            plugin.updateItemDurability(event.getItem(), config.durabilityLossChanceOnUse);
+            event.getPlayer().updateInventory();
+        }
+    }
+
+    @EventHandler(ignoreCancelled = false)
     public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
 
         if (!(event.getEntity() instanceof LivingEntity)) {
@@ -67,11 +76,14 @@ public class PlayerListener implements Listener {
         }
         // lets check the durability loss and negate it by using our own durability if it is a custom item
         for (ItemStack itemStack : ((LivingEntity) event.getEntity()).getEquipment().getArmorContents()) {
-            plugin.applyDurabilityLoss(itemStack, config.durabilityLossChanceOnDamage);
+            plugin.updateItemDurability(itemStack, config.durabilityLossChanceOnDamage);
+        }
+        if (event.getEntity() instanceof Player) {
+            ((Player) event.getEntity()).updateInventory();
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEnchant(EnchantItemEvent event) {
 
         ItemStack item = event.getItem();
@@ -133,7 +145,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onHeldItemChange(PlayerItemHeldEvent event) {
 
         ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getNewSlot());
@@ -153,8 +165,33 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
+
+        for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
+            if (itemStack == null || itemStack.getTypeId() == 0) {
+                continue;
+            }
+            try {
+                if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
+                    CustomItem customItem = RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId()));
+                    if (customItem == null) return;
+                    customItem.rebuild(itemStack);
+                } else if (CustomItemUtil.isCustomItem(itemStack)) {
+                    CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
+                    if (customItem == null) return;
+                    customItem.rebuild();
+                }
+            } catch (CustomItemException e) {
+                if (event.getPlayer() instanceof Player) {
+                    ((Player) event.getPlayer()).sendMessage(ChatColor.RED + e.getMessage());
+                }
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onInventoryOpen(InventoryOpenEvent event) {
 
         for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
             if (itemStack == null || itemStack.getTypeId() == 0) {

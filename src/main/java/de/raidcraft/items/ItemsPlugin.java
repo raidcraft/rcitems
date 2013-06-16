@@ -72,6 +72,7 @@ public class ItemsPlugin extends BasePlugin {
     @Override
     public void reload() {
 
+        config.reload();
         unloadRegisteredItems();
         // the attachments need to load before the custom items because we use them in there
         loadAttachments();
@@ -173,16 +174,18 @@ public class ItemsPlugin extends BasePlugin {
         return tables;
     }
 
-    public void applyDurabilityLoss(ItemStack item, double chance) {
+    public void updateItemDurability(ItemStack item, double chance) {
 
         // lets check the durability loss and negate it by using our own durability if it is a custom item
         if (!CustomItemUtil.isEquipment(item)) {
             return;
         }
+        CustomItemStack customItem = RaidCraft.getCustomItem(item);
         // on each interact with the item the player has a chance of 0.1% chance to loose one durability point
         if (Math.random() < chance) {
-            CustomItemStack customItem = RaidCraft.getCustomItem(item);
             customItem.setDurability(customItem.getDurability() - 1);
+        } else {
+            item.setDurability(CustomItemUtil.getMinecraftDurability(item, customItem.getDurability(), customItem.getMaxDurability()));
         }
     }
 

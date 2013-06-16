@@ -164,12 +164,13 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
 
     protected abstract List<String> getCustomTooltipLines();
 
-    private List<String> getTooltipLines() {
+    private List<String> getTooltipLines(boolean broken) {
 
         ArrayList<String> output = new ArrayList<>();
         int maxWidth = calculateMaxWidth();
         // we always add the first and last two lines, the rest is parsed by subclasses
-        output.add(encodedId + getQuality().getColor() + (this instanceof CustomEquipment ? ChatColor.BOLD : "") + getName());
+        output.add(encodedId + (broken ? ChatColor.DARK_RED : getQuality().getColor())
+                + (this instanceof CustomEquipment ? ChatColor.BOLD : "") + getName());
         output.add(ChatColor.GOLD + "Gegenstandsstufe " + getItemLevel());
         // a "->" means we need to replace the line width the width
         for (String line : getCustomTooltipLines()) {
@@ -269,12 +270,23 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
 
     private void setItemMeta(ItemStack itemStack) {
 
-        List<String> lines = getTooltipLines();
+        // lets first check if this item has durability and if yes set it later
+        int durability = 0;
+        if (this instanceof CustomEquipment) {
+            durability = ((CustomEquipment) this).parseDurability(itemStack);
+        }
+
+        List<String> lines = getTooltipLines(durability < 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(lines.get(0));
         lines.remove(0);
         itemMeta.setLore(lines);
         itemStack.setItemMeta(itemMeta);
+        // and at last update the durability
+        if (this instanceof CustomEquipment) {
+            CustomEquipment equipment = (CustomEquipment) this;
+            equipment.updateDurability(itemStack, durability);
+        }
     }
 
     @Override

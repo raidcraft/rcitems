@@ -4,6 +4,7 @@ import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.items.tables.TCustomEquipment;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -42,7 +43,8 @@ public abstract class BaseEquipment extends BaseItem implements CustomEquipment 
             for (String line : itemStack.getItemMeta().getLore()) {
                 matcher = DURABILITY_PATTERN.matcher(ChatColor.stripColor(line));
                 if (matcher.matches()) {
-                    return Integer.parseInt(matcher.group(1));
+                    int durability = Integer.parseInt(matcher.group(1));
+                    return durability < 1 ? 0 : durability;
                 }
             }
         }
@@ -56,16 +58,12 @@ public abstract class BaseEquipment extends BaseItem implements CustomEquipment 
         ChatColor color = ChatColor.GRAY;
         double durabilityInPercent = (double) durability / (double) getMaxDurability();
         if (durabilityInPercent < 0.10) {
-            color = ChatColor.RED;
+            color = ChatColor.DARK_RED;
         } else if (durabilityInPercent < 0.20) {
-            color = ChatColor.YELLOW;
+            color = ChatColor.GOLD;
         }
-        // also set the minecraft items durability
-        // minecrafts max durability is when the item is completly broken so we need to invert our durability
-        double mcDurabilityPercent = 1.0 - durabilityInPercent;
-        // always set -1 so we dont break the item
-        short mcDurability = (short) ((itemStack.getType().getMaxDurability() * mcDurabilityPercent) - 1);
-        itemStack.setDurability(mcDurability);
+        // lets reset the mc durability
+        itemStack.setDurability(CustomItemUtil.getMinecraftDurability(itemStack, durability, getMaxDurability()));
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta.hasLore()) {
