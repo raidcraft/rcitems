@@ -39,7 +39,7 @@ public class PlayerListener implements Listener {
         this.config = plugin.getConfig();
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = false)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
         if (CustomItemUtil.isCustomItem(event.getItem())) {
@@ -59,7 +59,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = false)
     public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
 
         if (!(event.getEntity() instanceof LivingEntity)) {
