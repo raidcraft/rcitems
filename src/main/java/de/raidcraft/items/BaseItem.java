@@ -7,6 +7,7 @@ import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
+import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentManager;
@@ -16,7 +17,6 @@ import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.Font;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,7 +33,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
 
     public static final int DEFAULT_WIDTH = 150;
     public static final String LINE_SEPARATOR = "->";
-    protected final Map<String, ConfigurationSection> attachments = new HashMap<>();
+    protected final Map<String, ConfiguredAttachment> attachments = new HashMap<>();
 
     private final int id;
     private final String encodedId;
@@ -183,8 +183,10 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
             }
         }
         // lets add the attachment information
-        for (ConfigurationSection section : attachments.values()) {
-            output.add(buildMultiLine(section.getString("description"), output, maxWidth, false, false, ChatColor.GREEN));
+        for (ConfiguredAttachment attachment : attachments.values()) {
+            if (attachment.getDescription() != null && !attachment.getDescription().equals("")) {
+                output.add(buildMultiLine(attachment.getDescription(), output, maxWidth, false, false, ChatColor.GREEN));
+            }
         }
         // lets put one empty space between the main body and the rest
         output.add("");
@@ -290,19 +292,18 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     }
 
     @Override
-    public void addAttachment(String name, ConfigurationSection config) {
+    public void addAttachment(ConfiguredAttachment attachment) {
 
-        attachments.put(de.raidcraft.util.StringUtils.formatName(name), config);
+        attachments.put(de.raidcraft.util.StringUtils.formatName(attachment.getAttachmentName()), attachment);
     }
 
     @Override
     public List<ItemAttachment> getAttachments(Player player) throws ItemAttachmentException {
 
         List<ItemAttachment> itemAttachments = new ArrayList<>();
-        for (String attachmentName : attachments.keySet()) {
-            ConfigurationSection section = attachments.get(attachmentName);
+        for (ConfiguredAttachment config : attachments.values()) {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
-                    .getItemAttachment(section.getString("provider"), attachmentName, player);
+                    .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
             itemAttachments.add(attachment);
         }
         return itemAttachments;
@@ -311,22 +312,20 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     @Override
     public void apply(Player player) throws CustomItemException {
 
-        for (String attachmentName : attachments.keySet()) {
-            ConfigurationSection section = attachments.get(attachmentName);
+        for (ConfiguredAttachment config : attachments.values()) {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
-                    .getItemAttachment(section.getString("provider"), attachmentName, player);
-            attachment.applyAttachment(this, player, section);
+                    .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
+            attachment.applyAttachment(this, player, config);
         }
     }
 
     @Override
     public void remove(Player player) throws CustomItemException {
 
-        for (String attachmentName : attachments.keySet()) {
-            ConfigurationSection section = attachments.get(attachmentName);
+        for (ConfiguredAttachment config : attachments.values()) {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
-                    .getItemAttachment(section.getString("provider"), attachmentName, player);
-            attachment.removeAttachment(this, player, section);
+                    .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
+            attachment.removeAttachment(this, player, config);
         }
     }
 

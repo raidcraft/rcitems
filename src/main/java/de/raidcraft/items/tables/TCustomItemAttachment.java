@@ -21,6 +21,9 @@ public class TCustomItemAttachment {
     private TCustomItem item;
     @NotNull
     private String attachmentName;
+    @NotNull
+    private String providerName;
+    private String description;
 
     public int getId() {
 
@@ -50,5 +53,25 @@ public class TCustomItemAttachment {
     public void setAttachmentName(String attachmentName) {
 
         this.attachmentName = attachmentName;
+    }
+
+    public String getProviderName() {
+
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+
+        this.providerName = providerName;
+    }
+
+    public String getDescription() {
+
+        return description;
+    }
+
+    public void setDescription(String description) {
+
+        this.description = description;
     }
 }

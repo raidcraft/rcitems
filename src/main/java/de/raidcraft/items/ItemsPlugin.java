@@ -9,6 +9,7 @@ import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
+import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.items.commands.ItemCommands;
 import de.raidcraft.items.configs.AttachmentConfig;
 import de.raidcraft.items.equipment.ConfiguredArmor;
@@ -142,13 +143,18 @@ public class ItemsPlugin extends BasePlugin {
                 // lets check for custom item attachments
                 if (item.getAttachments() != null && !item.getAttachments().isEmpty()) {
                     for (TCustomItemAttachment attachment : item.getAttachments()) {
+                        // lets create a new configured attachment
+                        ConfiguredAttachment configuredAttachment = new ConfiguredAttachment(
+                                attachment.getAttachmentName(),
+                                attachment.getProviderName(),
+                                attachment.getDescription()
+                        );
+                        // if a local config file for the attachment exists load it into the memory map
                         String attachmentName = StringUtils.formatName(attachment.getAttachmentName());
-                        if (!loadedAttachments.containsKey(attachmentName)) {
-                            getLogger().warning("Unknown item attachment defined in the config of custom item with id " + item.getId());
-                            continue;
+                        if (loadedAttachments.containsKey(attachmentName)) {
+                            configuredAttachment.merge(loadedAttachments.get(attachmentName));
                         }
-                        AttachmentConfig config = loadedAttachments.get(attachmentName);
-                        ((AttachableCustomItem) customItem).addAttachment(config.getName(), config);
+                        ((AttachableCustomItem) customItem).addAttachment(configuredAttachment);
                     }
                 }
                 // register the actual custom item
