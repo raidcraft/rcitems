@@ -54,6 +54,9 @@ public abstract class BaseEquipment extends BaseItem implements CustomEquipment 
     @Override
     public void updateDurability(ItemStack itemStack, int durability) {
 
+        if (getMaxDurability() <= 0) {
+            return;
+        }
         // define the state of the item via color
         ChatColor color = ChatColor.GRAY;
         double durabilityInPercent = (double) durability / (double) getMaxDurability();
