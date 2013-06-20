@@ -280,6 +280,15 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
 
         List<String> lines = getTooltipLines(durability < 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
+        int itemMetaKeyId = -1;
+        // lets get the last line to preserve the unique key
+        if (itemMeta.hasLore() && itemMeta.getLore().size() > 1) {
+            try {
+                itemMetaKeyId = CustomItemUtil.decodeItemId(itemMeta.getLore().get(itemMeta.getLore().size() - 1));
+            } catch (CustomItemException ignored) {
+            }
+        }
+
         itemMeta.setDisplayName(lines.get(0));
         lines.remove(0);
         itemMeta.setLore(lines);
@@ -288,6 +297,12 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         if (this instanceof CustomEquipment) {
             CustomEquipment equipment = (CustomEquipment) this;
             equipment.updateDurability(itemStack, durability);
+        }
+        // lets add a last line in which we hide the item meta id
+        if (itemMetaKeyId > 0) {
+            List<String> strings = itemStack.getItemMeta().getLore();
+            strings.add(CustomItemUtil.encodeItemId(itemMetaKeyId));
+            itemStack.getItemMeta().setLore(strings);
         }
     }
 
