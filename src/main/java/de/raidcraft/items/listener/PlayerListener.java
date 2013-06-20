@@ -49,7 +49,7 @@ public class PlayerListener implements Listener {
                 CustomItemStack customItem = RaidCraft.getCustomItem(event.getItem());
                 if (customItem.getItem() instanceof UseableCustomItem) {
                     try {
-                        ((UseableCustomItem) customItem.getItem()).use(event.getPlayer());
+                        ((UseableCustomItem) customItem.getItem()).use(event.getPlayer(), customItem);
                     } catch (ItemAttachmentException e) {
                         event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
                     }
@@ -101,20 +101,21 @@ public class PlayerListener implements Listener {
         }
         try {
             CustomItem customItem = null;
+            CustomItemStack customItemStack = null;
             if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
                 customItem = RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId()));
                 customItem.rebuild(itemStack);
             } else if (CustomItemUtil.isCustomItem(itemStack)) {
-                CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+                customItemStack = RaidCraft.getCustomItem(itemStack);
                 if (customItemStack == null) {
                     return;
                 }
                 customItemStack.rebuild();
                 customItem = customItemStack.getItem();
             }
-            if (customItem != null && customItem instanceof AttachableCustomItem) {
+            if (customItemStack != null && customItem != null && customItem instanceof AttachableCustomItem) {
                 try {
-                    ((AttachableCustomItem) customItem).apply(event.getPlayer());
+                    ((AttachableCustomItem) customItem).apply(event.getPlayer(), customItemStack);
                 } catch (CustomItemException e) {
                     event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
                     event.setCancelled(true);
@@ -136,7 +137,7 @@ public class PlayerListener implements Listener {
             CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
             if (customItem.getItem() instanceof AttachableCustomItem) {
                 try {
-                    ((AttachableCustomItem) customItem.getItem()).remove(event.getPlayer());
+                    ((AttachableCustomItem) customItem.getItem()).remove(event.getPlayer(), customItem);
                 } catch (CustomItemException e) {
                     event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
                     event.setCancelled(true);

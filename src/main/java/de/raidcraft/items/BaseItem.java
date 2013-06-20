@@ -325,22 +325,22 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     }
 
     @Override
-    public void apply(Player player) throws CustomItemException {
+    public void apply(Player player, CustomItemStack itemStack) throws CustomItemException {
 
         for (ConfiguredAttachment config : attachments.values()) {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
                     .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
-            attachment.applyAttachment(this, player, config);
+            attachment.applyAttachment(itemStack, player, config);
         }
     }
 
     @Override
-    public void remove(Player player) throws CustomItemException {
+    public void remove(Player player, CustomItemStack itemStack) throws CustomItemException {
 
         for (ConfiguredAttachment config : attachments.values()) {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
                     .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
-            attachment.removeAttachment(this, player, config);
+            attachment.removeAttachment(itemStack, player, config);
         }
     }
 
