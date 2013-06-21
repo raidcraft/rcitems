@@ -1,5 +1,8 @@
 package de.raidcraft.items;
 
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.config.ConfigurationBase;
@@ -11,10 +14,14 @@ import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.items.commands.ItemCommands;
+import de.raidcraft.items.commands.RecipeCommands;
 import de.raidcraft.items.configs.AttachmentConfig;
+import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.equipment.ConfiguredArmor;
 import de.raidcraft.items.equipment.ConfiguredWeapon;
 import de.raidcraft.items.listener.PlayerListener;
+import de.raidcraft.items.tables.TCraftingRecipe;
+import de.raidcraft.items.tables.TCraftingRecipeIngredient;
 import de.raidcraft.items.tables.TCustomArmor;
 import de.raidcraft.items.tables.TCustomEquipment;
 import de.raidcraft.items.tables.TCustomItem;
@@ -24,6 +31,7 @@ import de.raidcraft.items.tables.TEquipmentAttribute;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
+import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -42,6 +50,7 @@ public class ItemsPlugin extends BasePlugin {
     private final Set<Integer> loadedCustomItems = new HashSet<>();
     private final Map<String, AttachmentConfig> loadedAttachments = new HashMap<>();
     private LocalConfiguration config;
+    private CraftingManager craftingManager;
 
     @Override
     public void enable() {
@@ -52,6 +61,8 @@ public class ItemsPlugin extends BasePlugin {
         // the attachments need to load before the custom items because we use them in there
         loadAttachments();
         loadCustomItems();
+        // load the crafting manager after init of the custom items
+        craftingManager = new CraftingManager(this);
     }
 
     @Override
@@ -78,6 +89,8 @@ public class ItemsPlugin extends BasePlugin {
         // the attachments need to load before the custom items because we use them in there
         loadAttachments();
         loadCustomItems();
+        // load the crafting manager after init of the custom items
+        craftingManager.reload();
     }
 
     public LocalConfiguration getConfig() {
@@ -118,16 +131,15 @@ public class ItemsPlugin extends BasePlugin {
 
             try {
                 CustomItem customItem;
+                TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
                 switch (item.getItemType()) {
                     case WEAPON:
-                        TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
                         if (equipment == null) continue;
                         TCustomWeapon weapon = getDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findUnique();
                         if (weapon == null) continue;
                         customItem = new ConfiguredWeapon(weapon);
                         break;
                     case ARMOR:
-                        equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
                         if (equipment == null) continue;
                         TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findUnique();
                         if (armor == null) continue;
@@ -135,6 +147,16 @@ public class ItemsPlugin extends BasePlugin {
                         break;
                     case USEABLE:
                         customItem = new UseableItem(item);
+                        break;
+                    case EQUIPMENT:
+                        if (equipment == null) continue;
+                        customItem = new BaseEquipment(equipment) {
+                            @Override
+                            protected List<String> getCustomTooltipLines() {
+
+                                return new ArrayList<>();
+                            }
+                        };
                         break;
                     default:
                         customItem = new SimpleItem(item);
@@ -177,6 +199,9 @@ public class ItemsPlugin extends BasePlugin {
         tables.add(TCustomWeapon.class);
         tables.add(TCustomArmor.class);
         tables.add(TCustomItemAttachment.class);
+        // custom crafting
+        tables.add(TCraftingRecipe.class);
+        tables.add(TCraftingRecipeIngredient.class);
         return tables;
     }
 
@@ -216,4 +241,33 @@ public class ItemsPlugin extends BasePlugin {
         }
     }
 
+    public static class Commands {
+
+        private final ItemsPlugin plugin;
+
+        public Commands(ItemsPlugin plugin) {
+
+            this.plugin = plugin;
+        }
+
+        @Command(
+                aliases = {"rci", "item", "rcitems"},
+                desc = "Custom Item Commands",
+                min = 1
+        )
+        @NestedCommand(value = ItemCommands.class)
+        public void items(CommandContext args, CommandSender sender) {
+
+        }
+
+        @Command(
+                aliases = {"recipe", "rezept"},
+                desc = "Custom Item Commands",
+                min = 1
+        )
+        @NestedCommand(value = RecipeCommands.class)
+        public void recipes(CommandContext args, CommandSender sender) {
+
+        }
+    }
 }

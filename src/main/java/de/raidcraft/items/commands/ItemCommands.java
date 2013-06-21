@@ -4,7 +4,6 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
-import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemManager;
@@ -28,76 +27,55 @@ public class ItemCommands {
     }
 
     @Command(
-            aliases = {"rci", "item", "rcitems"},
-            desc = "Custom Item Commands",
-            min = 1
+            aliases = "reload",
+            desc = "Reloads the items plugin and all configs"
     )
+    @CommandPermissions("rcitems.reload")
+    public void reload(CommandContext args, CommandSender sender) {
 
-    @NestedCommand(value = SubCommands.class)
-    public void giveItem(CommandContext args, CommandSender sender) {
-
+        plugin.reload();
+        sender.sendMessage(ChatColor.GREEN + "Es wurden alle custom items erfolgreich neugeladen.");
     }
 
-    public static class SubCommands {
+    @Command(
+            aliases = {"give", "i", "g"},
+            desc = "Gives a custom item to the player",
+            min = 1,
+            flags = "p:"
+    )
+    @CommandPermissions("rcitems.give")
+    public void give(CommandContext args, CommandSender sender) throws CommandException {
 
-        private final ItemsPlugin plugin;
-
-        public SubCommands(ItemsPlugin plugin) {
-
-            this.plugin = plugin;
-        }
-
-        @Command(
-                aliases = "reload",
-                desc = "Reloads the items plugin and all configs"
-        )
-        @CommandPermissions("rcitems.reload")
-        public void reload(CommandContext args, CommandSender sender) {
-
-            plugin.reload();
-            sender.sendMessage(ChatColor.GREEN + "Es wurden alle custom items erfolgreich neugeladen.");
-        }
-
-        @Command(
-                aliases = {"give", "i", "g"},
-                desc = "Gives a custom item to the player",
-                min = 1,
-                flags = "p:"
-        )
-        @CommandPermissions("rcitems.give")
-        public void give(CommandContext args, CommandSender sender) throws CommandException {
-
-            try {
-                Player player;
-                if (args.hasFlag('p')) {
-                    player = Bukkit.getPlayer(args.getFlag('p'));
-                    if (player == null) {
-                        throw new CommandException("Es ist kein Spieler mit dem Namen " + args.hasFlag('p') + " online.");
-                    }
-                } else {
-                    player = (Player) sender;
+        try {
+            Player player;
+            if (args.hasFlag('p')) {
+                player = Bukkit.getPlayer(args.getFlag('p'));
+                if (player == null) {
+                    throw new CommandException("Es ist kein Spieler mit dem Namen " + args.hasFlag('p') + " online.");
                 }
-                CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getJoinedStrings(0));
-                player.getInventory().addItem(itemStack.getHandle());
-                player.sendMessage(ChatColor.GREEN + "Dir wurde das Custom Item " + ChatColor.AQUA + itemStack.getItem().getName() + ChatColor.GREEN + " gegeben.");
-                if (!player.equals(sender)) {
-                    sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA + player.getName() + ChatColor.GREEN
-                            + " das Custom Item " + ChatColor.AQUA + itemStack.getItem().getName() + ChatColor.GREEN + " gegeben.");
-                }
-            } catch (CustomItemException e) {
-                sender.sendMessage(ChatColor.RED + e.getMessage());
-                plugin.getLogger().warning(e.getMessage());
+            } else {
+                player = (Player) sender;
             }
+            CustomItemStack itemStack = RaidCraft.getComponent(CustomItemManager.class).getCustomItemStack(args.getJoinedStrings(0));
+            player.getInventory().addItem(itemStack.getHandle());
+            player.sendMessage(ChatColor.GREEN + "Dir wurde das Custom Item " + ChatColor.AQUA + itemStack.getItem().getName() + ChatColor.GREEN + " gegeben.");
+            if (!player.equals(sender)) {
+                sender.sendMessage(ChatColor.GREEN + "Du hast " + ChatColor.AQUA + player.getName() + ChatColor.GREEN
+                        + " das Custom Item " + ChatColor.AQUA + itemStack.getItem().getName() + ChatColor.GREEN + " gegeben.");
+            }
+        } catch (CustomItemException e) {
+            sender.sendMessage(ChatColor.RED + e.getMessage());
+            plugin.getLogger().warning(e.getMessage());
         }
+    }
 
-        @Command(
-                aliases = {"wizard", "config", "new", "create"},
-                desc = "Creates a new Item in the Item Wizard."
-        )
-        @CommandPermissions("rcitems.create")
-        public void wizard(CommandContext args, CommandSender sender) {
+    @Command(
+            aliases = {"wizard", "config", "new", "create"},
+            desc = "Creates a new Item in the Item Wizard."
+    )
+    @CommandPermissions("rcitems.create")
+    public void wizard(CommandContext args, CommandSender sender) {
 
 
-        }
     }
 }
