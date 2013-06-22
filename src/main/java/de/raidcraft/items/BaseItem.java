@@ -43,6 +43,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     private final String lore;
     private final int itemLevel;
     private final ItemQuality quality;
+    private final int maxStackSize;
     private final double sellPrice;
     private final List<Requirement<Player>> requirements = new ArrayList<>();
 
@@ -56,6 +57,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         this.lore = item.getLore();
         this.itemLevel = item.getItemLevel();
         this.quality = item.getQuality();
+        this.maxStackSize = item.getMaxStackSize();
         this.sellPrice = item.getSellPrice();
     }
 
@@ -104,6 +106,12 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     public ItemQuality getQuality() {
 
         return quality;
+    }
+
+    @Override
+    public int getMaxStackSize() {
+
+        return maxStackSize;
     }
 
     @Override

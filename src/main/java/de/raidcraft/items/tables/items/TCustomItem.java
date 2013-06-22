@@ -35,6 +35,8 @@ public class TCustomItem {
     @NotNull
     private ItemQuality quality;
     @NotNull
+    private int maxStackSize;
+    @NotNull
     private double sellPrice = 0.0;
     @NotNull
     private ItemType itemType;
@@ -100,6 +102,16 @@ public class TCustomItem {
     public void setItemLevel(int itemLevel) {
 
         this.itemLevel = itemLevel;
+    }
+
+    public int getMaxStackSize() {
+
+        return maxStackSize;
+    }
+
+    public void setMaxStackSize(int maxStackSize) {
+
+        this.maxStackSize = maxStackSize;
     }
 
     public ItemQuality getQuality() {
