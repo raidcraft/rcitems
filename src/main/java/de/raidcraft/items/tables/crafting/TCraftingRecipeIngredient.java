@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * @author Silthus
  */
 @Entity
-@Table(name = "rc_crafting_recipe_slots")
+@Table(name = "rcitems_crafting_recipe_slots")
 public class TCraftingRecipeIngredient {
 
     @Id

@@ -16,7 +16,7 @@ import java.util.List;
  * @author Silthus
  */
 @Entity
-@Table(name = "rc_crafting_recipes")
+@Table(name = "rcitems_crafting_recipes")
 public class TCraftingRecipe {
 
     @Id

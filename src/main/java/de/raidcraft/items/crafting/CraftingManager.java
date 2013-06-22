@@ -12,7 +12,6 @@ import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -75,7 +74,7 @@ public class CraftingManager implements Component {
                                 result
                         );
                         for (TCraftingRecipeIngredient ingredient : ingredients) {
-                            shapelessRecipe.addIngredient(ingredient.getAmount(), RaidCraft.getItem(ingredient.getItem()).getData());
+                            shapelessRecipe.addIngredient(ingredient.getAmount(), RaidCraft.getItem(ingredient.getItem()));
                         }
                         recipe = shapelessRecipe;
                         break;
@@ -85,12 +84,10 @@ public class CraftingManager implements Component {
                                 craftingRecipe.getPermission(),
                                 result
                         );
-                        for (TCraftingRecipeIngredient ingredient : ingredients) {
-                            shapedRecipe.setIngredient(ingredient.getSlot(), RaidCraft.getItem(ingredient.getItem()).getData());
-                        }
-                        shapedRecipe.setIngredient('O', Material.AIR);
-                        shapedRecipe.setIngredient('o', Material.AIR);
                         shapedRecipe.shape(craftingRecipe.getShape().split("\\|"));
+                        for (TCraftingRecipeIngredient ingredient : ingredients) {
+                            shapedRecipe.setIngredient(ingredient.getSlot(), RaidCraft.getItem(ingredient.getItem()));
+                        }
                         recipe = shapedRecipe;
                         break;
                 }

@@ -11,6 +11,7 @@ import de.raidcraft.items.crafting.recipes.CustomShapedRecipe;
 import de.raidcraft.items.crafting.recipes.CustomShapelessRecipe;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.ItemUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -63,7 +64,7 @@ public class RecipeCommands {
         }
 
         ItemStack result = player.getInventory().getItem(RESULT_SLOT);
-        if (ItemUtils.isStackValid(result)) {
+        if (!ItemUtils.isStackValid(result)) {
             throw new CommandException("Es wird ein gültiges Ergebnis benötigt! " +
                     "Bitte lege das Ergebnis Item in die Mitte deines Inventars in der 4. Spalte von links.");
         }
@@ -145,6 +146,7 @@ public class RecipeCommands {
             }
 
             CustomShapedRecipe recipe = new CustomShapedRecipe(name, permission, result);
+            recipe.shape(shape);
             for (Map.Entry<ItemStack, Character> entry : items.entrySet()) {
                 recipe.setIngredient(entry.getValue(), entry.getKey());
             }
@@ -192,5 +194,6 @@ public class RecipeCommands {
             plugin.getCraftingManager().loadRecipe(recipe);
             recipe.save();
         }
+        sender.sendMessage(ChatColor.GREEN + "Custom Crafting Rezept wurde erfolgreich hinzugefügt.");
     }
 }

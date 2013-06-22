@@ -57,7 +57,7 @@ public class ItemsPlugin extends BasePlugin {
 
         config = configure(new LocalConfiguration(this), true);
         registerEvents(new PlayerListener(this));
-        registerCommands(ItemCommands.class);
+        registerCommands(Commands.class);
         // the attachments need to load before the custom items because we use them in there
         loadAttachments();
         loadCustomItems();

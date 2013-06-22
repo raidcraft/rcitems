@@ -76,14 +76,17 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomRecipe {
             // create new
             recipe = new TCraftingRecipe();
         }
+        recipe.setName(getName());
         recipe.setResult(RaidCraft.getItemIdString(getResult()));
         recipe.setAmount(getResult().getAmount());
         recipe.setShape(null);
         recipe.setType(CraftingRecipeType.FURNACE);
         recipe.setPermission(getPermission());
         database.save(recipe);
-        // create the ingredients
-        database.delete(recipe.getIngredients());
+        if (recipe.getIngredients() != null && !recipe.getIngredients().isEmpty()) {
+            // create the ingredients
+            database.delete(recipe.getIngredients());
+        }
         TCraftingRecipeIngredient ingredient = new TCraftingRecipeIngredient();
         ingredient.setAmount(getInput().getAmount());
         ingredient.setRecipe(recipe);
