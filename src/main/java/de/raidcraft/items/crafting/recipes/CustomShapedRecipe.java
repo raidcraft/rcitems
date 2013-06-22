@@ -4,9 +4,9 @@ import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.crafting.CraftingRecipeType;
+import de.raidcraft.items.crafting.RecipeUtil;
 import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
-import de.raidcraft.util.CustomItemUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
@@ -70,25 +70,9 @@ public class CustomShapedRecipe extends ShapedRecipe implements CustomRecipe {
     public boolean isMatchingRecipe(CraftingInventory inventory) {
 
         ItemStack[] input = inventory.getMatrix();
-        ItemStack[] required = buildRequiredInput(input.length);
+        ItemStack[] required = RecipeUtil.shapeToMatrix(getShape(), getIngredientMap());
 
-        for (int i = 0; i < input.length; i++) {
-            if (!CustomItemUtil.isEqualCustomItem(input[i], required[i])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private ItemStack[] buildRequiredInput(int length) {
-
-        ItemStack[] out = new ItemStack[length];
-        String[] shape = getShape();
-
-        for (int i = 0; i < length; i++) {
-            out[i] = ingredients.get(shape[i].charAt(0));
-        }
-        return out;
+        return RecipeUtil.isEqualMatrix(input, required);
     }
 
     @Override

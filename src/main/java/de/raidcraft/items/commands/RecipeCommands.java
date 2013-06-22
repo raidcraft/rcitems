@@ -6,6 +6,7 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.crafting.CraftingRecipeType;
+import de.raidcraft.items.crafting.RecipeUtil;
 import de.raidcraft.items.crafting.recipes.CustomFurnaceRecipe;
 import de.raidcraft.items.crafting.recipes.CustomShapedRecipe;
 import de.raidcraft.items.crafting.recipes.CustomShapelessRecipe;
@@ -15,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -63,7 +65,7 @@ public class RecipeCommands {
             throw new CommandException("Das Crafting Rezept " + name + " ist bereits registriert.");
         }
 
-        ItemStack result = player.getInventory().getItem(RESULT_SLOT);
+        ItemStack result = new ItemStack(player.getInventory().getItem(RESULT_SLOT));
         if (!ItemUtils.isStackValid(result)) {
             throw new CommandException("Es wird ein gültiges Ergebnis benötigt! " +
                     "Bitte lege das Ergebnis Item in die Mitte deines Inventars in der 4. Spalte von links.");
@@ -71,84 +73,54 @@ public class RecipeCommands {
 
         // we will use the inventory slots on the left (3x3)
         // and the one in the middle will be the result
-        ItemStack[] slots = new ItemStack[]{((Player) sender).getInventory().getItem(9),((Player) sender).getInventory().getItem(10),
-                ((Player) sender).getInventory().getItem(11),((Player) sender).getInventory().getItem(18),((Player) sender).getInventory().getItem(19),
-                ((Player) sender).getInventory().getItem(20),((Player) sender).getInventory().getItem(27),((Player) sender).getInventory().getItem(28),
-                ((Player) sender).getInventory().getItem(29)};
+        PlayerInventory inventory = ((Player) sender).getInventory();
+        ItemStack[] slots = new ItemStack[]{inventory.getItem(9), inventory.getItem(10),
+                inventory.getItem(11), inventory.getItem(18), inventory.getItem(19),
+                inventory.getItem(20), inventory.getItem(27), inventory.getItem(28),
+                inventory.getItem(29)};
 
         if(type == CraftingRecipeType.SHAPED) {
 
             LinkedHashMap<ItemStack, Character> items = new LinkedHashMap<>();
 
-            int furtherestX = -1;
-            int furtherestY = -1;
-
-            for (int slot = 0; slot < 3; slot++) {
-                ItemStack stack = slots[slot];
-                if(ItemUtils.isStackValid(stack)) {
-                    furtherestY = 0;
-                    if(furtherestX < slot)
-                        furtherestX = slot;
-                }
-            }
-            for (int slot = 3; slot < 6; slot++) {
-                ItemStack stack = slots[slot];
-                if(ItemUtils.isStackValid(stack)) {
-                    furtherestY = 1;
-                    if(furtherestX < slot-3)
-                        furtherestX = slot-3;
-                }
-            }
-            for (int slot = 6; slot < 9; slot++) {
-                ItemStack stack = slots[slot];
-                if(ItemUtils.isStackValid(stack)) {
-                    furtherestY = 2;
-                    if(furtherestX < slot-6)
-                        furtherestX = slot-6;
-                }
-            }
-
-            if(furtherestX > 2)
-                furtherestX = 2;
-
-            String[] shape = new String[furtherestY+1];
+            String[] shape = new String[3];
             Character[] characters = new Character[]{'a','b','c','d','e','f','g','h','i'};
             int curChar = 0;
 
-            for(int y = 0; y < furtherestY+1; y++) {
-                for(int x = 0; x < furtherestX+1; x++) {
+            int x = 0;
+            String shapeLine = "";
+            for(int i = 0; i < slots.length; i++) {
 
-                    String c = " ";
-                    ItemStack stack = slots[x+y*3];
-                    if (ItemUtils.isStackValid(stack)) {
+                char c = RecipeUtil.SHAPE_AIR_CHAR;
+                ItemStack stack = slots[i];
+                if (ItemUtils.isStackValid(stack)) {
 
-                        boolean found = false;
-                        for (ItemStack st : items.keySet()) {
-                            if (st.isSimilar(stack)) {
-                                c = items.get(st).toString();
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            items.put(stack, characters[curChar]);
-                            c = characters[curChar].toString();
-                            curChar++;
+                    boolean found = false;
+                    for (ItemStack st : items.keySet()) {
+                        if (st.isSimilar(stack)) {
+                            c = items.get(st);
+                            found = true;
+                            break;
                         }
                     }
-
-                    if (x == 0) {
-                        shape[y] = c;
-                    } else {
-                        shape[y] = shape[y] + c;
+                    if (!found) {
+                        items.put(stack, characters[curChar]);
+                        c = characters[curChar];
+                        curChar++;
                     }
+                }
+                shapeLine += c;
+                if (shapeLine.length() % 3 == 0) {
+                    shape[x] = shapeLine;
+                    shapeLine = "";
+                    x++;
                 }
             }
 
             CustomShapedRecipe recipe = new CustomShapedRecipe(name, permission, result);
             recipe.shape(shape);
             for (Map.Entry<ItemStack, Character> entry : items.entrySet()) {
-                recipe.setIngredient(entry.getValue(), entry.getKey());
+                recipe.setIngredient(entry.getValue(), new ItemStack(entry.getKey()));
             }
             plugin.getCraftingManager().loadRecipe(recipe);
             recipe.save();

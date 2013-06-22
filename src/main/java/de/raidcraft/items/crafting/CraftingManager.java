@@ -12,8 +12,10 @@ import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,7 @@ public class CraftingManager implements Component {
 
     public void reload() {
 
-        Bukkit.clearRecipes();
+        Bukkit.resetRecipes();
         loadRecipes();
     }
 
@@ -64,7 +66,7 @@ public class CraftingManager implements Component {
                                 craftingRecipe.getName(),
                                 craftingRecipe.getPermission(),
                                 result,
-                                RaidCraft.getItem(ingredients.get(0).getItem())
+                                new ItemStack(RaidCraft.getItem(ingredients.get(0).getItem()))
                         );
                         break;
                     case SHAPELESS:
@@ -74,7 +76,7 @@ public class CraftingManager implements Component {
                                 result
                         );
                         for (TCraftingRecipeIngredient ingredient : ingredients) {
-                            shapelessRecipe.addIngredient(ingredient.getAmount(), RaidCraft.getItem(ingredient.getItem()));
+                            shapelessRecipe.addIngredient(ingredient.getAmount(), new ItemStack(RaidCraft.getItem(ingredient.getItem())));
                         }
                         recipe = shapelessRecipe;
                         break;
@@ -86,7 +88,7 @@ public class CraftingManager implements Component {
                         );
                         shapedRecipe.shape(craftingRecipe.getShape().split("\\|"));
                         for (TCraftingRecipeIngredient ingredient : ingredients) {
-                            shapedRecipe.setIngredient(ingredient.getSlot(), RaidCraft.getItem(ingredient.getItem()));
+                            shapedRecipe.setIngredient(ingredient.getSlot(), new ItemStack(RaidCraft.getItem(ingredient.getItem())));
                         }
                         recipe = shapedRecipe;
                         break;
@@ -104,6 +106,13 @@ public class CraftingManager implements Component {
             }
         }
         plugin.getLogger().info("Loaded " + loadedRecipes + "/" + recipes.size() + " custom crafting recipes");
+    }
+
+    public CraftingRecipeType getType(Recipe recipe) {
+
+        if (recipe instanceof FurnaceRecipe) return CraftingRecipeType.FURNACE;
+        if (recipe instanceof ShapedRecipe) return CraftingRecipeType.SHAPED;
+        return CraftingRecipeType.SHAPELESS;
     }
 
     public boolean loadRecipe(CustomRecipe recipe) {
@@ -126,10 +135,11 @@ public class CraftingManager implements Component {
         return loadedRecipes.get(name);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public CustomRecipe getMatchingRecipe(Recipe recipe) {
 
         for (CustomRecipe customRecipe : loadedRecipes.values()) {
-            if (customRecipe.equals(recipe)) {
+            if (RecipeUtil.areEqual(recipe, customRecipe)) {
                 return customRecipe;
             }
         }
