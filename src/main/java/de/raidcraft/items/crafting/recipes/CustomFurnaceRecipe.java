@@ -63,8 +63,12 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomRecipe {
     @Override
     public boolean isMatchingRecipe(CraftingInventory inventory) {
 
-        return inventory instanceof FurnaceInventory
-                && CustomItemUtil.isEqualCustomItem(((FurnaceInventory) inventory).getSmelting(), getInput());
+        return inventory instanceof FurnaceInventory && isMatchingRecipe(((FurnaceInventory) inventory).getSmelting());
+    }
+
+    public boolean isMatchingRecipe(ItemStack input) {
+
+        return CustomItemUtil.isEqualCustomItem(input, getInput());
     }
 
     @Override

@@ -7,14 +7,13 @@ import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.crafting.CraftingRecipeType;
 import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
+import de.raidcraft.util.ItemUtils;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Silthus
@@ -23,7 +22,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
 
     private final String name;
     private final String permission;
-    private final Map<String, Integer> ingredients = new HashMap<>();
+    private final List<String> ingredients = new ArrayList<>();
 
     public CustomShapelessRecipe(String name, String permission, ItemStack result) {
 
@@ -55,13 +54,11 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
         super.addIngredient(amount, ingredient.getData());
         // lets query for the name of the custom item stack and add it to our list
         String item = RaidCraft.getItemIdString(ingredient);
-        Integer previousAmount = ingredients.remove(item);
-        if (previousAmount != null) {
-            amount += previousAmount;
-        }
         // dont allow item amounts greater than nine, because that makes no sense...
         if (amount > 9) amount = 9;
-        ingredients.put(item, amount);
+        while (amount-- > 0) {
+            ingredients.add(item);
+        }
         return this;
     }
 
@@ -69,9 +66,8 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
 
         super.removeIngredient(amount, ingredient.getData());
         String item = RaidCraft.getItemIdString(ingredient);
-        Integer currentAmount = ingredients.remove(item);
-        if (currentAmount != null && currentAmount > amount) {
-            ingredients.put(item, currentAmount - amount);
+        while (amount-- > 0) {
+            ingredients.remove(ingredients.lastIndexOf(item));
         }
         return this;
     }
@@ -88,10 +84,9 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
     public List<ItemStack> getIngredientList() {
 
         ArrayList<ItemStack> items = new ArrayList<>();
-        for (String id : ingredients.keySet()) {
+        for (String id : ingredients) {
             try {
                 ItemStack item = RaidCraft.getItem(id);
-                item.setAmount(ingredients.get(id));
                 items.add(item);
             } catch (CustomItemException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
@@ -103,20 +98,18 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
     @Override
     public boolean isMatchingRecipe(CraftingInventory inventory) {
 
-        Map<String, Integer> count = new HashMap<>();
+        ArrayList<String> remainingIngredients = new ArrayList<>(ingredients);
+
         for (ItemStack itemStack : inventory.getMatrix()) {
+            if (!ItemUtils.isStackValid(itemStack)) {
+                continue;
+            }
             String id = RaidCraft.getItemIdString(itemStack);
-            if (ingredients.containsKey(id)) {
-                if (!count.containsKey(id)) {
-                    count.put(id, 1);
-                } else {
-                    count.put(id, count.get(id) + 1);
-                }
-            } else {
+            if (!remainingIngredients.remove(id)) {
                 return false;
             }
         }
-        return count.equals(ingredients);
+        return remainingIngredients.isEmpty();
     }
 
     @Override

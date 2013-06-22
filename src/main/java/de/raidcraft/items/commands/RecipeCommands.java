@@ -131,8 +131,9 @@ public class RecipeCommands {
 
             for (ItemStack slot : slots) {
 
-                if (!ItemUtils.isStackValid(slot))
+                if (!ItemUtils.isStackValid(slot)) {
                     continue;
+                }
 
                 ItemStack stack = new ItemStack(slot.clone());
 
@@ -159,10 +160,17 @@ public class RecipeCommands {
             recipe.save();
         } else if (type == CraftingRecipeType.FURNACE) {
 
-            if (slots.length < 1 || slots.length > 1) {
-                throw new CommandException("Ungültige Zutatenmenge für ein Schmelz Rezept.");
+            ItemStack input = null;
+            for (ItemStack slot : slots) {
+                if (!ItemUtils.isStackValid(slot)) {
+                    continue;
+                }
+                if (input != null) {
+                    throw new CommandException("Ungültige Zutatenmenge für ein Schmelzrezept. Maximal eine Zutat erlaubt.");
+                }
+                input = slot;
             }
-            CustomFurnaceRecipe recipe = new CustomFurnaceRecipe(name, permission, result, slots[0]);
+            CustomFurnaceRecipe recipe = new CustomFurnaceRecipe(name, permission, result, input);
             plugin.getCraftingManager().loadRecipe(recipe);
             recipe.save();
         }

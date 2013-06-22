@@ -16,7 +16,9 @@ import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.material.MaterialData;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ public class CraftingManager implements Component {
 
     private final ItemsPlugin plugin;
     private final Map<String, CustomRecipe> loadedRecipes = new CaseInsensitiveMap<>();
+    private final Map<MaterialData, CustomFurnaceRecipe> furnaceRecipes = new HashMap<>();
 
     public CraftingManager(ItemsPlugin plugin) {
 
@@ -120,6 +123,12 @@ public class CraftingManager implements Component {
         if (loadedRecipes.containsKey(recipe.getName())) {
             return false;
         }
+        if (recipe instanceof CustomFurnaceRecipe) {
+            if (furnaceRecipes.containsKey(((CustomFurnaceRecipe) recipe).getInput().getData())) {
+                return false;
+            }
+            furnaceRecipes.put(((CustomFurnaceRecipe) recipe).getInput().getData(), (CustomFurnaceRecipe) recipe);
+        }
         Bukkit.addRecipe(recipe);
         this.loadedRecipes.put(recipe.getName(), recipe);
         return true;
@@ -133,6 +142,11 @@ public class CraftingManager implements Component {
     public CustomRecipe getRecipe(String name) {
 
         return loadedRecipes.get(name);
+    }
+
+    public CustomFurnaceRecipe getFurnaceRecipe(ItemStack input) {
+
+        return furnaceRecipes.get(input.getData());
     }
 
     @SuppressWarnings("ConstantConditions")
