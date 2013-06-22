@@ -219,9 +219,9 @@ public class ItemsPlugin extends BasePlugin {
         CustomItemStack customItem = RaidCraft.getCustomItem(item);
         // on each interact with the item the player has a chance of 0.1% chance to loose one durability point
         if (Math.random() < chance) {
-            customItem.setDurability(customItem.getDurability() - 1);
+            customItem.setDurability(customItem.getCustomDurability() - 1);
         } else {
-            item.setDurability(CustomItemUtil.getMinecraftDurability(item, customItem.getDurability(), customItem.getMaxDurability()));
+            item.setDurability(CustomItemUtil.getMinecraftDurability(item, customItem.getCustomDurability(), customItem.getMaxDurability()));
         }
     }
 
