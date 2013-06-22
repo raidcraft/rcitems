@@ -5,7 +5,7 @@ import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.items.BaseEquipment;
 import de.raidcraft.items.BaseItem;
-import de.raidcraft.items.tables.TCustomArmor;
+import de.raidcraft.items.tables.items.TCustomArmor;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;

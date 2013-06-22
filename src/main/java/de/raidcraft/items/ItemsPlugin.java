@@ -20,14 +20,14 @@ import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.equipment.ConfiguredArmor;
 import de.raidcraft.items.equipment.ConfiguredWeapon;
 import de.raidcraft.items.listener.PlayerListener;
-import de.raidcraft.items.tables.TCraftingRecipe;
-import de.raidcraft.items.tables.TCraftingRecipeIngredient;
-import de.raidcraft.items.tables.TCustomArmor;
-import de.raidcraft.items.tables.TCustomEquipment;
-import de.raidcraft.items.tables.TCustomItem;
-import de.raidcraft.items.tables.TCustomItemAttachment;
-import de.raidcraft.items.tables.TCustomWeapon;
-import de.raidcraft.items.tables.TEquipmentAttribute;
+import de.raidcraft.items.tables.crafting.TCraftingRecipe;
+import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
+import de.raidcraft.items.tables.items.TCustomArmor;
+import de.raidcraft.items.tables.items.TCustomEquipment;
+import de.raidcraft.items.tables.items.TCustomItem;
+import de.raidcraft.items.tables.items.TCustomItemAttachment;
+import de.raidcraft.items.tables.items.TCustomWeapon;
+import de.raidcraft.items.tables.items.TEquipmentAttribute;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
@@ -91,6 +91,11 @@ public class ItemsPlugin extends BasePlugin {
         loadCustomItems();
         // load the crafting manager after init of the custom items
         craftingManager.reload();
+    }
+
+    public CraftingManager getCraftingManager() {
+
+        return craftingManager;
     }
 
     public LocalConfiguration getConfig() {

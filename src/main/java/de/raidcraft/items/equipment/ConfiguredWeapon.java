@@ -5,7 +5,7 @@ import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.items.BaseEquipment;
 import de.raidcraft.items.BaseItem;
-import de.raidcraft.items.tables.TCustomWeapon;
+import de.raidcraft.items.tables.items.TCustomWeapon;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 

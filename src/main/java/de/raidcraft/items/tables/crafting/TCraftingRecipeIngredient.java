@@ -1,4 +1,4 @@
-package de.raidcraft.items.tables;
+package de.raidcraft.items.tables.crafting;
 
 import com.avaje.ebean.validation.NotNull;
 

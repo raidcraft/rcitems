@@ -1,7 +1,13 @@
 package de.raidcraft.items.crafting.recipes;
 
+import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
+import de.raidcraft.items.ItemsPlugin;
+import de.raidcraft.items.crafting.CraftingRecipeType;
+import de.raidcraft.items.tables.crafting.TCraftingRecipe;
+import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 
@@ -13,25 +19,35 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public class CustomShapelessRecipe extends ShapelessRecipe {
+public class CustomShapelessRecipe extends ShapelessRecipe implements CustomRecipe {
 
+    private final String name;
+    private final String permission;
     private final Map<String, Integer> ingredients = new HashMap<>();
-    /**
-     * Create a shapeless recipe to craft the specified ItemStack. The constructor merely determines the
-     * result and type; to set the actual recipe, you'll need to call the appropriate methods.
-     *
-     * @param result The item you want the recipe to create.
-     *
-     * @see org.bukkit.inventory.ShapelessRecipe#addIngredient(org.bukkit.Material)
-     * @see org.bukkit.inventory.ShapelessRecipe#addIngredient(org.bukkit.material.MaterialData)
-     * @see org.bukkit.inventory.ShapelessRecipe#addIngredient(org.bukkit.Material, int)
-     * @see org.bukkit.inventory.ShapelessRecipe#addIngredient(int, org.bukkit.Material)
-     * @see org.bukkit.inventory.ShapelessRecipe#addIngredient(int, org.bukkit.material.MaterialData)
-     * @see org.bukkit.inventory.ShapelessRecipe#addIngredient(int, org.bukkit.Material, int)
-     */
-    public CustomShapelessRecipe(ItemStack result) {
+
+    public CustomShapelessRecipe(String name, String permission, ItemStack result) {
 
         super(result);
+        this.name = name;
+        this.permission = permission;
+    }
+
+    @Override
+    public String getName() {
+
+        return name;
+    }
+
+    @Override
+    public String getPermission() {
+
+        return permission;
+    }
+
+    @Override
+    public CraftingRecipeType getType() {
+
+        return CraftingRecipeType.SHAPELESS;
     }
 
     public CustomShapelessRecipe addIngredient(int amount, ItemStack ingredient) {
@@ -82,5 +98,50 @@ public class CustomShapelessRecipe extends ShapelessRecipe {
             }
         }
         return items;
+    }
+
+    @Override
+    public boolean isMatchingRecipe(CraftingInventory inventory) {
+
+        Map<String, Integer> count = new HashMap<>();
+        for (ItemStack itemStack : inventory.getMatrix()) {
+            String id = RaidCraft.getItemIdString(itemStack);
+            if (ingredients.containsKey(id)) {
+                if (!count.containsKey(id)) {
+                    count.put(id, 1);
+                } else {
+                    count.put(id, count.get(id) + 1);
+                }
+            } else {
+                return false;
+            }
+        }
+        return count.equals(ingredients);
+    }
+
+    @Override
+    public void save() {
+
+        EbeanServer database = RaidCraft.getDatabase(ItemsPlugin.class);
+        TCraftingRecipe recipe = database.find(TCraftingRecipe.class).where().eq("name", getName()).findUnique();
+        if (recipe == null) {
+            // create new
+            recipe = new TCraftingRecipe();
+        }
+        recipe.setResult(RaidCraft.getItemIdString(getResult()));
+        recipe.setAmount(getResult().getAmount());
+        recipe.setShape(null);
+        recipe.setType(CraftingRecipeType.SHAPELESS);
+        recipe.setPermission(getPermission());
+        database.save(recipe);
+        // create the ingredients
+        database.delete(recipe.getIngredients());
+        for (ItemStack itemStack : getIngredientList()) {
+            TCraftingRecipeIngredient ingredient = new TCraftingRecipeIngredient();
+            ingredient.setItem(RaidCraft.getItemIdString(itemStack));
+            ingredient.setAmount(itemStack.getAmount());
+            ingredient.setRecipe(recipe);
+            database.save(ingredient);
+        }
     }
 }

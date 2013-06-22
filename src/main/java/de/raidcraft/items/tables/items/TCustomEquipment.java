@@ -1,8 +1,8 @@
-package de.raidcraft.items.tables;
+package de.raidcraft.items.tables.items;
 
 import com.avaje.ebean.validation.NotNull;
-import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.EquipmentSlot;
+import de.raidcraft.api.items.ItemAttribute;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

@@ -1,4 +1,4 @@
-package de.raidcraft.items.tables;
+package de.raidcraft.items.tables.items;
 
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.items.AttributeType;

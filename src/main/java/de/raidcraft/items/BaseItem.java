@@ -12,7 +12,7 @@ import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentManager;
 import de.raidcraft.api.requirement.Requirement;
-import de.raidcraft.items.tables.TCustomItem;
+import de.raidcraft.items.tables.items.TCustomItem;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.Font;
 import org.apache.commons.lang.StringUtils;
@@ -359,7 +359,6 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         BaseItem baseItem = (BaseItem) o;
 
         return id == baseItem.id;
-
     }
 
     @Override

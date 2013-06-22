@@ -3,7 +3,7 @@ package de.raidcraft.items;
 import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
-import de.raidcraft.items.tables.TCustomEquipment;
+import de.raidcraft.items.tables.items.TCustomEquipment;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;

@@ -8,7 +8,7 @@ import de.raidcraft.api.items.attachments.ItemAttachmentManager;
 import de.raidcraft.api.items.attachments.UseableCustomItem;
 import de.raidcraft.api.items.attachments.UseableItemAttachment;
 import de.raidcraft.items.BaseItem;
-import de.raidcraft.items.tables.TCustomItem;
+import de.raidcraft.items.tables.items.TCustomItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

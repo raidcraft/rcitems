@@ -1,6 +1,6 @@
 package de.raidcraft.items;
 
-import de.raidcraft.items.tables.TCustomItem;
+import de.raidcraft.items.tables.items.TCustomItem;
 
 import java.util.ArrayList;
 import java.util.List;

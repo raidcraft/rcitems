@@ -4,39 +4,47 @@ import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.crafting.CraftingRecipeType;
-import de.raidcraft.items.tables.TCraftingRecipe;
+import de.raidcraft.items.tables.crafting.TCraftingRecipe;
+import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
+import de.raidcraft.util.CustomItemUtil;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Silthus
  */
-public class CustomFurnaceRecipe extends FurnaceRecipe {
+public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomRecipe {
 
     private final String name;
-    private String description;
+    private final String permission;
     private ItemStack input;
 
-    public CustomFurnaceRecipe(String name, ItemStack result, ItemStack input) {
+    public CustomFurnaceRecipe(String name, String permission, ItemStack result, ItemStack input) {
 
         super(result, input.getData());
         this.name = name;
+        this.permission = permission;
         this.input = input;
     }
 
+    @Override
     public String getName() {
 
         return name;
     }
 
-    public String getDescription() {
+    @Override
+    public String getPermission() {
 
-        return description;
+        return permission;
     }
 
-    public void setDescription(String description) {
+    @Override
+    public CraftingRecipeType getType() {
 
-        this.description = description;
+        return CraftingRecipeType.FURNACE;
     }
 
     @Override
@@ -52,6 +60,14 @@ public class CustomFurnaceRecipe extends FurnaceRecipe {
         return this;
     }
 
+    @Override
+    public boolean isMatchingRecipe(CraftingInventory inventory) {
+
+        return inventory instanceof FurnaceInventory
+                && CustomItemUtil.isEqualCustomItem(((FurnaceInventory) inventory).getSmelting(), getInput());
+    }
+
+    @Override
     public void save() {
 
         EbeanServer database = RaidCraft.getDatabase(ItemsPlugin.class);
@@ -62,11 +78,16 @@ public class CustomFurnaceRecipe extends FurnaceRecipe {
         }
         recipe.setResult(RaidCraft.getItemIdString(getResult()));
         recipe.setAmount(getResult().getAmount());
-        recipe.setDescription(getDescription());
         recipe.setShape(null);
         recipe.setType(CraftingRecipeType.FURNACE);
+        recipe.setPermission(getPermission());
         database.save(recipe);
         // create the ingredients
         database.delete(recipe.getIngredients());
+        TCraftingRecipeIngredient ingredient = new TCraftingRecipeIngredient();
+        ingredient.setAmount(getInput().getAmount());
+        ingredient.setRecipe(recipe);
+        ingredient.setItem(RaidCraft.getItemIdString(getInput()));
+        database.save(ingredient);
     }
 }

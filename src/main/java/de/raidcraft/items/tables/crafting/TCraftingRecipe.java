@@ -1,4 +1,4 @@
-package de.raidcraft.items.tables;
+package de.raidcraft.items.tables.crafting;
 
 import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.items.crafting.CraftingRecipeType;
@@ -24,7 +24,7 @@ public class TCraftingRecipe {
     @NotNull
     @Column(unique = true)
     private String name;
-    private String description;
+    private String permission;
     @NotNull
     private String result;
     private int amount;
@@ -55,14 +55,14 @@ public class TCraftingRecipe {
         this.name = name;
     }
 
-    public String getDescription() {
+    public String getPermission() {
 
-        return description;
+        return permission;
     }
 
-    public void setDescription(String description) {
+    public void setPermission(String permission) {
 
-        this.description = description;
+        this.permission = permission;
     }
 
     public String getResult() {
