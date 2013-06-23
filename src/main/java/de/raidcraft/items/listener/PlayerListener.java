@@ -50,6 +50,7 @@ public class PlayerListener implements Listener {
                 if (customItem.getItem() instanceof UseableCustomItem) {
                     try {
                         ((UseableCustomItem) customItem.getItem()).use(event.getPlayer(), customItem);
+                        event.setCancelled(true);
                     } catch (ItemAttachmentException e) {
                         event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
                     }
