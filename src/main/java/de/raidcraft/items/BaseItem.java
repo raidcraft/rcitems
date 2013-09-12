@@ -11,6 +11,7 @@ import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentManager;
+import de.raidcraft.api.items.attachments.RequiredItemAttachment;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.items.tables.items.TCustomItem;
 import de.raidcraft.util.CustomItemUtil;
@@ -339,6 +340,12 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
                     .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
             attachment.applyAttachment(itemStack, player, config);
+            // check if the attachment is an requirement
+            if (attachment instanceof RequiredItemAttachment) {
+                if (!((RequiredItemAttachment) attachment).isRequirementMet(player)) {
+                    throw new CustomItemException(((RequiredItemAttachment) attachment).getErrorMessage(player));
+                }
+            }
         }
     }
 

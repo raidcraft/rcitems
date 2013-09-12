@@ -114,14 +114,7 @@ public class PlayerListener implements Listener {
                 customItemStack.rebuild();
                 customItem = customItemStack.getItem();
             }
-            if (customItemStack != null && customItem != null && customItem instanceof AttachableCustomItem) {
-                try {
-                    ((AttachableCustomItem) customItem).apply(event.getPlayer(), customItemStack);
-                } catch (CustomItemException e) {
-                    event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
-                    event.setCancelled(true);
-                }
-            }
+
         } catch (CustomItemException e) {
             event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }
@@ -155,15 +148,10 @@ public class PlayerListener implements Listener {
             return;
         }
         try {
-            if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-                RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
-            } else if (CustomItemUtil.isCustomItem(itemStack)) {
-                CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
-                if (customItem == null) return;
-                customItem.rebuild();
-            }
+            equipCustomItem(event.getPlayer(), itemStack);
         } catch (CustomItemException e) {
             event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
+
         }
     }
 
@@ -215,5 +203,34 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+    }
+
+    private void equipCustomItem(Player player, ItemStack itemStack) throws CustomItemException {
+
+        CustomItemStack customItemStack = null;
+
+        if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
+            RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
+            customItemStack = RaidCraft.getCustomItem(itemStack);
+        } else if (CustomItemUtil.isCustomItem(itemStack)) {
+            customItemStack = RaidCraft.getCustomItem(itemStack);
+            if (customItemStack == null) return;
+            customItemStack.rebuild();
+        }
+
+        if (customItemStack == null) {
+            return;
+        }
+
+        CustomItem customItem = customItemStack.getItem();
+
+        if (customItem != null && customItem instanceof AttachableCustomItem) {
+            ((AttachableCustomItem) customItem).apply(player, customItemStack);
+        }
+    }
+
+    private void dropCustomItem(ItemStack itemStack) {
+
+
     }
 }
