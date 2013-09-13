@@ -288,10 +288,12 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         }
 
         List<String> lines = getTooltipLines(durability < 1);
-        // lets add ignored lines back at the end
-        for (String line : itemStack.getItemMeta().getLore()) {
-            if (line.startsWith(CustomItemUtil.IGNORE_CODE)) {
-                lines.add(line);
+        if (itemStack.getItemMeta().hasLore()) {
+            // lets add ignored lines back at the end
+            for (String line : itemStack.getItemMeta().getLore()) {
+                if (line.startsWith(CustomItemUtil.IGNORE_CODE)) {
+                    lines.add(line);
+                }
             }
         }
         ItemMeta itemMeta = itemStack.getItemMeta();
