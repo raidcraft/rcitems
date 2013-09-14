@@ -5,7 +5,9 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.config.ConfigUtil;
 import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.config.KeyValueMap;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemManager;
@@ -182,6 +184,13 @@ public class ItemsPlugin extends BasePlugin {
                         if (loadedAttachments.containsKey(attachmentName)) {
                             configuredAttachment.merge(loadedAttachments.get(attachmentName));
                         }
+                        // also merge our database
+                        ArrayList<KeyValueMap> dataList = new ArrayList<>();
+                        for (TItemAttachmentData data : attachment.getItemAttachmentDataList()) {
+                            dataList.add(data);
+                        }
+                        configuredAttachment.merge(ConfigUtil.parseKeyValueTable(dataList));
+
                         ((AttachableCustomItem) customItem).addAttachment(configuredAttachment);
                     }
                 }
