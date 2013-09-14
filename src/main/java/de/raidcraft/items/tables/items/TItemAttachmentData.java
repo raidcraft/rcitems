@@ -2,7 +2,6 @@ package de.raidcraft.items.tables.items;
 
 import de.raidcraft.api.config.KeyValueMap;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -16,7 +15,6 @@ public class TItemAttachmentData implements KeyValueMap {
 
     private int id;
     @ManyToOne
-    @Column(name = "attachment_id")
     private TCustomItemAttachment attachment;
     private String dataKey;
     private String dataValue;
