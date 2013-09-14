@@ -4,8 +4,11 @@ import com.avaje.ebean.validation.NotNull;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -24,6 +27,9 @@ public class TCustomItemAttachment {
     @NotNull
     private String providerName;
     private String description;
+    @OneToMany
+    @JoinColumn(name = "attachment_id")
+    private List<TItemAttachmentData> itemAttachmentDataList;
 
     public int getId() {
 
@@ -73,5 +79,15 @@ public class TCustomItemAttachment {
     public void setDescription(String description) {
 
         this.description = description;
+    }
+
+    public List<TItemAttachmentData> getItemAttachmentDataList() {
+
+        return itemAttachmentDataList;
+    }
+
+    public void setItemAttachmentDataList(List<TItemAttachmentData> itemAttachmentDataList) {
+
+        this.itemAttachmentDataList = itemAttachmentDataList;
     }
 }

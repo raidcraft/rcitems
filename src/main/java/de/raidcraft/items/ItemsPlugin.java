@@ -28,6 +28,7 @@ import de.raidcraft.items.tables.items.TCustomItem;
 import de.raidcraft.items.tables.items.TCustomItemAttachment;
 import de.raidcraft.items.tables.items.TCustomWeapon;
 import de.raidcraft.items.tables.items.TEquipmentAttribute;
+import de.raidcraft.items.tables.items.TItemAttachmentData;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
@@ -204,6 +205,7 @@ public class ItemsPlugin extends BasePlugin {
         tables.add(TCustomWeapon.class);
         tables.add(TCustomArmor.class);
         tables.add(TCustomItemAttachment.class);
+        tables.add(TItemAttachmentData.class);
         // custom crafting
         tables.add(TCraftingRecipe.class);
         tables.add(TCraftingRecipeIngredient.class);
