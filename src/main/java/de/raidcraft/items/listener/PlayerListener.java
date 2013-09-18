@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
@@ -210,7 +211,8 @@ public class PlayerListener implements Listener {
         if (customItem != null && customItem instanceof AttachableCustomItem) {
             ((AttachableCustomItem) customItem).apply(player, customItemStack);
             // lets also add our requirement lore
-            List<String> lore = customItemStack.getItemMeta().getLore();
+            ItemMeta itemMeta = customItemStack.getItemMeta();
+            List<String> lore = itemMeta.getLore();
             for (ItemAttachment attachment : ((AttachableCustomItem) customItem).getAttachments(player)) {
                 if (attachment instanceof RequiredItemAttachment) {
                     if (((RequiredItemAttachment) attachment).isRequirementMet(player)) {
@@ -220,7 +222,8 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            customItemStack.getItemMeta().setLore(lore);
+            itemMeta.setLore(lore);
+            customItemStack.setItemMeta(itemMeta);
         }
     }
 
