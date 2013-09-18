@@ -51,6 +51,7 @@ public class PlayerListener implements Listener {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
                 // lets check for a custom useable item
                 CustomItemStack customItem = RaidCraft.getCustomItem(event.getItem());
+                if (customItem == null) return;
                 if (customItem.getItem() instanceof UseableCustomItem) {
                     try {
                         ((UseableCustomItem) customItem.getItem()).use(event.getPlayer(), customItem);
