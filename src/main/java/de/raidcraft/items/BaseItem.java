@@ -100,7 +100,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     @Override
     public int getItemLevel() {
 
-        return itemLevel;
+        return itemLevel > 0 ? itemLevel : 1;
     }
 
     @Override
@@ -178,8 +178,12 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         ArrayList<String> output = new ArrayList<>();
         int maxWidth = calculateMaxWidth();
         // we always add the first and last two lines, the rest is parsed by subclasses
-        output.add(encodedId + (broken ? ChatColor.DARK_RED : getQuality().getColor())
-                + (this instanceof CustomEquipment ? ChatColor.BOLD : "") + getName());
+        if (this instanceof CustomEquipment) {
+            output.add(encodedId + (broken ? ChatColor.DARK_RED : getQuality().getColor())
+                    + ChatColor.BOLD + getName());
+        } else {
+            output.add(encodedId + getQuality().getColor());
+        }
         output.add(ChatColor.GOLD + "Gegenstandsstufe " + getItemLevel());
         // a "->" means we need to replace the line width the width
         for (String line : getCustomTooltipLines()) {
