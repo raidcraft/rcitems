@@ -1,16 +1,13 @@
 package de.raidcraft.items.equipment;
 
 import de.raidcraft.api.items.CustomWeapon;
-import de.raidcraft.api.items.ItemAttribute;
+import de.raidcraft.api.items.SingleLineTooltip;
+import de.raidcraft.api.items.Tooltip;
+import de.raidcraft.api.items.TooltipSlot;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.items.BaseEquipment;
-import de.raidcraft.items.BaseItem;
 import de.raidcraft.items.tables.items.TCustomWeapon;
 import de.raidcraft.util.CustomItemUtil;
-import org.bukkit.ChatColor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Silthus
@@ -29,13 +26,10 @@ public class ConfiguredWeapon extends BaseEquipment implements CustomWeapon {
         this.minDamage = weapon.getMinDamage();
         this.maxDamage = weapon.getMaxDamage();
         this.swingTime = weapon.getSwingTime();
-    }
-
-    @Override
-    protected List<String> getCustomTooltipLines() {
-
-        ArrayList<String> output = new ArrayList<>();
-        output.add(getWeaponType().getEquipmentSlot().getGermanName() + BaseItem.LINE_SEPARATOR + getWeaponType().getGermanName());
+        // set our tooltip lines
+        setTooltip(new SingleLineTooltip(
+                TooltipSlot.EQUIPMENT_TYPE, getEquipmentSlot().getGermanName() + Tooltip.LINE_SEPARATOR + getWeaponType().getGermanName()));
+        // damage tooltip
         String damageStr;
         if (getMinDamage() == 0 && getMaxDamage() == 0) {
             damageStr = null;
@@ -45,19 +39,10 @@ public class ConfiguredWeapon extends BaseEquipment implements CustomWeapon {
             damageStr = getMinDamage() + "-" + getMaxDamage() + " Schaden";
         }
         if (damageStr != null) {
-            damageStr += BaseItem.LINE_SEPARATOR + "Tempo " + CustomItemUtil.getSwingTimeString(getSwingTime());
-            output.add(damageStr);
-            output.add("(" + getDamagePerSecond() + " Schaden pro Sekunde)");
+            damageStr += Tooltip.LINE_SEPARATOR + "Tempo " + CustomItemUtil.getSwingTimeString(getSwingTime());
+            setTooltip(new SingleLineTooltip(TooltipSlot.DAMAGE, damageStr));
+            setTooltip(new SingleLineTooltip(TooltipSlot.DPS, "(" + getDamagePerSecond() + " Schaden pro Sekunde)"));
         }
-        for (ItemAttribute attribute : getSortedAttributes()) {
-            String str = "+";
-            if (attribute.getValue() < 0) {
-                str = ChatColor.RED + "-";
-            }
-            str += attribute.getValue() + " " + attribute.getDisplayName();
-            output.add(str);
-        }
-        return output;
     }
 
     @Override

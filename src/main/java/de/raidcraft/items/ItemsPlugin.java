@@ -158,13 +158,7 @@ public class ItemsPlugin extends BasePlugin {
                         break;
                     case EQUIPMENT:
                         if (equipment == null) continue;
-                        customItem = new BaseEquipment(equipment) {
-                            @Override
-                            protected List<String> getCustomTooltipLines() {
-
-                                return new ArrayList<>();
-                            }
-                        };
+                        customItem = new BaseEquipment(equipment);
                         break;
                     default:
                         customItem = new SimpleItem(item);
@@ -230,7 +224,7 @@ public class ItemsPlugin extends BasePlugin {
         CustomItemStack customItem = RaidCraft.getCustomItem(item);
         // on each interact with the item the player has a chance of 0.1% chance to loose one durability point
         if (Math.random() < chance) {
-            customItem.setDurability(customItem.getCustomDurability() - 1);
+            customItem.setCustomDurability(customItem.getCustomDurability() - 1);
         } else {
             item.setDurability(CustomItemUtil.getMinecraftDurability(item, customItem.getCustomDurability(), customItem.getMaxDurability()));
         }

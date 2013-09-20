@@ -2,14 +2,11 @@ package de.raidcraft.items.equipment;
 
 import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.CustomArmor;
-import de.raidcraft.api.items.ItemAttribute;
+import de.raidcraft.api.items.SingleLineTooltip;
+import de.raidcraft.api.items.Tooltip;
+import de.raidcraft.api.items.TooltipSlot;
 import de.raidcraft.items.BaseEquipment;
-import de.raidcraft.items.BaseItem;
 import de.raidcraft.items.tables.items.TCustomArmor;
-import org.bukkit.ChatColor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Silthus
@@ -24,6 +21,9 @@ public class ConfiguredArmor extends BaseEquipment implements CustomArmor {
         super(armor.getEquipment());
         this.armorType = armor.getArmorType();
         this.armorValue = armor.getArmorValue();
+        setTooltip(new SingleLineTooltip(
+                TooltipSlot.EQUIPMENT_TYPE, getEquipmentSlot().getGermanName() + Tooltip.LINE_SEPARATOR + getArmorType().getGermanName()));
+        setTooltip(new SingleLineTooltip(TooltipSlot.ARMOR, getArmorValue() + " Rüstung"));
     }
 
     public ArmorType getArmorType() {
@@ -34,24 +34,5 @@ public class ConfiguredArmor extends BaseEquipment implements CustomArmor {
     public int getArmorValue() {
 
         return armorValue;
-    }
-
-    @Override
-    protected List<String> getCustomTooltipLines() {
-
-        ArrayList<String> output = new ArrayList<>();
-
-        output.add(getEquipmentSlot().getGermanName() + BaseItem.LINE_SEPARATOR + getArmorType().getGermanName());
-        output.add(getArmorValue() + " Rüstung");
-
-        for (ItemAttribute attribute : getSortedAttributes()) {
-            String str = "+";
-            if (attribute.getValue() < 0) {
-                str = ChatColor.RED + "-";
-            }
-            str += attribute.getValue() + " " + attribute.getDisplayName();
-            output.add(str);
-        }
-        return output;
     }
 }

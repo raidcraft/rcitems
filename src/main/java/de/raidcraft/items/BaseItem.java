@@ -1,11 +1,14 @@
 package de.raidcraft.items;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemQuality;
+import de.raidcraft.api.items.VariableMultilineTooltip;
+import de.raidcraft.api.items.SingleLineTooltip;
+import de.raidcraft.api.items.Tooltip;
+import de.raidcraft.api.items.TooltipSlot;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachment;
@@ -15,14 +18,12 @@ import de.raidcraft.api.items.attachments.RequiredItemAttachment;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.items.tables.items.TCustomItem;
 import de.raidcraft.util.CustomItemUtil;
-import de.raidcraft.util.Font;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +33,6 @@ import java.util.Map;
  */
 public abstract class BaseItem implements CustomItem, AttachableCustomItem {
 
-    public static final int DEFAULT_WIDTH = 150;
-    public static final String LINE_SEPARATOR = "->";
     protected final Map<String, ConfiguredAttachment> attachments = new HashMap<>();
 
     private final int id;
@@ -47,6 +46,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     private final int maxStackSize;
     private final double sellPrice;
     private final List<Requirement<Player>> requirements = new ArrayList<>();
+    private final Map<TooltipSlot, Tooltip> tooltips = new EnumMap<>(TooltipSlot.class);
 
     public BaseItem(TCustomItem item) {
 
@@ -60,6 +60,26 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         this.quality = item.getQuality();
         this.maxStackSize = item.getMaxStackSize();
         this.sellPrice = item.getSellPrice();
+
+        buildTooltips();
+    }
+
+    private void buildTooltips() {
+
+        if (getItemLevel() > 0) {
+            setTooltip(new SingleLineTooltip(TooltipSlot.ITEM_LEVEL, "Gegenstandsstufe " + getItemLevel(), ChatColor.GOLD));
+        }
+        if (getSellPrice() > 0) {
+            setTooltip(new SingleLineTooltip(TooltipSlot.SELL_PRICE, "Verkaufspreis: " + CustomItemUtil.getSellPriceString(getSellPrice()), ChatColor.WHITE));
+        }
+        if (getLore() != null && !getLore().equals("")) {
+            setTooltip(new VariableMultilineTooltip(TooltipSlot.LORE, getLore(), true, true, ChatColor.GOLD));
+        }
+        for (ConfiguredAttachment attachment : attachments.values()) {
+            if (attachment.getDescription() != null && !attachment.getDescription().equals("")) {
+                setTooltip(new VariableMultilineTooltip(TooltipSlot.ATTACHMENT, attachment.getDescription(), false, false, ChatColor.GREEN));
+            }
+        }
     }
 
     @Override
@@ -132,12 +152,6 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     }
 
     @Override
-    public void rebuild(ItemStack itemStack) {
-
-        setItemMeta(itemStack);
-    }
-
-    @Override
     public Player getObject() {
 
         throw new UnsupportedOperationException();
@@ -171,160 +185,30 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         return "All requirements are met!";
     }
 
-    protected abstract List<String> getCustomTooltipLines();
+    protected void setTooltip(Tooltip tooltip) {
 
-    private List<String> getTooltipLines(boolean broken) {
-
-        ArrayList<String> output = new ArrayList<>();
-        int maxWidth = calculateMaxWidth();
-        // we always add the first and last two lines, the rest is parsed by subclasses
-        if (this instanceof CustomEquipment) {
-            output.add(encodedId + (broken ? ChatColor.DARK_RED : getQuality().getColor())
-                    + ChatColor.BOLD + getName());
-        } else {
-            output.add(encodedId + getQuality().getColor());
-        }
-        output.add(ChatColor.GOLD + "Gegenstandsstufe " + getItemLevel());
-        // a "->" means we need to replace the line width the width
-        for (String line : getCustomTooltipLines()) {
-            if (line.contains(LINE_SEPARATOR)) {
-                String[] split = line.split(LINE_SEPARATOR);
-                String buffer = StringUtils.repeat(" ", (maxWidth - CustomItemUtil.getStringWidth(split[0] + split[1])) / 4);
-                output.add(ChatColor.WHITE + split[0] + buffer + split[1]);
-            } else {
-                output.add(ChatColor.WHITE + line);
-            }
-        }
-        // lets add the attachment information
-        for (ConfiguredAttachment attachment : attachments.values()) {
-            if (attachment.getDescription() != null && !attachment.getDescription().equals("")) {
-                output.add(buildMultiLine(attachment.getDescription(), output, maxWidth, false, false, ChatColor.GREEN));
-            }
-        }
-        // lets put one empty space between the main body and the rest
-        output.add("");
-        // now lets add the lore text
-        if (getLore() != null && !getLore().equals("") && getLore().length() > 0) {
-            output.add(buildMultiLine(getLore(), output, maxWidth, true, true, ChatColor.YELLOW));
-        }
-        // and add the sell price last
-        if (getSellPrice() > 0.0) {
-            output.add(ChatColor.WHITE + "Verkaufspreis: " + CustomItemUtil.getSellPriceString(getSellPrice()));
-        }
-        return output;
+        this.tooltips.put(tooltip.getSlot(), tooltip);
     }
 
-    private String buildMultiLine(String original, List<String> output, int maxWidth, boolean quote, boolean italic, ChatColor color) {
+    @Override
+    public Tooltip getTooltip(TooltipSlot slot) {
 
-        StringBuilder out = new StringBuilder();
-        StringBuilder temp = new StringBuilder();
-        out.append(color);
-        if (italic) out.append(ChatColor.ITALIC);
-        int cWidth = 0;
-        int tWidth = 0;
-        String currentColour = color.toString();
-        String dMsg = quote ? "\"" + original + "\"" : original;
-        for (int i = 0; i < dMsg.length(); i++) {
-            char c = dMsg.charAt(i);
-            temp.append(c);
-            if (c == ChatColor.COLOR_CHAR || c == '&') {
-                i += 1;
-                temp.append(dMsg.charAt(i));
-                currentColour = ChatColor.COLOR_CHAR + "" + dMsg.charAt(i);
-                continue;
-            }
-            if (c == ' ')
-                tWidth += 4;
-            else
-                tWidth += Font.WIDTHS[c] + 1;
-            if (c == ' ' || i == dMsg.length() - 1) {
-                if (cWidth + tWidth > maxWidth) {
-                    cWidth = 0;
-                    cWidth += tWidth;
-                    tWidth = 0;
-                    output.add(out.toString());
-                    out = new StringBuilder();
-                    out.append(currentColour);
-                    if (italic) out.append(ChatColor.ITALIC);
-                    out.append(temp);
-                    temp = new StringBuilder();
-                } else {
-                    out.append(temp);
-                    temp = new StringBuilder();
-                    cWidth += tWidth;
-                    tWidth = 0;
-                }
-            }
-        }
-        out.append(temp);
-        return out.toString();
+        return tooltips.get(slot);
     }
 
-    private int calculateMaxWidth() {
+    @Override
+    public Map<TooltipSlot, Tooltip> getTooltips() {
 
-        // we need to keep track of the widest width in order to format the item nicely
-        int width = CustomItemUtil.checkWidth(getName(), DEFAULT_WIDTH, true);
-        width = CustomItemUtil.checkWidth("Gegenstandsstufe " + getItemLevel(), width);
-        for (String str : getCustomTooltipLines()) {
-            if (str.contains(LINE_SEPARATOR)) {
-                str = str.replace(LINE_SEPARATOR, "     ");
-            }
-            width = CustomItemUtil.checkWidth(str, width);
-        }
-        // lore and sell price are not relevant because they are never above the width limit
-        return width;
+        return tooltips;
     }
 
     @Override
     public final CustomItemStack createNewItem() {
 
         ItemStack itemStack = new ItemStack(getMinecraftId(), 1, getMinecraftDataValue());
-        setItemMeta(itemStack);
-        return RaidCraft.getCustomItem(itemStack);
-    }
-
-    private void setItemMeta(ItemStack itemStack) {
-
-        // lets first check if this item has durability and if yes set it later
-        int durability = 0;
-        if (this instanceof CustomEquipment) {
-            durability = ((CustomEquipment) this).parseDurability(itemStack);
-        }
-
-        List<String> lines = getTooltipLines(durability < 1);
-        if (itemStack.getItemMeta().hasLore()) {
-            // lets add ignored lines back at the end
-            for (String line : itemStack.getItemMeta().getLore()) {
-                if (line.startsWith(CustomItemUtil.IGNORE_CODE)) {
-                    lines.add(line);
-                }
-            }
-        }
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        int itemMetaKeyId = -1;
-        // lets get the last line to preserve the unique key
-        if (itemMeta.hasLore() && itemMeta.getLore().size() > 1) {
-            try {
-                itemMetaKeyId = CustomItemUtil.decodeItemId(itemMeta.getLore().get(itemMeta.getLore().size() - 1));
-            } catch (CustomItemException ignored) {
-            }
-        }
-
-        itemMeta.setDisplayName(lines.get(0));
-        lines.remove(0);
-        itemMeta.setLore(lines);
-        itemStack.setItemMeta(itemMeta);
-        // and at last update the durability
-        if (this instanceof CustomEquipment) {
-            CustomEquipment equipment = (CustomEquipment) this;
-            equipment.updateDurability(itemStack, durability);
-        }
-        // lets add a last line in which we hide the item meta id
-        if (itemMetaKeyId > 0) {
-            List<String> strings = itemStack.getItemMeta().getLore();
-            strings.add(CustomItemUtil.encodeItemId(itemMetaKeyId));
-            itemStack.getItemMeta().setLore(strings);
-        }
+        CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+        customItemStack.rebuild();
+        return customItemStack;
     }
 
     @Override
