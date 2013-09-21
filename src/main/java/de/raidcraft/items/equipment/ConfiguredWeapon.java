@@ -1,9 +1,9 @@
 package de.raidcraft.items.equipment;
 
 import de.raidcraft.api.items.CustomWeapon;
-import de.raidcraft.api.items.SingleLineTooltip;
-import de.raidcraft.api.items.Tooltip;
-import de.raidcraft.api.items.TooltipSlot;
+import de.raidcraft.api.items.tooltip.SingleLineTooltip;
+import de.raidcraft.api.items.tooltip.Tooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.items.BaseEquipment;
 import de.raidcraft.items.tables.items.TCustomWeapon;

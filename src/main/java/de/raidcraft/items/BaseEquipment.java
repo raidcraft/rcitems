@@ -2,12 +2,11 @@ package de.raidcraft.items;
 
 import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.EquipmentSlot;
-import de.raidcraft.api.items.FixedMultilineTooltip;
 import de.raidcraft.api.items.ItemAttribute;
-import de.raidcraft.api.items.SingleLineTooltip;
-import de.raidcraft.api.items.TooltipSlot;
+import de.raidcraft.api.items.tooltip.AttributeTooltip;
+import de.raidcraft.api.items.tooltip.SingleLineTooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.items.tables.items.TCustomEquipment;
-import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,16 +31,7 @@ public class BaseEquipment extends BaseItem implements CustomEquipment {
         // always add a spacer because we have durability
         setTooltip(new SingleLineTooltip(TooltipSlot.SPACER, ""));
         // also add our attributes
-        List<String> lines = new ArrayList<>();
-        for (ItemAttribute attribute : attributes) {
-            String str = ChatColor.GREEN + "+";
-            if (attribute.getValue() < 0) {
-                str = ChatColor.RED + "-";
-            }
-            str += attribute.getValue() + " " + attribute.getDisplayName();
-            lines.add(str);
-        }
-        setTooltip(new FixedMultilineTooltip(TooltipSlot.ATTRIBUTES, lines.toArray(new String[lines.size()])));
+        setTooltip(new AttributeTooltip(attributes));
     }
 
     @Override
