@@ -66,6 +66,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
 
     private void buildTooltips() {
 
+        setTooltip(new SingleLineTooltip(TooltipSlot.NAME, getName()));
         if (getItemLevel() > 0) {
             setTooltip(new SingleLineTooltip(TooltipSlot.ITEM_LEVEL, "Gegenstandsstufe " + getItemLevel(), ChatColor.GOLD));
         }
@@ -205,8 +206,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     @Override
     public final CustomItemStack createNewItem() {
 
-        ItemStack itemStack = new ItemStack(getMinecraftId(), 1, getMinecraftDataValue());
-        CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+        CustomItemStack customItemStack = RaidCraft.getCustomItem(this);
         customItemStack.rebuild();
         return customItemStack;
     }
