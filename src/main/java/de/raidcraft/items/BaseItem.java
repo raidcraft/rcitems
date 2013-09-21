@@ -45,6 +45,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     private final ItemQuality quality;
     private final int maxStackSize;
     private final double sellPrice;
+    private final boolean dropable;
     private final List<Requirement<Player>> requirements = new ArrayList<>();
     private final Map<TooltipSlot, Tooltip> tooltips = new EnumMap<>(TooltipSlot.class);
 
@@ -60,6 +61,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         this.quality = item.getQuality();
         this.maxStackSize = item.getMaxStackSize();
         this.sellPrice = item.getSellPrice();
+        this.dropable = item.isDropable();
 
         buildTooltips();
     }

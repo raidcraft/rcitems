@@ -39,6 +39,8 @@ public class TCustomItem {
     @NotNull
     private double sellPrice = 0.0;
     @NotNull
+    private boolean dropable = true;
+    @NotNull
     private ItemType itemType;
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "item_id")
@@ -132,6 +134,16 @@ public class TCustomItem {
     public void setSellPrice(double sellPrice) {
 
         this.sellPrice = sellPrice;
+    }
+
+    public boolean isDropable() {
+
+        return dropable;
+    }
+
+    public void setDropable(boolean dropable) {
+
+        this.dropable = dropable;
     }
 
     public ItemType getItemType() {
