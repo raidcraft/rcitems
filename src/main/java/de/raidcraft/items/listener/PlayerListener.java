@@ -161,7 +161,9 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryOpen(InventoryOpenEvent event) {
 
-        for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
+        ItemStack[] contents = event.getPlayer().getInventory().getContents();
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack itemStack = contents[i];
             if (itemStack == null || itemStack.getTypeId() == 0) {
                 continue;
             }
@@ -169,7 +171,7 @@ public class PlayerListener implements Listener {
                 if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
                     CustomItem customItem = RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId()));
                     if (customItem == null) return;
-                    customItem.rebuild(itemStack);
+                    contents[i] = customItem.createNewItem();
                 } else if (CustomItemUtil.isCustomItem(itemStack)) {
                     CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
                     if (customItem == null) return;
@@ -181,6 +183,7 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+        event.getPlayer().getInventory().setContents(contents);
     }
 
     private CustomItemStack rebuildCustomItem(Player player, ItemStack itemStack) throws CustomItemException {
@@ -188,8 +191,7 @@ public class PlayerListener implements Listener {
         CustomItemStack customItemStack = null;
 
         if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-            RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).rebuild(itemStack);
-            customItemStack = RaidCraft.getCustomItem(itemStack);
+            customItemStack = RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).createNewItem();
         } else if (CustomItemUtil.isCustomItem(itemStack)) {
             customItemStack = RaidCraft.getCustomItem(itemStack);
             if (customItemStack == null) return null;

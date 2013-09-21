@@ -12,9 +12,6 @@ import de.raidcraft.items.tables.items.TCustomItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Silthus
  */
@@ -23,12 +20,6 @@ public class UseableItem extends BaseItem implements UseableCustomItem {
     public UseableItem(TCustomItem item) {
 
         super(item);
-    }
-
-    @Override
-    protected List<String> getCustomTooltipLines() {
-
-        return new ArrayList<>();
     }
 
     @Override
