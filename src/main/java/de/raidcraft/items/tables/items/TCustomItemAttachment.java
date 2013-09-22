@@ -27,6 +27,7 @@ public class TCustomItemAttachment {
     @NotNull
     private String providerName;
     private String description;
+    private String color;
     @OneToMany
     @JoinColumn(name = "attachment_id")
     private List<TItemAttachmentData> itemAttachmentDataList;
@@ -89,5 +90,15 @@ public class TCustomItemAttachment {
     public void setItemAttachmentDataList(List<TItemAttachmentData> itemAttachmentDataList) {
 
         this.itemAttachmentDataList = itemAttachmentDataList;
+    }
+
+    public String getColor() {
+
+        return color;
+    }
+
+    public void setColor(String color) {
+
+        this.color = color;
     }
 }

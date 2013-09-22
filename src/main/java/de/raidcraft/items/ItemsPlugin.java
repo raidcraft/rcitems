@@ -34,6 +34,7 @@ import de.raidcraft.items.tables.items.TItemAttachmentData;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
@@ -171,7 +172,8 @@ public class ItemsPlugin extends BasePlugin {
                         ConfiguredAttachment configuredAttachment = new ConfiguredAttachment(
                                 attachment.getAttachmentName(),
                                 attachment.getProviderName(),
-                                attachment.getDescription()
+                                attachment.getDescription(),
+                                ChatColor.valueOf(attachment.getColor())
                         );
                         // if a local config file for the attachment exists load it into the memory map
                         String attachmentName = StringUtils.formatName(attachment.getAttachmentName());

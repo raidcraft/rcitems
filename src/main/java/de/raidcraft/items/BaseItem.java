@@ -81,7 +81,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         }
         for (ConfiguredAttachment attachment : attachments.values()) {
             if (attachment.getDescription() != null && !attachment.getDescription().equals("")) {
-                setTooltip(new VariableMultilineTooltip(TooltipSlot.ATTACHMENT, attachment.getDescription(), false, false, ChatColor.GREEN));
+                setTooltip(new VariableMultilineTooltip(TooltipSlot.ATTACHMENT, attachment.getDescription(), false, false, attachment.getColor()));
             }
         }
     }
@@ -242,7 +242,9 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
             // check if the attachment is an requirement
             if (attachment instanceof RequiredItemAttachment) {
                 if (!((RequiredItemAttachment) attachment).isRequirementMet(player)) {
-                    throw new CustomItemException(((RequiredItemAttachment) attachment).getErrorMessage(player));
+                    String errorMessage = ((RequiredItemAttachment) attachment).getErrorMessage(player);
+                    if (errorMessage == null) errorMessage = config.getDescription();
+                    throw new CustomItemException(errorMessage);
                 }
             }
         }
