@@ -47,6 +47,12 @@ public class BaseEquipment extends BaseItem implements CustomEquipment {
     }
 
     @Override
+    public boolean hasAttributes() {
+
+        return attributes != null && !attributes.isEmpty();
+    }
+
+    @Override
     public Set<ItemAttribute> getAttributes() {
 
         return attributes;
