@@ -95,7 +95,7 @@ public class PlayerListener implements Listener {
 
         ItemStack item = event.getItem();
         if (item != null && item.getTypeId() != 0 && CustomItemUtil.isCustomItem(item)) {
-            RaidCraft.getCustomItem(item).rebuild();
+            RaidCraft.getCustomItem(item).rebuild(event.getEnchanter());
         }
     }
 
@@ -175,7 +175,7 @@ public class PlayerListener implements Listener {
                 } else if (CustomItemUtil.isCustomItem(itemStack)) {
                     CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
                     if (customItem == null) return;
-                    customItem.rebuild();
+                    customItem.rebuild((Player) event.getPlayer());
                 }
             } catch (CustomItemException e) {
                 if (event.getPlayer() instanceof Player) {
@@ -195,7 +195,7 @@ public class PlayerListener implements Listener {
         } else if (CustomItemUtil.isCustomItem(itemStack)) {
             customItemStack = RaidCraft.getCustomItem(itemStack);
             if (customItemStack == null) return null;
-            customItemStack.rebuild();
+            customItemStack.rebuild(player);
         }
 
         return customItemStack;
