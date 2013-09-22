@@ -243,6 +243,8 @@ public class ItemsPlugin extends BasePlugin {
         public double durabilityLossChanceOnUse = 0.001;
         @Setting("durability-loss-chance-on-damage")
         public double durabilityLossChanceOnDamage = 0.0001;
+        @Setting("hide-item-level")
+        public boolean hideItemLevel = true;
 
         public int getDefaultCustomItem(int minecraftId) {
 

@@ -70,7 +70,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     private void buildTooltips() {
 
         setTooltip(new NameTooltip(getId(), getName(), getQuality().getColor()));
-        if (getItemLevel() > 0) {
+        if (getItemLevel() > 0 && !RaidCraft.getComponent(ItemsPlugin.class).getConfig().hideItemLevel) {
             setTooltip(new SingleLineTooltip(TooltipSlot.ITEM_LEVEL, "Gegenstandsstufe " + getItemLevel(), ChatColor.GOLD));
         }
         if (getSellPrice() > 0) {
