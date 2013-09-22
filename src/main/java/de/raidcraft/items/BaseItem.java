@@ -5,6 +5,7 @@ import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemQuality;
+import de.raidcraft.api.items.tooltip.NameTooltip;
 import de.raidcraft.api.items.tooltip.VariableMultilineTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.Tooltip;
@@ -68,7 +69,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
 
     private void buildTooltips() {
 
-        setTooltip(new SingleLineTooltip(TooltipSlot.NAME, getName()));
+        setTooltip(new NameTooltip(getId(), getName(), getQuality().getColor()));
         if (getItemLevel() > 0) {
             setTooltip(new SingleLineTooltip(TooltipSlot.ITEM_LEVEL, "Gegenstandsstufe " + getItemLevel(), ChatColor.GOLD));
         }
