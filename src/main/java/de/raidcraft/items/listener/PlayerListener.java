@@ -165,13 +165,17 @@ public class PlayerListener implements Listener {
                 continue;
             }
             try {
-                contents[i] = rebuildCustomItem(player, itemStack);
+                CustomItemStack stack = rebuildCustomItem(player, itemStack);
+                if (stack != null) {
+                    contents[i] = stack;
+                }
             } catch (CustomItemException e) {
                 player.sendMessage(ChatColor.RED + e.getMessage());
             }
         }
         player.getInventory().setContents(contents);
     }
+
 
     private CustomItemStack rebuildCustomItem(Player player, ItemStack itemStack) throws CustomItemException {
 
