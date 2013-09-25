@@ -9,10 +9,12 @@ import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.items.ItemsPlugin;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Silthus
@@ -70,12 +72,21 @@ public class ItemCommands {
     }
 
     @Command(
-            aliases = {"wizard", "config", "new", "create"},
-            desc = "Creates a new Item in the Item Wizard."
+            aliases = {"check", "checkitem", "info"},
+            desc = "Checks an item and gives info about it."
     )
     @CommandPermissions("rcitems.create")
-    public void wizard(CommandContext args, CommandSender sender) {
+    public void info(CommandContext args, CommandSender sender) throws CommandException {
 
-
+        if (!(sender instanceof Player)) {
+            throw new CommandException("Not a player!");
+        }
+        Player player = (Player) sender;
+        ItemStack inHand = player.getItemInHand();
+        if (inHand == null || !CustomItemUtil.isCustomItem(inHand)) {
+            throw new CommandException("Item in deiner Hand ist kein Custom Item.");
+        }
+        CustomItemStack customItem = RaidCraft.getCustomItem(inHand);
+        sender.sendMessage(customItem.getItem().getName());
     }
 }

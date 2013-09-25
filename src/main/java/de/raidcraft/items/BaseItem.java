@@ -79,6 +79,11 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         if (getLore() != null && !getLore().equals("")) {
             setTooltip(new VariableMultilineTooltip(TooltipSlot.LORE, getLore(), true, true, ChatColor.GOLD));
         }
+        updateAttachmentTooltip();
+    }
+
+    private void updateAttachmentTooltip() {
+
         for (ConfiguredAttachment attachment : attachments.values()) {
             if (attachment.getDescription() != null && !attachment.getDescription().equals("")) {
                 setTooltip(new VariableMultilineTooltip(TooltipSlot.ATTACHMENT, attachment.getDescription(), false, false, attachment.getColor()));
@@ -218,6 +223,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     public void addAttachment(ConfiguredAttachment attachment) {
 
         attachments.put(de.raidcraft.util.StringUtils.formatName(attachment.getAttachmentName()), attachment);
+        updateAttachmentTooltip();
     }
 
     @Override
