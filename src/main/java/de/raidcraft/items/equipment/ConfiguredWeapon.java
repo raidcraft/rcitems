@@ -1,6 +1,7 @@
 package de.raidcraft.items.equipment;
 
 import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.tooltip.DpsTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.Tooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
@@ -41,7 +42,7 @@ public class ConfiguredWeapon extends BaseEquipment implements CustomWeapon {
         if (damageStr != null) {
             damageStr += Tooltip.LINE_SEPARATOR + "Tempo " + CustomItemUtil.getSwingTimeString(getSwingTime());
             setTooltip(new SingleLineTooltip(TooltipSlot.DAMAGE, damageStr));
-            setTooltip(new SingleLineTooltip(TooltipSlot.DPS, "(" + getDamagePerSecond() + " Schaden pro Sekunde)"));
+            setTooltip(new DpsTooltip(getDamagePerSecond()));
         }
     }
 
