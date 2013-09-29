@@ -9,6 +9,7 @@ import de.raidcraft.api.config.ConfigUtil;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.KeyValueMap;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemManager;
@@ -193,10 +194,19 @@ public class ItemsPlugin extends BasePlugin {
                     }
                 }
                 // lets calculate the item level
-                if (customItem instanceof CustomEquipment) {
+                if (customItem instanceof CustomEquipment && customItem.getItemLevel() < 1) {
                     int itemLevel = calculateItemLevel((CustomEquipment) customItem);
                     item.setItemLevel(itemLevel);
                     getDatabase().save(item);
+                }
+                // lets calculate the armor value if its an item
+                if (customItem instanceof CustomArmor && ((CustomArmor) customItem).getArmorValue() < 1) {
+                    double armorModifier = ((CustomArmor) customItem).getArmorType().getArmorModifier(customItem.getQuality(), customItem.getItemLevel());
+                    double armorValue = ((CustomArmor) customItem).getEquipmentSlot().getArmorSlotModifier() * armorModifier;
+                    ((CustomArmor) customItem).setArmorValue((int) armorValue);
+                    TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findUnique();
+                    armor.setArmorValue((int) armorValue);
+                    getDatabase().save(armor);
                 }
                 // register the actual custom item
                 component.registerCustomItem(customItem);
@@ -222,6 +232,7 @@ public class ItemsPlugin extends BasePlugin {
         for (ItemAttribute attribute : item.getAttributes()) {
             itemValue += Math.pow((attribute.getValue() * attribute.getType().getItemLevelValue()), 1.7095);
         }
+        itemValue = Math.pow(itemValue, 1 / 1.7095);
         double itemSlotValue = itemValue / item.getEquipmentSlot().getSlotModifier();
         return (int) ((itemSlotValue * item.getQuality().getQualityMultiplier()) + item.getQuality().getQualityModifier());
     }

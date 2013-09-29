@@ -14,7 +14,7 @@ import de.raidcraft.items.tables.items.TCustomArmor;
 public class ConfiguredArmor extends BaseEquipment implements CustomArmor {
 
     private final ArmorType armorType;
-    private final int armorValue;
+    private int armorValue;
 
     public ConfiguredArmor(TCustomArmor armor) {
 
@@ -26,11 +26,19 @@ public class ConfiguredArmor extends BaseEquipment implements CustomArmor {
         setTooltip(new SingleLineTooltip(TooltipSlot.ARMOR, getArmorValue() + " Rüstung"));
     }
 
+    @Override
     public ArmorType getArmorType() {
 
         return armorType;
     }
 
+    @Override
+    public void setArmorValue(int armorValue) {
+
+        this.armorValue = armorValue;
+    }
+
+    @Override
     public int getArmorValue() {
 
         return armorValue;
