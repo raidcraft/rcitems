@@ -9,10 +9,12 @@ import de.raidcraft.api.config.ConfigUtil;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.KeyValueMap;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.DuplicateCustomItemException;
+import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.items.commands.ItemCommands;
@@ -190,6 +192,12 @@ public class ItemsPlugin extends BasePlugin {
                         ((AttachableCustomItem) customItem).addAttachment(configuredAttachment);
                     }
                 }
+                // lets calculate the item level
+                if (customItem instanceof CustomEquipment) {
+                    int itemLevel = calculateItemLevel((CustomEquipment) customItem);
+                    item.setItemLevel(itemLevel);
+                    getDatabase().save(item);
+                }
                 // register the actual custom item
                 component.registerCustomItem(customItem);
                 loadedCustomItems.add(customItem.getId());
@@ -198,6 +206,24 @@ public class ItemsPlugin extends BasePlugin {
                 getLogger().warning(e.getMessage());
             }
         }
+    }
+
+    /**
+     * The item level is calculated based on the wow formula.
+     * ItemValue = [(StatValue[1]*StatMod[1])^1.7095 + (StatValue[2]*StatMod[2])^1.7095 + ...]1/1.7095
+     * ItemSlotValue = 	ItemValue / SlotMod
+     * ItemLevel = 	ItemSlotValue * QualityModifier
+     * @param item to calculate itemlevel for
+     * @return item level
+     */
+    private int calculateItemLevel(CustomEquipment item) {
+
+        double itemValue = 0;
+        for (ItemAttribute attribute : item.getAttributes()) {
+            itemValue += Math.pow((attribute.getValue() * attribute.getType().getItemLevelValue()), 1.7095);
+        }
+        double itemSlotValue = itemValue / item.getEquipmentSlot().getSlotModifier();
+        return (int) ((itemSlotValue * item.getQuality().getQualityMultiplier()) + item.getQuality().getQualityModifier());
     }
 
     @Override

@@ -42,13 +42,13 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     private final short minecraftData;
     private final String name;
     private final String lore;
-    private final int itemLevel;
     private final ItemQuality quality;
     private final int maxStackSize;
     private final double sellPrice;
-    private final boolean dropable;
     private final List<Requirement<Player>> requirements = new ArrayList<>();
     private final Map<TooltipSlot, Tooltip> tooltips = new EnumMap<>(TooltipSlot.class);
+    private int itemLevel;
+    private boolean tradeable;
 
     public BaseItem(TCustomItem item) {
 
@@ -62,7 +62,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         this.quality = item.getQuality();
         this.maxStackSize = item.getMaxStackSize();
         this.sellPrice = item.getSellPrice();
-        this.dropable = item.isDropable();
+        this.tradeable = item.isTradeable();
 
         buildTooltips();
     }
@@ -127,9 +127,27 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     }
 
     @Override
+    public void setTradeable(boolean tradeable) {
+
+        this.tradeable = tradeable;
+    }
+
+    @Override
+    public boolean isTradeable() {
+
+        return tradeable;
+    }
+
+    @Override
+    public void setItemLevel(int itemLevel) {
+
+        this.itemLevel = itemLevel;
+    }
+
+    @Override
     public int getItemLevel() {
 
-        return itemLevel > 0 ? itemLevel : 1;
+        return itemLevel;
     }
 
     @Override

@@ -39,7 +39,7 @@ public class TCustomItem {
     @NotNull
     private double sellPrice = 0.0;
     @NotNull
-    private boolean dropable = true;
+    private boolean tradeable = true;
     @NotNull
     private ItemType itemType;
     @OneToMany(cascade = CascadeType.REMOVE)
@@ -136,14 +136,14 @@ public class TCustomItem {
         this.sellPrice = sellPrice;
     }
 
-    public boolean isDropable() {
+    public boolean isTradeable() {
 
-        return dropable;
+        return tradeable;
     }
 
-    public void setDropable(boolean dropable) {
+    public void setTradeable(boolean tradeable) {
 
-        this.dropable = dropable;
+        this.tradeable = tradeable;
     }
 
     public ItemType getItemType() {
