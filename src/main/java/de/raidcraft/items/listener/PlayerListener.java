@@ -70,7 +70,6 @@ public class PlayerListener implements Listener {
         if (CustomItemUtil.isCustomItem(event.getItem())) {
             // also update the item in hand
             plugin.updateItemDurability(event.getItem(), config.durabilityLossChanceOnUse);
-            event.getPlayer().updateInventory();
         }
     }
 
