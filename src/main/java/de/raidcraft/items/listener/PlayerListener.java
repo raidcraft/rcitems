@@ -63,12 +63,6 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onArmorEquip(PlayerInteractEvent event) {
-
-
-    }
-
     @EventHandler(ignoreCancelled = false)
     public void useItemDurability(PlayerInteractEvent event) {
 
@@ -209,7 +203,7 @@ public class PlayerListener implements Listener {
             customItemStack.rebuild(player);
             if (CustomItemUtil.isArmorSlot(slot)) {
                 ItemStack[] armor = player.getInventory().getArmorContents();
-                armor[slot - CustomItemUtil.ARMOR_SLOT] = customItemStack;
+                armor[slot] = customItemStack;
                 player.getInventory().setArmorContents(armor);
             } else {
                 player.getInventory().setItem(slot, customItemStack);
