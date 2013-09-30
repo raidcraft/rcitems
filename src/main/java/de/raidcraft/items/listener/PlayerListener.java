@@ -23,7 +23,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -62,6 +61,12 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onArmorEquip(PlayerInteractEvent event) {
+
+
     }
 
     @EventHandler(ignoreCancelled = false)
@@ -104,25 +109,13 @@ public class PlayerListener implements Listener {
         if (itemStack == null || itemStack.getTypeId() == 0) {
             return;
         }
-        try {
-            equipCustomItem(event.getPlayer(), itemStack);
-        } catch (CustomItemException e) {
-            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
-        }
+        equipCustomWeapons(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemDrop(PlayerDropItemEvent event) {
 
-        ItemStack itemStack = event.getItemDrop().getItemStack();
-        if (itemStack == null || itemStack.getTypeId() == 0) {
-            return;
-        }
-        try {
-            dropCustomItem(event.getPlayer(), itemStack);
-        } catch (CustomItemException e) {
-            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
-        }
+        rebuildInventory(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -132,26 +125,15 @@ public class PlayerListener implements Listener {
         if (itemStack == null || itemStack.getTypeId() == 0) {
             return;
         }
-        try {
-            equipCustomItem(event.getPlayer(), itemStack);
-        } catch (CustomItemException e) {
-            event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
-        }
+        equipCustomWeapons(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
         if (event.getPlayer() instanceof Player) {
-            rebuildInventory((Player) event.getPlayer());
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onInventoryOpen(InventoryOpenEvent event) {
-
-        if (event.getPlayer() instanceof Player) {
-            rebuildInventory((Player) event.getPlayer());
+            equipCustomWeapons((Player) event.getPlayer());
+            equipCustomArmor((Player) event.getPlayer());
         }
     }
 
@@ -166,6 +148,9 @@ public class PlayerListener implements Listener {
             try {
                 CustomItemStack stack = rebuildCustomItem(player, itemStack);
                 if (stack != null) {
+                    if (stack.getItem() instanceof AttachableCustomItem) {
+                        buildAttachmentInfo(player, (AttachableCustomItem) stack.getItem(), stack);
+                    }
                     contents[i] = stack;
                 }
             } catch (CustomItemException e) {
@@ -178,6 +163,9 @@ public class PlayerListener implements Listener {
 
     private CustomItemStack rebuildCustomItem(Player player, ItemStack itemStack) throws CustomItemException {
 
+        if (itemStack == null) {
+            return null;
+        }
         CustomItemStack customItemStack = null;
 
         if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
@@ -191,53 +179,63 @@ public class PlayerListener implements Listener {
         return customItemStack;
     }
 
-    private void equipCustomItem(Player player, ItemStack itemStack) throws CustomItemException {
+    private void equipCustomArmor(Player player) {
 
-        CustomItemStack customItemStack = rebuildCustomItem(player, itemStack);
+        ItemStack[] armorContents = player.getEquipment().getArmorContents();
+        for (int i = 0; i < armorContents.length; i++) {
+            equipCustomItem(player, i + CustomItemUtil.ARMOR_SLOT, armorContents[i]);
+        }
+    }
+
+    private void equipCustomWeapons(Player player) {
+
+        equipCustomItem(player, 0, player.getInventory().getItem(0));
+        equipCustomItem(player, 1, player.getInventory().getItem(1));
+    }
+
+    private void equipCustomItem(Player player, int slot, ItemStack itemStack) {
+
+        CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+
         if (customItemStack == null) {
             return;
         }
+        try {
+            CustomItem customItem = customItemStack.getItem();
+            if (customItem != null && customItem instanceof AttachableCustomItem) {
+                ((AttachableCustomItem) customItem).apply(player, customItemStack);
+                buildAttachmentInfo(player, (AttachableCustomItem) customItem, customItemStack);
+            }
+            customItemStack.rebuild(player);
+            if (CustomItemUtil.isArmorSlot(slot)) {
+                ItemStack[] armor = player.getInventory().getArmorContents();
+                armor[slot - CustomItemUtil.ARMOR_SLOT] = customItemStack;
+                player.getInventory().setArmorContents(armor);
+            } else {
+                player.getInventory().setItem(slot, customItemStack);
+            }
+        } catch (CustomItemException e) {
+            player.sendMessage(ChatColor.RED + e.getMessage());
+            if (CustomItemUtil.isArmorSlot(slot)) {
+                CustomItemUtil.moveArmor(player, slot - CustomItemUtil.ARMOR_SLOT, itemStack);
+            } else {
+                CustomItemUtil.moveItem(player, slot, itemStack);
+            }
+        }
+    }
 
-        CustomItem customItem = customItemStack.getItem();
+    private void buildAttachmentInfo(Player player, AttachableCustomItem item, CustomItemStack stack) throws CustomItemException {
 
-        if (customItem != null && customItem instanceof AttachableCustomItem) {
-            ((AttachableCustomItem) customItem).apply(player, customItemStack);
-            // lets also add our requirement lore
-            for (ItemAttachment attachment : ((AttachableCustomItem) customItem).getAttachments(player)) {
-                if (attachment instanceof RequiredItemAttachment) {
-                    ChatColor color = ChatColor.WHITE;
-
-                    if (!((RequiredItemAttachment) attachment).isRequirementMet(player)) {
-                        color = ChatColor.RED;
-                    }
-                    if (!customItemStack.hasTooltip(TooltipSlot.REQUIREMENT)) {
-                        customItemStack.setTooltip(new RequirementTooltip(((RequiredItemAttachment) attachment).getName(),
-                                color + ((RequiredItemAttachment) attachment).getItemText(player)));
-                    } else {
-                        RequirementTooltip tooltip = (RequirementTooltip) customItemStack.getTooltip(TooltipSlot.REQUIREMENT);
-                        tooltip.addRequirement(((RequiredItemAttachment) attachment).getName(),
-                                color + ((RequiredItemAttachment) attachment).getItemText(player));
-                    }
+        // lets also add our requirement lore
+        for (ItemAttachment attachment : item.getAttachments(player)) {
+            if (attachment instanceof RequiredItemAttachment) {
+                if (stack.hasTooltip(TooltipSlot.REQUIREMENT)) {
+                    RequirementTooltip tooltip = (RequirementTooltip) stack.getTooltip(TooltipSlot.REQUIREMENT);
+                    tooltip.addRequirement((RequiredItemAttachment) attachment);
+                } else {
+                    stack.setTooltip(new RequirementTooltip((RequiredItemAttachment) attachment));
                 }
             }
         }
-        customItemStack.rebuild(player);
-        rebuildInventory(player);
-    }
-
-    private void dropCustomItem(Player player, ItemStack itemStack) throws CustomItemException {
-
-        CustomItemStack customItemStack = rebuildCustomItem(player, itemStack);
-        if (customItemStack == null) {
-            return;
-        }
-
-        CustomItem customItem = customItemStack.getItem();
-
-        if (customItem != null && customItem instanceof AttachableCustomItem) {
-            ((AttachableCustomItem) customItem).remove(player, customItemStack);
-        }
-        customItemStack.rebuild();
-        rebuildInventory(player);
     }
 }

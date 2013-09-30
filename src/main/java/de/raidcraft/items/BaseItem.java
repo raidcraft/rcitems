@@ -5,17 +5,17 @@ import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemQuality;
-import de.raidcraft.api.items.tooltip.NameTooltip;
-import de.raidcraft.api.items.tooltip.VariableMultilineTooltip;
-import de.raidcraft.api.items.tooltip.SingleLineTooltip;
-import de.raidcraft.api.items.tooltip.Tooltip;
-import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentManager;
 import de.raidcraft.api.items.attachments.RequiredItemAttachment;
+import de.raidcraft.api.items.tooltip.NameTooltip;
+import de.raidcraft.api.items.tooltip.SingleLineTooltip;
+import de.raidcraft.api.items.tooltip.Tooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
+import de.raidcraft.api.items.tooltip.VariableMultilineTooltip;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.items.tables.items.TCustomItem;
 import de.raidcraft.util.CustomItemUtil;
@@ -252,6 +252,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
                     .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
             itemAttachments.add(attachment);
+            attachment.loadAttachment(config);
         }
         return itemAttachments;
     }
@@ -262,11 +263,12 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         for (ConfiguredAttachment config : attachments.values()) {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
                     .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
-            attachment.applyAttachment(itemStack, player, config);
+            attachment.loadAttachment(config);
+            attachment.applyAttachment(player);
             // check if the attachment is an requirement
             if (attachment instanceof RequiredItemAttachment) {
                 if (!((RequiredItemAttachment) attachment).isRequirementMet(player)) {
-                    String errorMessage = ((RequiredItemAttachment) attachment).getErrorMessage(player);
+                    String errorMessage = ((RequiredItemAttachment) attachment).getErrorMessage();
                     if (errorMessage == null) errorMessage = config.getDescription();
                     throw new CustomItemException(errorMessage);
                 }
@@ -280,7 +282,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         for (ConfiguredAttachment config : attachments.values()) {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
                     .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
-            attachment.removeAttachment(itemStack, player, config);
+            attachment.removeAttachment(player);
         }
     }
 

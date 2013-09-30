@@ -176,7 +176,8 @@ public class ItemsPlugin extends BasePlugin {
                                 attachment.getAttachmentName(),
                                 attachment.getProviderName(),
                                 attachment.getDescription(),
-                                ChatColor.valueOf(attachment.getColor())
+                                (attachment.getColor() == null || attachment.getColor().equals(""))
+                                        ? ChatColor.WHITE : ChatColor.valueOf(attachment.getColor())
                         );
                         // if a local config file for the attachment exists load it into the memory map
                         String attachmentName = StringUtils.formatName(attachment.getAttachmentName());
