@@ -42,6 +42,7 @@ public class TCustomItem {
     private boolean tradeable = true;
     @NotNull
     private ItemType itemType;
+    private String info;
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "item_id")
     private List<TCustomItemAttachment> attachments;
@@ -164,5 +165,15 @@ public class TCustomItem {
     public void setAttachments(List<TCustomItemAttachment> attachments) {
 
         this.attachments = attachments;
+    }
+
+    public String getInfo() {
+
+        return info;
+    }
+
+    public void setInfo(String info) {
+
+        this.info = info;
     }
 }
