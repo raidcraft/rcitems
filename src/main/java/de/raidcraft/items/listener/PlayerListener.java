@@ -203,7 +203,7 @@ public class PlayerListener implements Listener {
             customItemStack.rebuild(player);
             if (CustomItemUtil.isArmorSlot(slot)) {
                 ItemStack[] armor = player.getInventory().getArmorContents();
-                armor[slot] = customItemStack;
+                armor[slot - CustomItemUtil.ARMOR_SLOT] = customItemStack;
                 player.getInventory().setArmorContents(armor);
             } else {
                 player.getInventory().setItem(slot, customItemStack);
