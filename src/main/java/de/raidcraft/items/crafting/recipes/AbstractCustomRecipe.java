@@ -19,7 +19,6 @@ public abstract class AbstractCustomRecipe implements CustomRecipe {
         this.name = name;
     }
 
-    @Override
     public int getId() {
 
         return id;
@@ -31,7 +30,6 @@ public abstract class AbstractCustomRecipe implements CustomRecipe {
         return name;
     }
 
-    @Override
     public void remove() {
 
         EbeanServer database = RaidCraft.getDatabase(ItemsPlugin.class);
