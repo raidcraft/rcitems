@@ -143,6 +143,7 @@ public class PlayerListener implements Listener {
                 CustomItemStack stack = rebuildCustomItem(player, itemStack);
                 if (stack != null) {
                     if (stack.getItem() instanceof AttachableCustomItem) {
+                        ((AttachableCustomItem) stack.getItem()).apply(player, stack, true);
                         buildAttachmentInfo(player, (AttachableCustomItem) stack.getItem(), stack);
                     }
                     contents[i] = stack;
@@ -197,7 +198,7 @@ public class PlayerListener implements Listener {
         try {
             CustomItem customItem = customItemStack.getItem();
             if (customItem != null && customItem instanceof AttachableCustomItem) {
-                ((AttachableCustomItem) customItem).apply(player, customItemStack);
+                ((AttachableCustomItem) customItem).apply(player, customItemStack, false);
                 buildAttachmentInfo(player, (AttachableCustomItem) customItem, customItemStack);
             }
             customItemStack.rebuild(player);

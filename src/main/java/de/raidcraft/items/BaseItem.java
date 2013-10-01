@@ -258,19 +258,21 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     }
 
     @Override
-    public void apply(Player player, CustomItemStack itemStack) throws CustomItemException {
+    public void apply(Player player, CustomItemStack itemStack, boolean loadOnly) throws CustomItemException {
 
         for (ConfiguredAttachment config : attachments.values()) {
             ItemAttachment attachment = RaidCraft.getComponent(ItemAttachmentManager.class)
                     .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
             attachment.loadAttachment(config);
-            attachment.applyAttachment(player);
-            // check if the attachment is an requirement
-            if (attachment instanceof RequiredItemAttachment) {
-                if (!((RequiredItemAttachment) attachment).isRequirementMet(player)) {
-                    String errorMessage = ((RequiredItemAttachment) attachment).getErrorMessage();
-                    if (errorMessage == null) errorMessage = config.getDescription();
-                    throw new CustomItemException(errorMessage);
+            if (!loadOnly) {
+                attachment.applyAttachment(player);
+                // check if the attachment is an requirement
+                if (attachment instanceof RequiredItemAttachment) {
+                    if (!((RequiredItemAttachment) attachment).isRequirementMet(player)) {
+                        String errorMessage = ((RequiredItemAttachment) attachment).getErrorMessage();
+                        if (errorMessage == null) errorMessage = config.getDescription();
+                        throw new CustomItemException(errorMessage);
+                    }
                 }
             }
         }
