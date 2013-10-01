@@ -224,11 +224,16 @@ public class PlayerListener implements Listener {
         // lets also add our requirement lore
         for (ItemAttachment attachment : item.getAttachments(player)) {
             if (attachment instanceof RequiredItemAttachment) {
+                boolean requirementMet = ((RequiredItemAttachment) attachment).isRequirementMet(player);
                 if (stack.hasTooltip(TooltipSlot.REQUIREMENT)) {
                     RequirementTooltip tooltip = (RequirementTooltip) stack.getTooltip(TooltipSlot.REQUIREMENT);
-                    tooltip.addRequirement((RequiredItemAttachment) attachment);
+                    if (requirementMet) {
+                        tooltip.removeRequirement((RequiredItemAttachment) attachment);
+                    } else {
+                        tooltip.addRequirement((RequiredItemAttachment) attachment);
+                    }
                 } else {
-                    stack.setTooltip(new RequirementTooltip((RequiredItemAttachment) attachment));
+                    if (!requirementMet) stack.setTooltip(new RequirementTooltip((RequiredItemAttachment) attachment));
                 }
             }
         }
