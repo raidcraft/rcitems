@@ -104,4 +104,10 @@ public class CustomShapedRecipe extends ShapedRecipe implements CustomRecipe {
             database.save(ingredient);
         }
     }
+
+    @Override
+    public String toString() {
+
+        return getName();
+    }
 }

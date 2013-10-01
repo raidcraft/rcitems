@@ -7,7 +7,9 @@ import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.crafting.CraftingRecipeType;
 import de.raidcraft.items.crafting.RecipeUtil;
+import de.raidcraft.items.crafting.UnknownRecipeException;
 import de.raidcraft.items.crafting.recipes.CustomFurnaceRecipe;
+import de.raidcraft.items.crafting.recipes.CustomRecipe;
 import de.raidcraft.items.crafting.recipes.CustomShapedRecipe;
 import de.raidcraft.items.crafting.recipes.CustomShapelessRecipe;
 import de.raidcraft.util.CustomItemUtil;
@@ -175,5 +177,22 @@ public class RecipeCommands {
             recipe.save();
         }
         sender.sendMessage(ChatColor.GREEN + "Custom Crafting Rezept wurde erfolgreich hinzugefügt.");
+    }
+
+    @Command(
+            aliases = {"remove", "delete", "del"},
+            desc = "Removes the given recipe",
+            min = 1,
+            usage = "<name>"
+    )
+    @CommandPermissions("rcitems.recipe.remove")
+    public void remove(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            CustomRecipe recipe = plugin.getCraftingManager().deleteRecipe(args.getString(0));
+            sender.sendMessage(ChatColor.GREEN + "Deleted the Custom Crafting Recipe " + recipe.getName() + " sucessfully!");
+        } catch (UnknownRecipeException e) {
+            throw new CommandException(e.getMessage());
+        }
     }
 }

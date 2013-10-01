@@ -140,4 +140,10 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
             database.save(ingredient);
         }
     }
+
+    @Override
+    public String toString() {
+
+        return getName();
+    }
 }

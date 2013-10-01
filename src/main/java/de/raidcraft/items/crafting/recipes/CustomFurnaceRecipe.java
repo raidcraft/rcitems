@@ -97,4 +97,10 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomRecipe {
         ingredient.setItem(RaidCraft.getItemIdString(getInput()));
         database.save(ingredient);
     }
+
+    @Override
+    public String toString() {
+
+        return getName();
+    }
 }

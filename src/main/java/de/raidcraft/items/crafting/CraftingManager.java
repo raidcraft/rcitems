@@ -1,5 +1,6 @@
 package de.raidcraft.items.crafting;
 
+import com.sk89q.util.StringUtil;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.items.CustomItemException;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.material.MaterialData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,9 +141,34 @@ public class CraftingManager implements Component {
         return loadedRecipes.containsKey(name);
     }
 
-    public CustomRecipe getRecipe(String name) {
+    public CustomRecipe getRecipe(String name) throws UnknownRecipeException {
 
-        return loadedRecipes.get(name);
+        if (isLoadedRecipe(name)) {
+            return loadedRecipes.get(name);
+        }
+        List<CustomRecipe> foundRecipes = new ArrayList<>();
+        for (CustomRecipe recipe : loadedRecipes.values()) {
+            if (recipe.getName().contains(name)) {
+                foundRecipes.add(recipe);
+            }
+        }
+        if (foundRecipes.size() == 1) {
+            return foundRecipes.get(0);
+        }
+        if (foundRecipes.isEmpty()) {
+            throw new UnknownRecipeException("There is no recipe with the name " + name);
+        }
+        throw new UnknownRecipeException("Found multiple recipes with the name " + name + ": "
+                + StringUtil.joinString(foundRecipes, ", ", 0));
+    }
+
+    public CustomRecipe deleteRecipe(String name) throws UnknownRecipeException {
+
+        CustomRecipe recipe = getRecipe(name);
+        TCraftingRecipe table = plugin.getDatabase().find(TCraftingRecipe.class).where().eq("name", recipe.getName()).findUnique();
+        plugin.getDatabase().delete(table);
+        loadedRecipes.remove(recipe.getName());
+        return recipe;
     }
 
     public CustomFurnaceRecipe getFurnaceRecipe(ItemStack input) {
