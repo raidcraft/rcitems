@@ -138,7 +138,7 @@ public class ItemsPlugin extends BasePlugin {
         loadedCustomItems.clear();
         // lets load all custom items that are defined in the database
         CustomItemManager component = RaidCraft.getComponent(CustomItemManager.class);
-        List<TCustomItem> customItems = getDatabase().find(TCustomItem.class).findList();
+        Set<TCustomItem> customItems = getDatabase().find(TCustomItem.class).findSet();
         for (TCustomItem item : customItems) {
 
             try {

@@ -23,6 +23,7 @@ public class TCustomItem {
     @Id
     private int id;
     @NotNull
+    @Column(unique = true)
     private String name;
     private String lore;
     @NotNull
