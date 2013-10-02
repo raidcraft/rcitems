@@ -220,7 +220,7 @@ public class ItemsPlugin extends BasePlugin {
                 getLogger().warning(e.getMessage());
             }
         }
-        getLogger().info("Loaded " + loaded + "/" + loaded + failed + " Custom Items...");
+        getLogger().info("Loaded " + loaded + "/" + (loaded + failed) + " Custom Items...");
     }
 
     /**
