@@ -135,6 +135,8 @@ public class ItemsPlugin extends BasePlugin {
 
     private void loadCustomItems() {
 
+        int loaded = 0;
+        int failed = 0;
         loadedCustomItems.clear();
         // lets load all custom items that are defined in the database
         CustomItemManager component = RaidCraft.getComponent(CustomItemManager.class);
@@ -212,11 +214,13 @@ public class ItemsPlugin extends BasePlugin {
                 // register the actual custom item
                 component.registerCustomItem(customItem);
                 loadedCustomItems.add(customItem.getId());
-                getLogger().info("loaded item: [" + customItem.getId() + "]" + customItem.getName());
+                loaded++;
             } catch (DuplicateCustomItemException e) {
+                failed++;
                 getLogger().warning(e.getMessage());
             }
         }
+        getLogger().info("Loaded " + loaded + "/" + loaded + failed + " Custom Items...");
     }
 
     /**
