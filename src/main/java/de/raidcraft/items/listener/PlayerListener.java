@@ -28,9 +28,6 @@ import org.bukkit.inventory.ItemStack;
  */
 public class PlayerListener implements Listener {
 
-    private static final int MAIN_WEAPON_SLOT = 0;
-    private static final int OFFHAND_WEAPON_SLOT = 1;
-
     private final ItemsPlugin plugin;
     private final ItemsPlugin.LocalConfiguration config;
 
@@ -96,7 +93,7 @@ public class PlayerListener implements Listener {
             equipCustomWeapons(event.getPlayer());
         } catch (CustomItemException e) {
             int pickupSlot = getPickupSlot(event);
-            if (pickupSlot == MAIN_WEAPON_SLOT || pickupSlot == OFFHAND_WEAPON_SLOT) {
+            if (pickupSlot == CustomItemUtil.MAIN_WEAPON_SLOT || pickupSlot == CustomItemUtil.OFFHAND_WEAPON_SLOT) {
                 CustomItemUtil.denyItem(event.getPlayer(), pickupSlot, itemStack, e);
             }
         }
@@ -141,7 +138,7 @@ public class PlayerListener implements Listener {
                     contents[i] = stack;
                 }
             } catch (CustomItemException e) {
-                if (i == MAIN_WEAPON_SLOT || i == OFFHAND_WEAPON_SLOT) {
+                if (i == CustomItemUtil.MAIN_WEAPON_SLOT || i == CustomItemUtil.OFFHAND_WEAPON_SLOT) {
                     CustomItemUtil.denyItem(player, i, itemStack, e);
                 }
             }
@@ -178,8 +175,8 @@ public class PlayerListener implements Listener {
 
     private void equipCustomWeapons(Player player) {
 
-        equipCustomItem(player, MAIN_WEAPON_SLOT, player.getInventory().getItem(MAIN_WEAPON_SLOT));
-        equipCustomItem(player, OFFHAND_WEAPON_SLOT, player.getInventory().getItem(OFFHAND_WEAPON_SLOT));
+        equipCustomItem(player, CustomItemUtil.MAIN_WEAPON_SLOT, player.getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT));
+        equipCustomItem(player, CustomItemUtil.OFFHAND_WEAPON_SLOT, player.getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT));
     }
 
     private void equipCustomItem(Player player, int slot, ItemStack itemStack) {
