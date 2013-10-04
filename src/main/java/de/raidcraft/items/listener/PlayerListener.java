@@ -1,16 +1,10 @@
 package de.raidcraft.items.listener;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.attachments.AttachableCustomItem;
-import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
-import de.raidcraft.api.items.attachments.RequiredItemAttachment;
 import de.raidcraft.api.items.attachments.UseableCustomItem;
-import de.raidcraft.api.items.tooltip.RequirementTooltip;
-import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
@@ -20,19 +14,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Silthus
  */
 public class PlayerListener implements Listener {
+
+    private static final int MAIN_WEAPON_SLOT = 0;
+    private static final int OFFHAND_WEAPON_SLOT = 1;
 
     private final ItemsPlugin plugin;
     private final ItemsPlugin.LocalConfiguration config;
@@ -88,22 +85,21 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onEnchant(EnchantItemEvent event) {
-
-        ItemStack item = event.getItem();
-        if (item != null && item.getTypeId() != 0 && CustomItemUtil.isCustomItem(item)) {
-            RaidCraft.getCustomItem(item).rebuild(event.getEnchanter());
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemPickup(PlayerPickupItemEvent event) {
 
         ItemStack itemStack = event.getItem().getItemStack();
         if (itemStack == null || itemStack.getTypeId() == 0) {
             return;
         }
-        equipCustomWeapons(event.getPlayer());
+        try {
+            rebuildCustomItem(event.getPlayer(), itemStack);
+            equipCustomWeapons(event.getPlayer());
+        } catch (CustomItemException e) {
+            int pickupSlot = getPickupSlot(event);
+            if (pickupSlot == MAIN_WEAPON_SLOT || pickupSlot == OFFHAND_WEAPON_SLOT) {
+                CustomItemUtil.denyItem(event.getPlayer(), pickupSlot, itemStack, e);
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -142,14 +138,12 @@ public class PlayerListener implements Listener {
             try {
                 CustomItemStack stack = rebuildCustomItem(player, itemStack);
                 if (stack != null) {
-                    if (stack.getItem() instanceof AttachableCustomItem) {
-                        ((AttachableCustomItem) stack.getItem()).apply(player, stack, true);
-                        buildAttachmentInfo(player, (AttachableCustomItem) stack.getItem(), stack);
-                    }
                     contents[i] = stack;
                 }
             } catch (CustomItemException e) {
-                player.sendMessage(ChatColor.RED + e.getMessage());
+                if (i == MAIN_WEAPON_SLOT || i == OFFHAND_WEAPON_SLOT) {
+                    CustomItemUtil.denyItem(player, i, itemStack, e);
+                }
             }
         }
         player.getInventory().setContents(contents);
@@ -184,8 +178,8 @@ public class PlayerListener implements Listener {
 
     private void equipCustomWeapons(Player player) {
 
-        equipCustomItem(player, 0, player.getInventory().getItem(0));
-        equipCustomItem(player, 1, player.getInventory().getItem(1));
+        equipCustomItem(player, MAIN_WEAPON_SLOT, player.getInventory().getItem(MAIN_WEAPON_SLOT));
+        equipCustomItem(player, OFFHAND_WEAPON_SLOT, player.getInventory().getItem(OFFHAND_WEAPON_SLOT));
     }
 
     private void equipCustomItem(Player player, int slot, ItemStack itemStack) {
@@ -196,11 +190,6 @@ public class PlayerListener implements Listener {
             return;
         }
         try {
-            CustomItem customItem = customItemStack.getItem();
-            if (customItem != null && customItem instanceof AttachableCustomItem) {
-                ((AttachableCustomItem) customItem).apply(player, customItemStack, false);
-                buildAttachmentInfo(player, (AttachableCustomItem) customItem, customItemStack);
-            }
             customItemStack.rebuild(player);
             if (CustomItemUtil.isArmorSlot(slot)) {
                 ItemStack[] armor = player.getInventory().getArmorContents();
@@ -210,32 +199,31 @@ public class PlayerListener implements Listener {
                 player.getInventory().setItem(slot, customItemStack);
             }
         } catch (CustomItemException e) {
-            player.sendMessage(ChatColor.RED + e.getMessage());
-            if (CustomItemUtil.isArmorSlot(slot)) {
-                CustomItemUtil.moveArmor(player, slot - CustomItemUtil.ARMOR_SLOT, itemStack);
-            } else {
-                CustomItemUtil.moveItem(player, slot, itemStack);
-            }
+            CustomItemUtil.denyItem(player, slot, customItemStack, e);
         }
     }
 
-    private void buildAttachmentInfo(Player player, AttachableCustomItem item, CustomItemStack stack) throws CustomItemException {
+    private int getPickupSlot(PlayerPickupItemEvent event) {
 
-        // lets also add our requirement lore
-        for (ItemAttachment attachment : item.getAttachments(player)) {
-            if (attachment instanceof RequiredItemAttachment) {
-                boolean requirementMet = ((RequiredItemAttachment) attachment).isRequirementMet(player);
-                if (stack.hasTooltip(TooltipSlot.REQUIREMENT)) {
-                    RequirementTooltip tooltip = (RequirementTooltip) stack.getTooltip(TooltipSlot.REQUIREMENT);
-                    if (requirementMet) {
-                        tooltip.removeRequirement((RequiredItemAttachment) attachment);
-                    } else {
-                        tooltip.addRequirement((RequiredItemAttachment) attachment);
-                    }
-                } else {
-                    if (!requirementMet) stack.setTooltip(new RequirementTooltip((RequiredItemAttachment) attachment));
-                }
-            }
+        // The event isn't canceled, this means this player can pick the item up.
+        Inventory inventory = event.getPlayer().getInventory();
+
+        ItemStack itemStack = event.getItem().getItemStack();
+        int maxStackSize = itemStack.getMaxStackSize();
+
+        int slotIndex = -1;
+        for(int stackSize=1; stackSize<maxStackSize; stackSize++) // Loop 1 less than max stack size so there is room for this item in the stack.
+        {
+            itemStack.setAmount(stackSize);
+            slotIndex = inventory.first(itemStack);
+
+            if(slotIndex != -1)
+                break;
         }
+
+        if(slotIndex == -1)
+            slotIndex = inventory.firstEmpty();
+
+        return slotIndex;
     }
 }
