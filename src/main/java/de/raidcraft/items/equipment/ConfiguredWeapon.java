@@ -2,6 +2,7 @@ package de.raidcraft.items.equipment;
 
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.tooltip.DPSTooltip;
+import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.Tooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
@@ -28,8 +29,7 @@ public class ConfiguredWeapon extends BaseEquipment implements CustomWeapon {
         this.maxDamage = weapon.getMaxDamage();
         this.swingTime = weapon.getSwingTime();
         // set our tooltip lines
-        setTooltip(new SingleLineTooltip(
-                TooltipSlot.EQUIPMENT_TYPE, getEquipmentSlot().getGermanName() + Tooltip.LINE_SEPARATOR + getWeaponType().getGermanName()));
+        setTooltip(new EquipmentTypeTooltip(getEquipmentSlot().getGermanName() + Tooltip.LINE_SEPARATOR + getWeaponType().getGermanName()));
         // damage tooltip
         String damageStr;
         if (getMinDamage() == 0 && getMaxDamage() == 0) {
