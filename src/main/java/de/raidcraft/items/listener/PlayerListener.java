@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -92,9 +91,9 @@ public class PlayerListener implements Listener {
             rebuildCustomItem(event.getPlayer(), itemStack);
             equipCustomWeapons(event.getPlayer());
         } catch (CustomItemException e) {
-            int pickupSlot = getPickupSlot(event);
+            int pickupSlot = CustomItemUtil.getPickupSlot(event);
             if (pickupSlot == CustomItemUtil.MAIN_WEAPON_SLOT || pickupSlot == CustomItemUtil.OFFHAND_WEAPON_SLOT) {
-                CustomItemUtil.denyItem(event.getPlayer(), pickupSlot, itemStack, e);
+                CustomItemUtil.denyItem(event.getPlayer(), pickupSlot, itemStack, e.getMessage());
             }
         }
     }
@@ -139,7 +138,7 @@ public class PlayerListener implements Listener {
                 }
             } catch (CustomItemException e) {
                 if (i == CustomItemUtil.MAIN_WEAPON_SLOT || i == CustomItemUtil.OFFHAND_WEAPON_SLOT) {
-                    CustomItemUtil.denyItem(player, i, itemStack, e);
+                    CustomItemUtil.denyItem(player, i, itemStack, e.getMessage());
                 }
             }
         }
@@ -196,31 +195,8 @@ public class PlayerListener implements Listener {
                 player.getInventory().setItem(slot, customItemStack);
             }
         } catch (CustomItemException e) {
-            CustomItemUtil.denyItem(player, slot, customItemStack, e);
+            CustomItemUtil.denyItem(player, slot, customItemStack, e.getMessage());
         }
     }
 
-    private int getPickupSlot(PlayerPickupItemEvent event) {
-
-        // The event isn't canceled, this means this player can pick the item up.
-        Inventory inventory = event.getPlayer().getInventory();
-
-        ItemStack itemStack = event.getItem().getItemStack();
-        int maxStackSize = itemStack.getMaxStackSize();
-
-        int slotIndex = -1;
-        for(int stackSize=1; stackSize<maxStackSize; stackSize++) // Loop 1 less than max stack size so there is room for this item in the stack.
-        {
-            itemStack.setAmount(stackSize);
-            slotIndex = inventory.first(itemStack);
-
-            if(slotIndex != -1)
-                break;
-        }
-
-        if(slotIndex == -1)
-            slotIndex = inventory.firstEmpty();
-
-        return slotIndex;
-    }
 }
