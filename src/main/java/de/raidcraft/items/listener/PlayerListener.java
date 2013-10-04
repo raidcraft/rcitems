@@ -5,6 +5,8 @@ import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.UseableCustomItem;
+import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
@@ -88,7 +90,11 @@ public class PlayerListener implements Listener {
             return;
         }
         try {
-            rebuildCustomItem(event.getPlayer(), itemStack);
+            CustomItemStack customItemStack = rebuildCustomItem(event.getPlayer(), itemStack);
+            if (customItemStack != null && customItemStack.hasTooltip(TooltipSlot.EQUIPMENT_TYPE)) {
+                EquipmentTypeTooltip tooltip = (EquipmentTypeTooltip) customItemStack.getTooltip(TooltipSlot.EQUIPMENT_TYPE);
+                tooltip.setColor(ChatColor.WHITE);
+            }
             equipCustomWeapons(event.getPlayer());
         } catch (CustomItemException e) {
             int pickupSlot = CustomItemUtil.getPickupSlot(event);
@@ -160,7 +166,6 @@ public class PlayerListener implements Listener {
             if (customItemStack == null) return null;
             customItemStack.rebuild(player);
         }
-
         return customItemStack;
     }
 
