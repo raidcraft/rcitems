@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
@@ -47,8 +48,8 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     private final double sellPrice;
     private final List<Requirement<Player>> requirements = new ArrayList<>();
     private final Map<TooltipSlot, Tooltip> tooltips = new EnumMap<>(TooltipSlot.class);
+    private final ItemBindType bindType;
     private int itemLevel;
-    private boolean tradeable;
 
     public BaseItem(TCustomItem item) {
 
@@ -62,7 +63,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         this.quality = item.getQuality();
         this.maxStackSize = item.getMaxStackSize();
         this.sellPrice = item.getSellPrice();
-        this.tradeable = item.isTradeable();
+        this.bindType = item.getBindType();
 
         buildTooltips();
     }
@@ -127,18 +128,6 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     }
 
     @Override
-    public void setTradeable(boolean tradeable) {
-
-        this.tradeable = tradeable;
-    }
-
-    @Override
-    public boolean isTradeable() {
-
-        return tradeable;
-    }
-
-    @Override
     public void setItemLevel(int itemLevel) {
 
         this.itemLevel = itemLevel;
@@ -148,6 +137,11 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     public int getItemLevel() {
 
         return itemLevel;
+    }
+
+    public ItemBindType getBindType() {
+
+        return bindType;
     }
 
     @Override

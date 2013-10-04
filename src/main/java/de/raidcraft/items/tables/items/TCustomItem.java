@@ -1,6 +1,7 @@
 package de.raidcraft.items.tables.items;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
 
@@ -39,7 +40,7 @@ public class TCustomItem {
     @NotNull
     private double sellPrice = 0.0;
     @NotNull
-    private boolean tradeable = true;
+    private ItemBindType bindType = ItemBindType.NONE;
     @NotNull
     private ItemType itemType;
     private String info;
@@ -137,14 +138,14 @@ public class TCustomItem {
         this.sellPrice = sellPrice;
     }
 
-    public boolean isTradeable() {
+    public ItemBindType getBindType() {
 
-        return tradeable;
+        return bindType;
     }
 
-    public void setTradeable(boolean tradeable) {
+    public void setBindType(ItemBindType bindType) {
 
-        this.tradeable = tradeable;
+        this.bindType = bindType;
     }
 
     public ItemType getItemType() {
