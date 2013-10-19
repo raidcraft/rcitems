@@ -3,6 +3,7 @@ package de.raidcraft.items;
 import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
+import de.raidcraft.api.items.ItemType;
 import de.raidcraft.api.items.tooltip.AttributeTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
@@ -22,9 +23,9 @@ public class BaseEquipment extends BaseItem implements CustomEquipment {
     private final int maxDurability;
     private final Set<ItemAttribute> attributes;
 
-    public BaseEquipment(TCustomEquipment equipment) {
+    public BaseEquipment(TCustomEquipment equipment, ItemType type) {
 
-        super(equipment.getItem());
+        super(equipment.getItem(), type);
         this.equipmentSlot = equipment.getEquipmentSlot();
         this.maxDurability = equipment.getDurability();
         this.attributes = equipment.createAttributes();
@@ -32,6 +33,11 @@ public class BaseEquipment extends BaseItem implements CustomEquipment {
         setTooltip(new SingleLineTooltip(TooltipSlot.SPACER, ""));
         // also add our attributes
         setTooltip(new AttributeTooltip(attributes));
+    }
+
+    public BaseEquipment(TCustomEquipment equipment) {
+
+        this(equipment, ItemType.EQUIPMENT);
     }
 
     @Override

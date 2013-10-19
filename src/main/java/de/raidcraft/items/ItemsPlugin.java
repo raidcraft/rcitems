@@ -167,7 +167,7 @@ public class ItemsPlugin extends BasePlugin {
                         customItem = new BaseEquipment(equipment);
                         break;
                     default:
-                        customItem = new SimpleItem(item);
+                        customItem = new SimpleItem(item, item.getItemType());
                         break;
                 }
                 // lets check for custom item attachments

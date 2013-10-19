@@ -6,6 +6,7 @@ import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemQuality;
+import de.raidcraft.api.items.ItemType;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachment;
@@ -43,6 +44,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     private final short minecraftData;
     private final String name;
     private final String lore;
+    private final ItemType type;
     private final ItemQuality quality;
     private final int maxStackSize;
     private final double sellPrice;
@@ -51,7 +53,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     private final ItemBindType bindType;
     private int itemLevel;
 
-    public BaseItem(TCustomItem item) {
+    public BaseItem(TCustomItem item, ItemType type) {
 
         this.id = item.getId();
         this.encodedId = CustomItemUtil.encodeItemId(id);
@@ -60,6 +62,7 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
         this.name = item.getName();
         this.lore = item.getLore();
         this.itemLevel = item.getItemLevel();
+        this.type = type;
         this.quality = item.getQuality();
         this.maxStackSize = item.getMaxStackSize();
         this.sellPrice = item.getSellPrice();
@@ -137,6 +140,12 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     public int getItemLevel() {
 
         return itemLevel;
+    }
+
+    @Override
+    public ItemType getType() {
+
+        return type;
     }
 
     public ItemBindType getBindType() {

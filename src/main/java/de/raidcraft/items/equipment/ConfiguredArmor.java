@@ -2,6 +2,7 @@ package de.raidcraft.items.equipment;
 
 import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.ItemType;
 import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.Tooltip;
@@ -19,7 +20,7 @@ public class ConfiguredArmor extends BaseEquipment implements CustomArmor {
 
     public ConfiguredArmor(TCustomArmor armor) {
 
-        super(armor.getEquipment());
+        super(armor.getEquipment(), ItemType.ARMOR);
         this.armorType = armor.getArmorType();
         this.armorValue = armor.getArmorValue();
         setTooltip(new EquipmentTypeTooltip(getEquipmentSlot().getGermanName() + Tooltip.LINE_SEPARATOR + getArmorType().getGermanName()));

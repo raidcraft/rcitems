@@ -1,12 +1,13 @@
 package de.raidcraft.items.equipment;
 
 import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.ItemType;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.items.tooltip.DPSTooltip;
 import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.Tooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
-import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.items.BaseEquipment;
 import de.raidcraft.items.tables.items.TCustomWeapon;
 import de.raidcraft.util.CustomItemUtil;
@@ -23,7 +24,7 @@ public class ConfiguredWeapon extends BaseEquipment implements CustomWeapon {
 
     public ConfiguredWeapon(TCustomWeapon weapon) {
 
-        super(weapon.getEquipment());
+        super(weapon.getEquipment(), ItemType.WEAPON);
         this.type = weapon.getWeaponType();
         this.minDamage = weapon.getMinDamage();
         this.maxDamage = weapon.getMaxDamage();
