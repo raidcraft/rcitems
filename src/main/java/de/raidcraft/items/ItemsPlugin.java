@@ -143,6 +143,9 @@ public class ItemsPlugin extends BasePlugin {
         Set<TCustomItem> customItems = getDatabase().find(TCustomItem.class).findSet();
         for (TCustomItem item : customItems) {
 
+            if (item.getMinecraftId() < 1) {
+                continue;
+            }
             try {
                 CustomItem customItem;
                 TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
