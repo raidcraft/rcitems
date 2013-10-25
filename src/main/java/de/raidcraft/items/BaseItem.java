@@ -196,10 +196,20 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     @Override
     public boolean isMeetingAllRequirements(Player object) {
 
-        for (Requirement<Player> requirement : requirements) {
-            if (!requirement.isMet(object)) {
-                return false;
+        try {
+            for (Requirement<Player> requirement : requirements) {
+                if (!requirement.isMet(object)) {
+                    return false;
+                }
             }
+            for (ItemAttachment attachment : getAttachments(object)) {
+                if (attachment instanceof RequiredItemAttachment) {
+                    if (!((RequiredItemAttachment) attachment).isRequirementMet(object)) {
+                        return false;
+                    }
+                }
+            }
+        } catch (ItemAttachmentException ignored) {
         }
         return true;
     }
