@@ -193,6 +193,11 @@ public class PlayerListener implements Listener {
         }
         try {
             customItemStack.rebuild(player);
+            // lets check the requirements
+            if (!customItemStack.getItem().isMeetingAllRequirements(player)) {
+                CustomItemUtil.denyItem(player, slot, customItemStack, customItemStack.getItem().getResolveReason(player));
+                return;
+            }
             if (CustomItemUtil.isArmorSlot(slot)) {
                 ItemStack[] armor = player.getInventory().getArmorContents();
                 armor[slot - CustomItemUtil.ARMOR_SLOT] = customItemStack;
