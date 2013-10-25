@@ -10,7 +10,6 @@ import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -59,26 +58,27 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = false)
-    public void useItemDurability(PlayerInteractEvent event) {
-
-        if (CustomItemUtil.isCustomItem(event.getItem())) {
-            // also update the item in hand
-            plugin.updateItemDurability(event.getItem(), config.durabilityLossChanceOnUse);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = false)
     public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
 
-        if (!(event.getEntity() instanceof LivingEntity)) {
+        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player)) {
             return;
         }
-        // lets check the durability loss and negate it by using our own durability if it is a custom item
-        for (ItemStack itemStack : ((LivingEntity) event.getEntity()).getEquipment().getArmorContents()) {
-            plugin.updateItemDurability(itemStack, config.durabilityLossChanceOnDamage);
-        }
         if (event.getEntity() instanceof Player) {
-            ((Player) event.getEntity()).updateInventory();
+            // lets check the durability loss and negate it by using our own durability if it is a custom item
+            Player player = (Player) event.getEntity();
+            ItemStack[] armorContents = player.getEquipment().getArmorContents();
+            for (int i = 0; i < armorContents.length; i++) {
+                ItemStack itemStack = plugin.updateItemDurability(player, armorContents[i], config.durabilityLossChanceOnDamage);
+                armorContents[i] = itemStack;
+            }
+            player.getEquipment().setArmorContents(armorContents);
+        }
+        if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
+            player.getInventory().setItem(CustomItemUtil.MAIN_WEAPON_SLOT,
+                    plugin.updateItemDurability(player, player.getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT), config.durabilityLossChanceOnUse));
+            player.getInventory().setItem(CustomItemUtil.OFFHAND_WEAPON_SLOT,
+                    plugin.updateItemDurability(player, player.getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT), config.durabilityLossChanceOnUse));
         }
     }
 
@@ -123,6 +123,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
+        rebuildInventory((Player) event.getPlayer());
         if (event.getPlayer() instanceof Player) {
             equipCustomWeapons((Player) event.getPlayer());
             equipCustomArmor((Player) event.getPlayer());

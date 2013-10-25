@@ -12,6 +12,7 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomEquipment;
 import de.raidcraft.api.items.CustomItem;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.DuplicateCustomItemException;
@@ -39,6 +40,7 @@ import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -262,19 +264,26 @@ public class ItemsPlugin extends BasePlugin {
         return tables;
     }
 
-    public void updateItemDurability(ItemStack item, double chance) {
+    public ItemStack updateItemDurability(Player player, ItemStack item, double chance) {
 
         // lets check the durability loss and negate it by using our own durability if it is a custom item
         if (!CustomItemUtil.isEquipment(item)) {
-            return;
+            return item;
         }
         CustomItemStack customItem = RaidCraft.getCustomItem(item);
         // on each interact with the item the player has a chance of 0.1% chance to loose one durability point
         if (Math.random() < chance) {
-            customItem.setCustomDurability(customItem.getCustomDurability() - 1);
+            try {
+                customItem.setCustomDurability(customItem.getCustomDurability() - 1);
+                customItem.rebuild(player);
+            } catch (CustomItemException e) {
+                player.sendMessage(ChatColor.RED + e.getMessage());
+            }
         } else {
             item.setDurability(CustomItemUtil.getMinecraftDurability(item, customItem.getCustomDurability(), customItem.getMaxDurability()));
+            return item;
         }
+        return customItem;
     }
 
     public static class LocalConfiguration extends ConfigurationBase<ItemsPlugin> {
