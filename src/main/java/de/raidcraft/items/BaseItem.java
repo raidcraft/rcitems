@@ -217,10 +217,20 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     @Override
     public String getResolveReason(Player object) {
 
-        for (Requirement<Player> requirement : requirements) {
-            if (!requirement.isMet(object)) {
-                return requirement.getLongReason();
+        try {
+            for (Requirement<Player> requirement : requirements) {
+                if (!requirement.isMet(object)) {
+                    return requirement.getLongReason();
+                }
             }
+            for (ItemAttachment attachment : getAttachments(object)) {
+                if (attachment instanceof RequiredItemAttachment) {
+                    if (!((RequiredItemAttachment) attachment).isRequirementMet(object)) {
+                        return ((RequiredItemAttachment) attachment).getErrorMessage();
+                    }
+                }
+            }
+        } catch (ItemAttachmentException ignored) {
         }
         return "All requirements are met!";
     }
