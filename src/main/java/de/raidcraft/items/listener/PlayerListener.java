@@ -57,12 +57,9 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = false)
+    @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
     public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
 
-        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player)) {
-            return;
-        }
         if (event.getEntity() instanceof Player) {
             // lets check the durability loss and negate it by using our own durability if it is a custom item
             Player player = (Player) event.getEntity();
@@ -72,8 +69,7 @@ public class PlayerListener implements Listener {
                 armorContents[i] = itemStack;
             }
             player.getEquipment().setArmorContents(armorContents);
-        }
-        if (event.getDamager() instanceof Player) {
+        } else if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
             player.getInventory().setItem(CustomItemUtil.MAIN_WEAPON_SLOT,
                     plugin.updateItemDurability(player, player.getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT), config.durabilityLossChanceOnUse));
