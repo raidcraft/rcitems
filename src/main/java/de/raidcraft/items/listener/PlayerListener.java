@@ -53,6 +53,8 @@ public class PlayerListener implements Listener {
                         event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
                     }
                 }
+            } else {
+                updateWeaponDurability(event.getPlayer());
             }
         }
     }
@@ -69,15 +71,17 @@ public class PlayerListener implements Listener {
                 armorContents[i] = itemStack;
             }
             player.getEquipment().setArmorContents(armorContents);
-            player.updateInventory();
         } else if (event.getDamager() instanceof Player) {
-            Player player = (Player) event.getDamager();
-            player.getInventory().setItem(CustomItemUtil.MAIN_WEAPON_SLOT,
-                    plugin.updateItemDurability(player, player.getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT), config.durabilityLossChanceOnUse));
-            player.getInventory().setItem(CustomItemUtil.OFFHAND_WEAPON_SLOT,
-                    plugin.updateItemDurability(player, player.getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT), config.durabilityLossChanceOnUse));
-            player.updateInventory();
+            updateWeaponDurability((Player) event.getDamager());
         }
+    }
+
+    private void updateWeaponDurability(Player player) {
+
+        player.getInventory().setItem(CustomItemUtil.MAIN_WEAPON_SLOT,
+                plugin.updateItemDurability(player, player.getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT), config.durabilityLossChanceOnUse));
+        player.getInventory().setItem(CustomItemUtil.OFFHAND_WEAPON_SLOT,
+                plugin.updateItemDurability(player, player.getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT), config.durabilityLossChanceOnUse));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
