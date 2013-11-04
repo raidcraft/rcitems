@@ -73,6 +73,7 @@ public class PlayerListener implements Listener {
             player.getEquipment().setArmorContents(armorContents);
         } else if (event.getDamager() instanceof Player) {
             updateWeaponDurability((Player) event.getDamager());
+            ((Player) event.getDamager()).updateInventory(); // we have to update the player inventory to make changes visible
         }
     }
 
