@@ -8,12 +8,10 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.storage.ItemStorage;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -90,27 +88,5 @@ public class ItemCommands {
         }
         CustomItemStack customItem = RaidCraft.getCustomItem(inHand);
         sender.sendMessage(customItem.getItem().getName());
-    }
-
-    @Command(
-            aliases = "store",
-            desc = "Stores current item in hand in database and returns id of stored object"
-    )
-    @CommandPermissions("rcitems.store")
-    public void store(CommandContext args, CommandSender sender) throws CommandException {
-
-        if (!(sender instanceof Player)) {
-            throw new CommandException("Not a player!");
-        }
-        Player player = (Player) sender;
-
-        if(player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR) {
-            throw new CommandException("Du hast kein Item in der Hand!");
-        }
-
-        final String storageName = "custom";
-        ItemStorage itemStorage = new ItemStorage(storageName);
-        int itemId = itemStorage.storeObject(player.getItemInHand());
-        sender.sendMessage(ChatColor.GREEN + "Item gespeichert -> Storage-Name: " + storageName + " | Storage-ID: " + itemId);
     }
 }

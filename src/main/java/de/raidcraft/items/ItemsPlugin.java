@@ -348,5 +348,15 @@ public class ItemsPlugin extends BasePlugin {
         public void book(CommandContext args, CommandSender sender) {
 
         }
+
+        @Command(
+                aliases = {"storage"},
+                desc = "Storage Commands",
+                min = 1
+        )
+        @NestedCommand(value = BookUtilCommands.class)
+        public void storage(CommandContext args, CommandSender sender) {
+
+        }
     }
 }
