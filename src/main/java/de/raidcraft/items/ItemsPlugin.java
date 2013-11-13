@@ -19,6 +19,7 @@ import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
+import de.raidcraft.items.commands.BookUtilCommands;
 import de.raidcraft.items.commands.ItemCommands;
 import de.raidcraft.items.commands.RecipeCommands;
 import de.raidcraft.items.configs.AttachmentConfig;
@@ -335,6 +336,16 @@ public class ItemsPlugin extends BasePlugin {
         )
         @NestedCommand(value = RecipeCommands.class)
         public void recipes(CommandContext args, CommandSender sender) {
+
+        }
+
+        @Command(
+                aliases = {"book"},
+                desc = "Book Util Commands",
+                min = 1
+        )
+        @NestedCommand(value = BookUtilCommands.class)
+        public void book(CommandContext args, CommandSender sender) {
 
         }
     }
