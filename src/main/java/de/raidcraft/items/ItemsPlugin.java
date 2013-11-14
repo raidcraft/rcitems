@@ -22,6 +22,7 @@ import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.items.commands.BookUtilCommands;
 import de.raidcraft.items.commands.ItemCommands;
 import de.raidcraft.items.commands.RecipeCommands;
+import de.raidcraft.items.commands.StorageCommands;
 import de.raidcraft.items.configs.AttachmentConfig;
 import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.equipment.ConfiguredArmor;
@@ -354,7 +355,7 @@ public class ItemsPlugin extends BasePlugin {
                 desc = "Storage Commands",
                 min = 1
         )
-        @NestedCommand(value = BookUtilCommands.class)
+        @NestedCommand(value = StorageCommands.class)
         public void storage(CommandContext args, CommandSender sender) {
 
         }

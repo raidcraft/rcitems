@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
 /**
  * @author Silthus
  */
-public class StoreCommands {
+public class StorageCommands {
 
     private final ItemsPlugin plugin;
 
-    public StoreCommands(ItemsPlugin plugin) {
+    public StorageCommands(ItemsPlugin plugin) {
 
         this.plugin = plugin;
     }
