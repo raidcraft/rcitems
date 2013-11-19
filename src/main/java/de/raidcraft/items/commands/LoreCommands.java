@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -49,7 +50,12 @@ public class LoreCommands {
         String newLoreLine = SignUtil.parseColor(args.getJoinedStrings(0));
 
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.getLore().add(newLoreLine);
+        List<String> lore = itemMeta.getLore();
+        if(lore == null) {
+            lore = new ArrayList<>();
+        }
+        lore.add(newLoreLine);
+        itemMeta.setLore(lore);
         itemStack.setItemMeta(itemMeta);
 
         player.updateInventory();
