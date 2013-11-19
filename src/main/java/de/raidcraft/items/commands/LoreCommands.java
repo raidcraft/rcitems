@@ -34,8 +34,8 @@ public class LoreCommands {
             min = 1,
             usage = "<lore line>"
     )
-    @CommandPermissions("rcitems.lore")
-    public void addLine(CommandContext args, CommandSender sender) throws CommandException {
+         @CommandPermissions("rcitems.lore")
+         public void addLine(CommandContext args, CommandSender sender) throws CommandException {
 
         if (!(sender instanceof Player)) {
             throw new CommandException("Not a player!");
@@ -86,5 +86,34 @@ public class LoreCommands {
 
         player.updateInventory();
         player.sendMessage(ChatColor.GREEN + "Die Item-Lore wurde entfernt!");
+    }
+
+    @Command(
+            aliases = {"setname", "name"},
+            desc = "Set display name",
+            min = 1,
+            usage = "<new name>"
+    )
+    @CommandPermissions("rcitems.lore")
+    public void setName(CommandContext args, CommandSender sender) throws CommandException {
+
+        if (!(sender instanceof Player)) {
+            throw new CommandException("Not a player!");
+        }
+        Player player = (Player) sender;
+
+        if(player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR) {
+            throw new CommandException("Du hast kein Item in der Hand!");
+        }
+
+        ItemStack itemStack = player.getItemInHand();
+        String name = SignUtil.parseColor(args.getJoinedStrings(0));
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(name);
+        itemStack.setItemMeta(itemMeta);
+
+        player.updateInventory();
+        player.sendMessage(ChatColor.GREEN + "Der Display-Name wurde geändert!");
     }
 }
