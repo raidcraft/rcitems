@@ -19,10 +19,7 @@ import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
-import de.raidcraft.items.commands.BookUtilCommands;
-import de.raidcraft.items.commands.ItemCommands;
-import de.raidcraft.items.commands.RecipeCommands;
-import de.raidcraft.items.commands.StorageCommands;
+import de.raidcraft.items.commands.*;
 import de.raidcraft.items.configs.AttachmentConfig;
 import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.equipment.ConfiguredArmor;
@@ -357,6 +354,16 @@ public class ItemsPlugin extends BasePlugin {
         )
         @NestedCommand(value = StorageCommands.class)
         public void storage(CommandContext args, CommandSender sender) {
+
+        }
+
+        @Command(
+                aliases = {"lore"},
+                desc = "Lore Commands",
+                min = 1
+        )
+        @NestedCommand(value = LoreCommands.class)
+        public void lore(CommandContext args, CommandSender sender) {
 
         }
     }
