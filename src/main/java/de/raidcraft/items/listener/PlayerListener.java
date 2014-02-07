@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -35,6 +36,14 @@ public class PlayerListener implements Listener {
 
         this.plugin = plugin;
         this.config = plugin.getConfig();
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerPlaceBlock(BlockPlaceEvent event) {
+
+        if (CustomItemUtil.isCustomItem(event.getItemInHand())) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
