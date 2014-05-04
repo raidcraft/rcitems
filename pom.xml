@@ -35,6 +35,10 @@
             <url>http://nexus.raid-craft.de/content/groups/public/</url>
         </repository>
     </repositories>
+    
+    <scm>
+        <developerConnection>scm:git:ssh://git@raid-craft.de:22109/raid-craft-de/${project.artifactId}.git</developerConnection>
+    </scm>
 
     <dependencies>
         <dependency>
