@@ -10,6 +10,7 @@ import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -98,7 +99,7 @@ public class PlayerListener implements Listener {
     public void onItemPickup(PlayerPickupItemEvent event) {
 
         ItemStack itemStack = event.getItem().getItemStack();
-        if (itemStack == null || itemStack.getTypeId() == 0) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return;
         }
         try {

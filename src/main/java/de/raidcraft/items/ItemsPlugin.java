@@ -5,6 +5,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.config.ConfigUtil;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.KeyValueMap;
@@ -19,7 +20,11 @@ import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
-import de.raidcraft.items.commands.*;
+import de.raidcraft.items.commands.BookUtilCommands;
+import de.raidcraft.items.commands.ItemCommands;
+import de.raidcraft.items.commands.LoreCommands;
+import de.raidcraft.items.commands.RecipeCommands;
+import de.raidcraft.items.commands.StorageCommands;
 import de.raidcraft.items.configs.AttachmentConfig;
 import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.equipment.ConfiguredArmor;
@@ -34,6 +39,7 @@ import de.raidcraft.items.tables.items.TCustomItemAttachment;
 import de.raidcraft.items.tables.items.TCustomWeapon;
 import de.raidcraft.items.tables.items.TEquipmentAttribute;
 import de.raidcraft.items.tables.items.TItemAttachmentData;
+import de.raidcraft.items.trigger.CustomItemTrigger;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
@@ -63,7 +69,7 @@ public class ItemsPlugin extends BasePlugin {
     @Override
     public void enable() {
 
-        config = configure(new LocalConfiguration(this), true);
+        config = configure(new LocalConfiguration(this));
         registerEvents(new PlayerListener(this));
         registerCommands(Commands.class);
         // the attachments need to load before the custom items because we use them in there
@@ -71,6 +77,8 @@ public class ItemsPlugin extends BasePlugin {
         loadCustomItems();
         // load the crafting manager after init of the custom items
         craftingManager = new CraftingManager(this);
+        // register action api stuff
+        TriggerManager.getInstance().registerTrigger(this, new CustomItemTrigger());
     }
 
     @Override
