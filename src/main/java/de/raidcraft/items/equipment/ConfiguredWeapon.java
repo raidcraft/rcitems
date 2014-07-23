@@ -8,14 +8,14 @@ import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.Tooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
-import de.raidcraft.items.BaseEquipment;
+import de.raidcraft.items.DatabaseEquipment;
 import de.raidcraft.items.tables.items.TCustomWeapon;
 import de.raidcraft.util.CustomItemUtil;
 
 /**
  * @author Silthus
  */
-public class ConfiguredWeapon extends BaseEquipment implements CustomWeapon {
+public class ConfiguredWeapon extends DatabaseEquipment implements CustomWeapon {
 
     private final WeaponType type;
     private final int minDamage;

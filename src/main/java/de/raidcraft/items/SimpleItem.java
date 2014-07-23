@@ -6,7 +6,7 @@ import de.raidcraft.items.tables.items.TCustomItem;
 /**
  * @author Silthus
  */
-public class SimpleItem extends BaseItem {
+public class SimpleItem extends DatabaseItem {
 
     public SimpleItem(TCustomItem item, ItemType type) {
 
