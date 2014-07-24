@@ -87,7 +87,6 @@ public class ItemsPlugin extends BasePlugin {
         loadCustomItems();
         // load the crafting manager after init of the custom items
         craftingManager = new CraftingManager(this);
-        customItemManager = RaidCraft.getComponent(CustomItemManager.class);
         // register action api stuff
         TriggerManager.getInstance().registerTrigger(this, new CustomItemTrigger());
         // also register a quest config loader for custom items in quests
@@ -134,6 +133,14 @@ public class ItemsPlugin extends BasePlugin {
         loadCustomItems();
         // load the crafting manager after init of the custom items
         craftingManager.reload();
+    }
+
+    public CustomItemManager getCustomItemManager() {
+
+        if (customItemManager == null) {
+            customItemManager = RaidCraft.getComponent(CustomItemManager.class);
+        }
+        return customItemManager;
     }
 
     public CraftingManager getCraftingManager() {
