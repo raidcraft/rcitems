@@ -75,6 +75,7 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
 
     protected void setMinecraftItem(Material minecraftItem) {
 
+        if (minecraftItem == null) return;
         this.minecraftItem = minecraftItem;
         this.minecraftId = minecraftItem.getId();
     }
