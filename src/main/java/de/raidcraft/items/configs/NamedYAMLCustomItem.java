@@ -2,6 +2,7 @@ package de.raidcraft.items.configs;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItem;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
@@ -14,11 +15,11 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class NamedYAMLCustomItem extends AbstractCustomItem {
 
-    public NamedYAMLCustomItem(String name, ConfigurationSection config) {
+    public NamedYAMLCustomItem(String name, ConfigurationSection config) throws CustomItemException {
 
         super(CustomItem.NAMED_CUSTOM_ITEM_ID, name, ItemType.fromString(config.getString("type", "Undefined")));
         Material item = Material.matchMaterial(config.getString("item"));
-        if (item == null) RaidCraft.LOGGER.warning("Item Type " + config.getString("item") + " in " + name + " is invalid!");
+        if (item == null) throw new CustomItemException("Item Type " + config.getString("item") + " in " + name + " is invalid!");
         setMinecraftItem(item);
         short dataValue = (short) config.getInt("item-data", 0);
         if (dataValue > 0) setMinecraftDataValue(dataValue);

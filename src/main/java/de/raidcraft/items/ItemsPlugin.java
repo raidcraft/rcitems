@@ -99,7 +99,7 @@ public class ItemsPlugin extends BasePlugin {
                         CustomItem customItem = new NamedYAMLCustomItem(config.getString("name", id), config);
                         getCustomItemManager().registerNamedCustomItem(id, customItem);
                         getLogger().info("Loaded custom quest item: " + id + " (" + customItem.getName() + ")");
-                    } catch (DuplicateCustomItemException e) {
+                    } catch (CustomItemException e) {
                         getLogger().warning(e.getMessage());
                     }
                 }
