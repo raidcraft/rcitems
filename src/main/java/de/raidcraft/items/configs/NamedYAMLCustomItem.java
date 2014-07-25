@@ -17,13 +17,15 @@ public class NamedYAMLCustomItem extends AbstractCustomItem {
     public NamedYAMLCustomItem(String name, ConfigurationSection config) {
 
         super(CustomItem.NAMED_CUSTOM_ITEM_ID, name, ItemType.fromString(config.getString("type", "Undefined")));
-        setMinecraftItem(Material.getMaterial(config.getString("item")));
+        Material item = Material.getMaterial(config.getString("item"));
+        if (item == null) RaidCraft.LOGGER.warning("Item Type " + config.getString("item") + " in " + name + " is invalid!");
+        setMinecraftItem(item);
         short dataValue = (short) config.getInt("item-data", 0);
         if (dataValue > 0) setMinecraftDataValue(dataValue);
-        setLore(config.getString("lore"));
+        if (config.isSet("lore")) setLore(config.getString("lore"));
         setMaxStackSize(config.getInt("max-stack-size", 1));
-        setItemLevel(config.getInt("item-level"));
-        setSellPrice(RaidCraft.getEconomy().parseCurrencyInput(config.getString("price")));
+        setItemLevel(config.getInt("item-level", 1));
+        if (config.isSet("price")) setSellPrice(RaidCraft.getEconomy().parseCurrencyInput(config.getString("price")));
         setBindType(ItemBindType.valueOf(config.getString("bind-type", "NONE")));
         setQuality(ItemQuality.fromString(config.getString("quality", "COMMON")));
         buildTooltips();
