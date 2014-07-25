@@ -48,15 +48,15 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
     @Deprecated
     protected int minecraftId;
     protected short minecraftDataValue;
-    protected String lore;
-    protected ItemQuality quality;
-    protected int maxStackSize;
-    protected double sellPrice;
-    protected ItemBindType bindType;
+    protected String lore = "";
+    protected ItemQuality quality = ItemQuality.COMMON;
+    protected int maxStackSize = 1;
+    protected double sellPrice = 0;
+    protected ItemBindType bindType = ItemBindType.NONE;
     private final Map<TooltipSlot, Tooltip> tooltips = new EnumMap<>(TooltipSlot.class);
     private final List<Requirement<Player>> requirements = new ArrayList<>();
     protected final Map<String, ConfiguredAttachment> attachments = new HashMap<>();
-    protected int itemLevel;
+    protected int itemLevel = 1;
 
     public AbstractCustomItem(int id, String name, ItemType type) {
 
