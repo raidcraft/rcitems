@@ -17,17 +17,17 @@ public class NamedYAMLCustomItem extends AbstractCustomItem {
     public NamedYAMLCustomItem(String name, ConfigurationSection config) {
 
         super(CustomItem.NAMED_CUSTOM_ITEM_ID, name, ItemType.fromString(config.getString("type", "Undefined")));
-        Material item = Material.getMaterial(config.getString("item"));
+        Material item = Material.matchMaterial(config.getString("item"));
         if (item == null) RaidCraft.LOGGER.warning("Item Type " + config.getString("item") + " in " + name + " is invalid!");
         setMinecraftItem(item);
         short dataValue = (short) config.getInt("item-data", 0);
         if (dataValue > 0) setMinecraftDataValue(dataValue);
         if (config.isSet("lore")) setLore(config.getString("lore"));
-        setMaxStackSize(config.getInt("max-stack-size", 1));
-        setItemLevel(config.getInt("item-level", 1));
+        if (config.isSet("max-stack-size")) setMaxStackSize(config.getInt("max-stack-size"));
+        if (config.isSet("item-level")) setItemLevel(config.getInt("item-level"));
         if (config.isSet("price")) setSellPrice(RaidCraft.getEconomy().parseCurrencyInput(config.getString("price")));
-        setBindType(ItemBindType.valueOf(config.getString("bind-type", "NONE")));
-        setQuality(ItemQuality.fromString(config.getString("quality", "COMMON")));
+        if (config.isSet("bind-type")) setBindType(ItemBindType.valueOf(config.getString("bind-type")));
+        if (config.isSet("quality")) setQuality(ItemQuality.fromString(config.getString("quality")));
         buildTooltips();
     }
 }
