@@ -172,7 +172,7 @@ public class ItemsPlugin extends BasePlugin {
             }
             AttachmentConfig config = configure(new AttachmentConfig(this, file), false);
             loadedAttachments.put(config.getName(), config);
-            getLogger().info("Loaded item attachment config: " + config.getName());
+            info("Loaded item attachment config: " + config.getName());
         }
     }
 
