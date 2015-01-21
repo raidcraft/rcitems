@@ -7,13 +7,13 @@ import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.Tooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
-import de.raidcraft.items.BaseEquipment;
+import de.raidcraft.items.DatabaseEquipment;
 import de.raidcraft.items.tables.items.TCustomArmor;
 
 /**
  * @author Silthus
  */
-public class ConfiguredArmor extends BaseEquipment implements CustomArmor {
+public class ConfiguredArmor extends DatabaseEquipment implements CustomArmor {
 
     private final ArmorType armorType;
     private int armorValue;

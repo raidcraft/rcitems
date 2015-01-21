@@ -20,12 +20,16 @@ import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
+import de.raidcraft.api.quests.QuestConfigLoader;
+import de.raidcraft.api.quests.QuestException;
+import de.raidcraft.api.quests.Quests;
 import de.raidcraft.items.commands.BookUtilCommands;
 import de.raidcraft.items.commands.ItemCommands;
 import de.raidcraft.items.commands.LoreCommands;
 import de.raidcraft.items.commands.RecipeCommands;
 import de.raidcraft.items.commands.StorageCommands;
 import de.raidcraft.items.configs.AttachmentConfig;
+import de.raidcraft.items.configs.NamedYAMLCustomItem;
 import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.equipment.ConfiguredArmor;
 import de.raidcraft.items.equipment.ConfiguredWeapon;
@@ -43,11 +47,15 @@ import de.raidcraft.items.trigger.CustomItemTrigger;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
+import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +73,8 @@ public class ItemsPlugin extends BasePlugin {
     private final Map<String, AttachmentConfig> loadedAttachments = new HashMap<>();
     private LocalConfiguration config;
     private CraftingManager craftingManager;
+    @Getter
+    private CustomItemManager customItemManager;
 
     @Override
     public void enable() {
@@ -79,6 +89,25 @@ public class ItemsPlugin extends BasePlugin {
         craftingManager = new CraftingManager(this);
         // register action api stuff
         TriggerManager.getInstance().registerTrigger(this, new CustomItemTrigger());
+        // also register a quest config loader for custom items in quests
+        try {
+            Quests.registerQuestLoader(new QuestConfigLoader("item") {
+                @Override
+                public void loadConfig(String id, ConfigurationSection config) {
+
+                    try {
+                        CustomItem customItem = new NamedYAMLCustomItem(config.getString("name", id), config);
+                        getCustomItemManager().registerNamedCustomItem(id, customItem);
+                        getLogger().info("Loaded custom quest item: " + id + " (" + customItem.getName() + ")");
+                    } catch (CustomItemException e) {
+                        getLogger().warning(e.getMessage());
+                    }
+                }
+            });
+        } catch (QuestException e) {
+            getLogger().warning(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -90,10 +119,7 @@ public class ItemsPlugin extends BasePlugin {
 
     private void unloadRegisteredItems() {
 
-        CustomItemManager component = RaidCraft.getComponent(CustomItemManager.class);
-        for (int id : loadedCustomItems) {
-            component.unregisterCustomItem(id);
-        }
+        loadedCustomItems.forEach(getCustomItemManager()::unregisterCustomItem);
         loadedCustomItems.clear();
     }
 
@@ -107,6 +133,14 @@ public class ItemsPlugin extends BasePlugin {
         loadCustomItems();
         // load the crafting manager after init of the custom items
         craftingManager.reload();
+    }
+
+    public CustomItemManager getCustomItemManager() {
+
+        if (customItemManager == null) {
+            customItemManager = RaidCraft.getComponent(CustomItemManager.class);
+        }
+        return customItemManager;
     }
 
     public CraftingManager getCraftingManager() {
@@ -138,7 +172,7 @@ public class ItemsPlugin extends BasePlugin {
             }
             AttachmentConfig config = configure(new AttachmentConfig(this, file), false);
             loadedAttachments.put(config.getName(), config);
-            getLogger().info("Loaded item attachment config: " + config.getName());
+            info("Loaded item attachment config: " + config.getName());
         }
     }
 
@@ -148,83 +182,23 @@ public class ItemsPlugin extends BasePlugin {
         int failed = 0;
         loadedCustomItems.clear();
         // lets load all custom items that are defined in the database
-        CustomItemManager component = RaidCraft.getComponent(CustomItemManager.class);
         Set<TCustomItem> customItems = getDatabase().find(TCustomItem.class).findSet();
         for (TCustomItem item : customItems) {
-
             if (item.getMinecraftId() < 1) {
+                continue;
+            } else if (item.getMinecraftItem() == null || item.getMinecraftItem().equals("")) {
+                // convert to new minecraft name format
+                item.setMinecraftItem(Material.getMaterial(item.getMinecraftId()).name());
+                getDatabase().save(item);
+                getLogger().info("Item ID Converter: id " + item.getId() + " -> " + item.getMinecraftItem());
+            }
+            CustomItem customItem = loadCustomDatabaseItem(item);
+            if (customItem == null) {
                 continue;
             }
             try {
-                CustomItem customItem;
-                TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
-                switch (item.getItemType()) {
-                    case WEAPON:
-                        if (equipment == null) continue;
-                        TCustomWeapon weapon = getDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findUnique();
-                        if (weapon == null) continue;
-                        customItem = new ConfiguredWeapon(weapon);
-                        break;
-                    case ARMOR:
-                        if (equipment == null) continue;
-                        TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findUnique();
-                        if (armor == null) continue;
-                        customItem = new ConfiguredArmor(armor);
-                        break;
-                    case USEABLE:
-                        customItem = new UseableItem(item);
-                        break;
-                    case EQUIPMENT:
-                        if (equipment == null) continue;
-                        customItem = new BaseEquipment(equipment);
-                        break;
-                    default:
-                        customItem = new SimpleItem(item, item.getItemType());
-                        break;
-                }
-                // lets check for custom item attachments
-                if (item.getAttachments() != null && !item.getAttachments().isEmpty()) {
-                    for (TCustomItemAttachment attachment : item.getAttachments()) {
-                        // lets create a new configured attachment
-                        ConfiguredAttachment configuredAttachment = new ConfiguredAttachment(
-                                attachment.getAttachmentName(),
-                                attachment.getProviderName(),
-                                attachment.getDescription(),
-                                (attachment.getColor() == null || attachment.getColor().equals(""))
-                                        ? ChatColor.WHITE : ChatColor.valueOf(attachment.getColor())
-                        );
-                        // if a local config file for the attachment exists load it into the memory map
-                        String attachmentName = StringUtils.formatName(attachment.getAttachmentName());
-                        if (loadedAttachments.containsKey(attachmentName)) {
-                            configuredAttachment.merge(loadedAttachments.get(attachmentName));
-                        }
-                        // also merge our database
-                        ArrayList<KeyValueMap> dataList = new ArrayList<>();
-                        for (TItemAttachmentData data : attachment.getItemAttachmentDataList()) {
-                            dataList.add(data);
-                        }
-                        configuredAttachment.merge(ConfigUtil.parseKeyValueTable(dataList));
-
-                        ((AttachableCustomItem) customItem).addAttachment(configuredAttachment);
-                    }
-                }
-                // lets calculate the item level
-                if (customItem instanceof CustomEquipment && customItem.getItemLevel() < 1) {
-                    int itemLevel = calculateItemLevel((CustomEquipment) customItem);
-                    item.setItemLevel(itemLevel);
-                    getDatabase().save(item);
-                }
-                // lets calculate the armor value if its an item
-                if (customItem instanceof CustomArmor && ((CustomArmor) customItem).getArmorValue() < 1) {
-                    double armorModifier = ((CustomArmor) customItem).getArmorType().getArmorModifier(customItem.getQuality(), customItem.getItemLevel());
-                    double armorValue = ((CustomArmor) customItem).getEquipmentSlot().getArmorSlotModifier() * armorModifier;
-                    ((CustomArmor) customItem).setArmorValue((int) armorValue);
-                    TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findUnique();
-                    armor.setArmorValue((int) armorValue);
-                    getDatabase().save(armor);
-                }
                 // register the actual custom item
-                component.registerCustomItem(customItem);
+                getCustomItemManager().registerCustomItem(customItem);
                 loadedCustomItems.add(customItem.getId());
                 loaded++;
             } catch (DuplicateCustomItemException e) {
@@ -233,6 +207,86 @@ public class ItemsPlugin extends BasePlugin {
             }
         }
         getLogger().info("Loaded " + loaded + "/" + (loaded + failed) + " Custom Items...");
+    }
+
+    @Nullable
+    private CustomItem createCustomItemFromType(TCustomItem item) {
+
+        CustomItem customItem;
+        TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
+        switch (item.getItemType()) {
+            case WEAPON:
+                if (equipment == null) return null;
+                TCustomWeapon weapon = getDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findUnique();
+                if (weapon == null) return null;
+                customItem = new ConfiguredWeapon(weapon);
+                break;
+            case ARMOR:
+                if (equipment == null) return null;
+                TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findUnique();
+                if (armor == null) return null;
+                customItem = new ConfiguredArmor(armor);
+                // lets calculate the armor value if its an item
+                if (((CustomArmor) customItem).getArmorValue() < 1) {
+                    double armorModifier = ((CustomArmor) customItem).getArmorType().getArmorModifier(customItem.getQuality(), customItem.getItemLevel());
+                    double armorValue = ((CustomArmor) customItem).getEquipmentSlot().getArmorSlotModifier() * armorModifier;
+                    ((CustomArmor) customItem).setArmorValue((int) armorValue);
+                    armor.setArmorValue((int) armorValue);
+                    getDatabase().save(armor);
+                }
+                break;
+            case USEABLE:
+                customItem = new UseableItem(item);
+                break;
+            case EQUIPMENT:
+                if (equipment == null) return null;
+                customItem = new DatabaseEquipment(equipment);
+                break;
+            default:
+                customItem = new SimpleItem(item, item.getItemType());
+                break;
+        }
+        // lets calculate the item level
+        if (customItem instanceof CustomEquipment && customItem.getItemLevel() < 1) {
+            int itemLevel = calculateItemLevel((CustomEquipment) customItem);
+            item.setItemLevel(itemLevel);
+            getDatabase().save(item);
+        }
+        return customItem;
+    }
+
+    @Nullable
+    private CustomItem loadCustomDatabaseItem(TCustomItem item) {
+
+        CustomItem customItem = createCustomItemFromType(item);
+        if (customItem == null) return null;
+        // lets check for custom item attachments
+        if (item.getAttachments() != null && !item.getAttachments().isEmpty()) {
+            for (TCustomItemAttachment attachment : item.getAttachments()) {
+                // lets create a new configured attachment
+                ConfiguredAttachment configuredAttachment = new ConfiguredAttachment(
+                        attachment.getAttachmentName(),
+                        attachment.getProviderName(),
+                        attachment.getDescription(),
+                        (attachment.getColor() == null || attachment.getColor().equals(""))
+                                ? ChatColor.WHITE : ChatColor.valueOf(attachment.getColor())
+                );
+                // if a local config file for the attachment exists load it into the memory map
+                String attachmentName = StringUtils.formatName(attachment.getAttachmentName());
+                if (loadedAttachments.containsKey(attachmentName)) {
+                    configuredAttachment.merge(loadedAttachments.get(attachmentName));
+                }
+                // also merge our database
+                ArrayList<KeyValueMap> dataList = new ArrayList<>();
+                for (TItemAttachmentData data : attachment.getItemAttachmentDataList()) {
+                    dataList.add(data);
+                }
+                configuredAttachment.merge(ConfigUtil.parseKeyValueTable(dataList));
+
+                ((AttachableCustomItem) customItem).addAttachment(configuredAttachment);
+            }
+        }
+        return customItem;
     }
 
     /**

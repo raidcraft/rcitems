@@ -17,13 +17,13 @@ import java.util.Set;
 /**
  * @author Silthus
  */
-public class BaseEquipment extends BaseItem implements CustomEquipment {
+public class DatabaseEquipment extends DatabaseItem implements CustomEquipment {
 
     private final EquipmentSlot equipmentSlot;
     private final int maxDurability;
     private final Set<ItemAttribute> attributes;
 
-    public BaseEquipment(TCustomEquipment equipment, ItemType type) {
+    public DatabaseEquipment(TCustomEquipment equipment, ItemType type) {
 
         super(equipment.getItem(), type);
         this.equipmentSlot = equipment.getEquipmentSlot();
@@ -35,7 +35,7 @@ public class BaseEquipment extends BaseItem implements CustomEquipment {
         setTooltip(new AttributeTooltip(attributes));
     }
 
-    public BaseEquipment(TCustomEquipment equipment) {
+    public DatabaseEquipment(TCustomEquipment equipment) {
 
         this(equipment, ItemType.EQUIPMENT);
     }

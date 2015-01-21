@@ -19,9 +19,11 @@ import de.raidcraft.api.items.tooltip.Tooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.api.items.tooltip.VariableMultilineTooltip;
 import de.raidcraft.api.requirement.Requirement;
-import de.raidcraft.items.tables.items.TCustomItem;
 import de.raidcraft.util.CustomItemUtil;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,46 +34,53 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Silthus
+ * @author mdoering
  */
-public abstract class BaseItem implements CustomItem, AttachableCustomItem {
-
-    protected final Map<String, ConfiguredAttachment> attachments = new HashMap<>();
+@Getter
+@Setter
+public abstract class AbstractCustomItem implements CustomItem, AttachableCustomItem {
 
     private final int id;
     private final String encodedId;
-    private final int minecraftId;
-    private final short minecraftData;
     private final String name;
-    private final String lore;
     private final ItemType type;
-    private final ItemQuality quality;
-    private final int maxStackSize;
-    private final double sellPrice;
-    private final List<Requirement<Player>> requirements = new ArrayList<>();
+    protected Material minecraftItem;
+    @Deprecated
+    protected int minecraftId;
+    protected short minecraftDataValue;
+    protected String lore = "";
+    protected ItemQuality quality = ItemQuality.COMMON;
+    protected int maxStackSize = 1;
+    protected double sellPrice = 0;
+    protected ItemBindType bindType = ItemBindType.NONE;
     private final Map<TooltipSlot, Tooltip> tooltips = new EnumMap<>(TooltipSlot.class);
-    private final ItemBindType bindType;
-    private int itemLevel;
+    private final List<Requirement<Player>> requirements = new ArrayList<>();
+    protected final Map<String, ConfiguredAttachment> attachments = new HashMap<>();
+    protected int itemLevel = 1;
 
-    public BaseItem(TCustomItem item, ItemType type) {
+    public AbstractCustomItem(int id, String name, ItemType type) {
 
-        this.id = item.getId();
+        this.id = id;
         this.encodedId = CustomItemUtil.encodeItemId(id);
-        this.minecraftId = item.getMinecraftId();
-        this.minecraftData = (short) item.getMinecraftDataValue();
-        this.name = item.getName();
-        this.lore = item.getLore();
-        this.itemLevel = item.getItemLevel();
+        this.name = name;
         this.type = type;
-        this.quality = item.getQuality();
-        this.maxStackSize = item.getMaxStackSize();
-        this.sellPrice = item.getSellPrice();
-        this.bindType = item.getBindType();
-
-        buildTooltips();
     }
 
-    private void buildTooltips() {
+    @Deprecated
+    protected void setMinecraftId(int id) {
+
+        this.minecraftId = id;
+        setMinecraftItem(Material.getMaterial(id));
+    }
+
+    protected void setMinecraftItem(Material minecraftItem) {
+
+        if (minecraftItem == null) return;
+        this.minecraftItem = minecraftItem;
+        this.minecraftId = minecraftItem.getId();
+    }
+
+    protected void buildTooltips() {
 
         setTooltip(new NameTooltip(getId(), getName(), getQuality().getColor()));
         if (getItemLevel() > 0 && !RaidCraft.getComponent(ItemsPlugin.class).getConfig().hideItemLevel) {
@@ -96,82 +105,6 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     }
 
     @Override
-    public int getId() {
-
-        return id;
-    }
-
-    public String getEncodedId() {
-
-        return encodedId;
-    }
-
-    @Override
-    public int getMinecraftId() {
-
-        return minecraftId;
-    }
-
-    @Override
-    public short getMinecraftDataValue() {
-
-        return minecraftData;
-    }
-
-    @Override
-    public String getName() {
-
-        return name;
-    }
-
-    @Override
-    public String getLore() {
-
-        return lore;
-    }
-
-    @Override
-    public void setItemLevel(int itemLevel) {
-
-        this.itemLevel = itemLevel;
-    }
-
-    @Override
-    public int getItemLevel() {
-
-        return itemLevel;
-    }
-
-    @Override
-    public ItemType getType() {
-
-        return type;
-    }
-
-    public ItemBindType getBindType() {
-
-        return bindType;
-    }
-
-    @Override
-    public ItemQuality getQuality() {
-
-        return quality;
-    }
-
-    @Override
-    public int getMaxStackSize() {
-
-        return maxStackSize;
-    }
-
-    @Override
-    public double getSellPrice() {
-
-        return sellPrice;
-    }
-
-    @Override
     public final boolean matches(ItemStack itemStack) {
 
         try {
@@ -191,6 +124,12 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     public List<Requirement<Player>> getRequirements() {
 
         return requirements;
+    }
+
+    @Override
+    public Tooltip getTooltip(TooltipSlot slot) {
+
+        return tooltips.get(slot);
     }
 
     @Override
@@ -238,18 +177,6 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
     protected void setTooltip(Tooltip tooltip) {
 
         this.tooltips.put(tooltip.getSlot(), tooltip);
-    }
-
-    @Override
-    public Tooltip getTooltip(TooltipSlot slot) {
-
-        return tooltips.get(slot);
-    }
-
-    @Override
-    public Map<TooltipSlot, Tooltip> getTooltips() {
-
-        return tooltips;
     }
 
     @Override
@@ -309,28 +236,5 @@ public abstract class BaseItem implements CustomItem, AttachableCustomItem {
                     .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
             attachment.removeAttachment(player);
         }
-    }
-
-    @Override
-    public String toString() {
-
-        return getName();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o) return true;
-        if (!(o instanceof BaseItem)) return false;
-
-        BaseItem baseItem = (BaseItem) o;
-
-        return id == baseItem.id;
-    }
-
-    @Override
-    public int hashCode() {
-
-        return id;
     }
 }
