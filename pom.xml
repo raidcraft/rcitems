@@ -21,19 +21,19 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>items</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.5-develop-SNAPSHOT</version>
+    <version>1.1.5-SNAPSHOT</version>
     <name>RCItems</name>
 
     <parent>
         <groupId>de.raidcraft</groupId>
         <artifactId>masterpom</artifactId>
-        <version>3.4.14-develop-SNAPSHOT</version>
+        <version>3.4.14-SNAPSHOT</version>
     </parent>
 
     <repositories>
         <repository>
             <id>raidcraft</id>
-            <url>http://nexus.raid-craft.de/content/groups/public/</url>
+            <url>http://repo.raid-craft.de/artifactory/repo/</url>
         </repository>
     </repositories>
 
