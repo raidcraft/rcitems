@@ -48,10 +48,5 @@
             <artifactId>raidcraft-api</artifactId>
             <version>1.4.9-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>de.raidcraft</groupId>
-            <artifactId>rcconversations</artifactId>
-            <version>1.1.9-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 </project>
