@@ -20,12 +20,15 @@ import de.raidcraft.api.items.DuplicateCustomItemException;
 import de.raidcraft.api.items.ItemAttribute;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
+import de.raidcraft.api.quests.QuestConfigLoader;
+import de.raidcraft.api.quests.Quests;
 import de.raidcraft.items.commands.BookUtilCommands;
 import de.raidcraft.items.commands.ItemCommands;
 import de.raidcraft.items.commands.LoreCommands;
 import de.raidcraft.items.commands.RecipeCommands;
 import de.raidcraft.items.commands.StorageCommands;
 import de.raidcraft.items.configs.AttachmentConfig;
+import de.raidcraft.items.configs.NamedYAMLCustomItem;
 import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.equipment.ConfiguredArmor;
 import de.raidcraft.items.equipment.ConfiguredWeapon;
@@ -47,6 +50,7 @@ import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -84,6 +88,33 @@ public class ItemsPlugin extends BasePlugin {
         craftingManager = new CraftingManager(this);
         // register action api stuff
         TriggerManager.getInstance().registerTrigger(this, new CustomItemTrigger());
+
+        Quests.registerQuestLoader(new QuestConfigLoader("item") {
+            @Override
+            public void loadConfig(String id, ConfigurationSection config) {
+
+                try {
+                    CustomItem customItem = new NamedYAMLCustomItem(config.getString("name", id), config);
+                    RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().registerNamedCustomItem(id, customItem);
+                    getLogger().info("Loaded custom quest item: " + id + " (" + customItem.getName() + ")");
+                } catch (CustomItemException e) {
+                    getLogger().warning(e.getMessage());
+                }
+            }
+
+            @Override
+            public String replaceReference(String key) {
+
+                ItemStack unsafeItem = RaidCraft.getUnsafeItem(key);
+                if (unsafeItem != null) {
+                    if (unsafeItem instanceof CustomItemStack) {
+                        return ((CustomItemStack) unsafeItem).getItem().getName();
+                    }
+                    return unsafeItem.getType().name();
+                }
+                return key;
+            }
+        });
     }
 
     @Override
