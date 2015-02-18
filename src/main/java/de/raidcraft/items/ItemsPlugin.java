@@ -6,7 +6,6 @@ import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.action.trigger.TriggerManager;
-import de.raidcraft.api.config.ConfigUtil;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.KeyValueMap;
 import de.raidcraft.api.config.Setting;
@@ -44,6 +43,7 @@ import de.raidcraft.items.tables.items.TEquipmentAttribute;
 import de.raidcraft.items.tables.items.TItemAttachmentData;
 import de.raidcraft.items.trigger.CustomItemTrigger;
 import de.raidcraft.items.useable.UseableItem;
+import de.raidcraft.util.ConfigUtil;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
 import lombok.Getter;
@@ -177,7 +177,7 @@ public class ItemsPlugin extends BasePlugin {
             if (!file.getName().endsWith(".yml")) {
                 continue;
             }
-            AttachmentConfig config = configure(new AttachmentConfig(this, file), false);
+            AttachmentConfig config = configure(new AttachmentConfig(this, file));
             loadedAttachments.put(config.getName(), config);
             info("Loaded item attachment config: " + config.getName());
         }
