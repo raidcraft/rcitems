@@ -36,8 +36,8 @@ public class PlayerListener implements Listener {
     public PlayerListener(ItemsPlugin plugin) {
 
         this.plugin = plugin;
-        this.config = plugin.getConfig();
-    }
+    this.config = plugin.getConfig();
+}
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerPlaceBlock(BlockPlaceEvent event) {
@@ -50,6 +50,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
+        if (event.getPlayer().hasMetadata("NPC")) return;
         if (CustomItemUtil.isCustomItem(event.getItem())) {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
                 // lets check for a custom useable item
@@ -72,6 +73,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
     public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
 
+        if (event.getEntity().hasMetadata("NPC")) return;
         if (event.getEntity() instanceof Player) {
             // lets check the durability loss and negate it by using our own durability if it is a custom item
             Player player = (Player) event.getEntity();
@@ -98,6 +100,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemPickup(PlayerPickupItemEvent event) {
 
+        if (event.getPlayer().hasMetadata("NPC")) return;
         ItemStack itemStack = event.getItem().getItemStack();
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return;
@@ -120,12 +123,14 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemDrop(PlayerDropItemEvent event) {
 
+        if (event.getPlayer().hasMetadata("NPC")) return;
         rebuildInventory(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onHeldItemChange(PlayerItemHeldEvent event) {
 
+        if (event.getPlayer().hasMetadata("NPC")) return;
         ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getNewSlot());
         if (itemStack == null || itemStack.getTypeId() == 0) {
             return;
@@ -136,6 +141,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
 
+        if (event.getPlayer().hasMetadata("NPC")) return;
         rebuildInventory((Player) event.getPlayer());
         if (event.getPlayer() instanceof Player) {
             equipCustomWeapons((Player) event.getPlayer());
