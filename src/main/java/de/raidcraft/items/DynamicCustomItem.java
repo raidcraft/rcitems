@@ -1,6 +1,13 @@
 package de.raidcraft.items;
 
+import de.raidcraft.api.items.CustomItem;
+import de.raidcraft.api.items.ItemBindType;
+import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
+import de.raidcraft.api.items.tooltip.Tooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
+import de.raidcraft.api.items.tooltip.VariableMultilineTooltip;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 /**
@@ -8,14 +15,28 @@ import org.bukkit.Material;
  */
 public class DynamicCustomItem extends AbstractCustomItem {
 
+    private Tooltip miscTooltip;
+
     public static Builder create(String name) {
 
-        return new Builder(new DynamicCustomItem(0, name, ItemType.UNDEFINED));
+        return new Builder(new DynamicCustomItem(CustomItem.DYNAMIC_CUSTOM_ITEM_ID, name, ItemType.UNDEFINED));
     }
 
     private DynamicCustomItem(int id, String name, ItemType type) {
 
         super(id, name, type);
+    }
+
+    public void setMiscTooltip(String original, boolean quote, boolean italic, ChatColor color) {
+
+        this.miscTooltip = new VariableMultilineTooltip(TooltipSlot.MISC, original, quote, italic, color);
+    }
+
+    @Override
+    protected void buildTooltips() {
+
+        super.buildTooltips();
+        if (miscTooltip != null) setTooltip(miscTooltip);
     }
 
     public static class Builder {
@@ -68,6 +89,30 @@ public class DynamicCustomItem extends AbstractCustomItem {
 
             this.item.setSellPrice(sellPrice);
             return this;
+        }
+
+        public Builder bindType(ItemBindType bindType) {
+
+            this.item.setBindType(bindType);
+            return this;
+        }
+
+        public Builder quality(ItemQuality quality) {
+
+            this.item.setQuality(quality);
+            return this;
+        }
+
+        public Builder tooltip(String original, boolean quote, boolean italic, ChatColor color) {
+
+            this.item.setMiscTooltip(original, quote, italic, color);
+            return this;
+        }
+
+        public CustomItem build() {
+
+            this.item.buildTooltips();
+            return item;
         }
     }
 }
