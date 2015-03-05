@@ -43,10 +43,10 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
     private final int id;
     private final String encodedId;
     private final String name;
-    private final ItemType type;
     protected Material minecraftItem;
     @Deprecated
     protected int minecraftId;
+    private ItemType type;
     protected short minecraftDataValue;
     protected String lore = "";
     protected ItemQuality quality = ItemQuality.COMMON;
