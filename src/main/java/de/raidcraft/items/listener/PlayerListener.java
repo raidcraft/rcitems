@@ -3,12 +3,15 @@ package de.raidcraft.items.listener;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.UseableCustomItem;
 import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
+import de.raidcraft.api.language.Translator;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,6 +27,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -107,9 +113,23 @@ public class PlayerListener implements Listener {
         }
         try {
             CustomItemStack customItemStack = rebuildCustomItem(event.getPlayer(), itemStack);
-            if (customItemStack != null && customItemStack.hasTooltip(TooltipSlot.EQUIPMENT_TYPE)) {
-                EquipmentTypeTooltip tooltip = (EquipmentTypeTooltip) customItemStack.getTooltip(TooltipSlot.EQUIPMENT_TYPE);
-                tooltip.setColor(ChatColor.WHITE);
+            if (customItemStack != null) {
+                if (customItemStack.hasTooltip(TooltipSlot.EQUIPMENT_TYPE)) {
+                    EquipmentTypeTooltip tooltip = (EquipmentTypeTooltip) customItemStack.getTooltip(TooltipSlot.EQUIPMENT_TYPE);
+                    tooltip.setColor(ChatColor.WHITE);
+                }
+                Optional<UUID> owner = customItemStack.getOwner();
+                if (owner.isPresent() && !owner.get().equals(event.getPlayer().getUniqueId())) {
+                    Translator.msg(ItemsPlugin.class, event.getPlayer(), "itempickup.deny-soulbound",
+                            ChatColor.RED + "Das Item %s ist an %s gebunden und kann nicht aufgenommen werden!",
+                            customItemStack.getItemMeta().getDisplayName(), UUIDUtil.getNameFromUUID(owner.get()));
+                    event.setCancelled(true);
+                    return;
+                }
+                if (customItemStack.getItem().getBindType() == ItemBindType.BIND_ON_PICKUP) {
+                    customItemStack.setOwner(event.getPlayer());
+                }
+                event.getItem().setItemStack(customItemStack);
             }
             equipCustomWeapons(event.getPlayer());
         } catch (CustomItemException e) {
@@ -217,12 +237,23 @@ public class PlayerListener implements Listener {
                 CustomItemUtil.denyItem(player, slot, customItemStack, customItemStack.getItem().getResolveReason(player));
                 return;
             }
+            Optional<UUID> owner = customItemStack.getOwner();
+            if (owner.isPresent() && !owner.get().equals(player.getUniqueId())) {
+                CustomItemUtil.denyItem(player, slot, customItemStack, plugin.getTranslationProvider().tr(player, "itemequip.deny-soulbound",
+                        ChatColor.RED + "Das Item %s ist an %s gebunden und kann nicht angelegt werden!",
+                        customItemStack.getItemMeta().getDisplayName(), UUIDUtil.getNameFromUUID(owner.get())));
+                return;
+            }
             if (CustomItemUtil.isArmorSlot(slot)) {
                 ItemStack[] armor = player.getInventory().getArmorContents();
                 armor[slot - CustomItemUtil.ARMOR_SLOT] = customItemStack;
                 player.getInventory().setArmorContents(armor);
             } else {
                 player.getInventory().setItem(slot, customItemStack);
+            }
+            // bind the item if it is bind on equip
+            if (customItemStack.getItem().getBindType() == ItemBindType.BIND_ON_EQUIP) {
+                customItemStack.setOwner(player);
             }
         } catch (CustomItemException e) {
             CustomItemUtil.denyItem(player, slot, customItemStack, e.getMessage());

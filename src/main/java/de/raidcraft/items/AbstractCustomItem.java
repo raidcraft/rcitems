@@ -13,6 +13,7 @@ import de.raidcraft.api.items.attachments.ItemAttachment;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentManager;
 import de.raidcraft.api.items.attachments.RequiredItemAttachment;
+import de.raidcraft.api.items.tooltip.BindTooltip;
 import de.raidcraft.api.items.tooltip.NameTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.Tooltip;
@@ -91,6 +92,9 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
         }
         if (getLore() != null && !getLore().equals("")) {
             setTooltip(new VariableMultilineTooltip(TooltipSlot.LORE, getLore(), true, true, ChatColor.GOLD));
+        }
+        if (getBindType() != ItemBindType.NONE) {
+            setTooltip(new BindTooltip(getBindType(), null));
         }
         updateAttachmentTooltip();
     }

@@ -27,7 +27,7 @@ public class NamedYAMLCustomItem extends AbstractCustomItem {
         if (config.isSet("max-stack-size")) setMaxStackSize(config.getInt("max-stack-size"));
         if (config.isSet("item-level")) setItemLevel(config.getInt("item-level"));
         if (config.isSet("price")) setSellPrice(RaidCraft.getEconomy().parseCurrencyInput(config.getString("price")));
-        if (config.isSet("bind-type")) setBindType(ItemBindType.valueOf(config.getString("bind-type")));
+        if (config.isSet("bind-type")) setBindType(ItemBindType.fromName(config.getString("bind-type")));
         if (config.isSet("quality")) setQuality(ItemQuality.fromString(config.getString("quality")));
         buildTooltips();
     }
