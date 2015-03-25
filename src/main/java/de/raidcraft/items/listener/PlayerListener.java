@@ -246,16 +246,16 @@ public class PlayerListener implements Listener {
                         customItemStack.getItemMeta().getDisplayName(), UUIDUtil.getNameFromUUID(owner.get())));
                 return;
             }
+            // bind the item if it is bind on equip
+            if (customItemStack.getItem().getBindType() == ItemBindType.BIND_ON_EQUIP) {
+                customItemStack.setOwner(player);
+            }
             if (CustomItemUtil.isArmorSlot(slot)) {
                 ItemStack[] armor = player.getInventory().getArmorContents();
                 armor[slot - CustomItemUtil.ARMOR_SLOT] = customItemStack;
                 player.getInventory().setArmorContents(armor);
             } else {
                 player.getInventory().setItem(slot, customItemStack);
-            }
-            // bind the item if it is bind on equip
-            if (customItemStack.getItem().getBindType() == ItemBindType.BIND_ON_EQUIP) {
-                customItemStack.setOwner(player);
             }
         } catch (CustomItemException e) {
             CustomItemUtil.denyItem(player, slot, customItemStack, e.getMessage());
