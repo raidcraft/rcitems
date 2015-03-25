@@ -69,6 +69,8 @@ public class PlayerListener implements Listener {
                     } catch (ItemAttachmentException e) {
                         event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
                     }
+                } else if (customItem.getItem().isBlockingUsage()) {
+                    event.setCancelled(true);
                 }
             } else {
                 updateWeaponDurability(event.getPlayer());

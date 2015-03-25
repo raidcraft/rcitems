@@ -1,4 +1,4 @@
-package de.raidcraft.items;
+package de.raidcraft.items.items;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItem;
@@ -20,6 +20,7 @@ import de.raidcraft.api.items.tooltip.Tooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.api.items.tooltip.VariableMultilineTooltip;
 import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,6 +54,7 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
     protected ItemQuality quality = ItemQuality.COMMON;
     protected int maxStackSize = 1;
     protected double sellPrice = 0;
+    protected boolean blockingUsage = false;
     protected ItemBindType bindType = ItemBindType.NONE;
     private final Map<TooltipSlot, Tooltip> tooltips = new EnumMap<>(TooltipSlot.class);
     private final List<Requirement<Player>> requirements = new ArrayList<>();

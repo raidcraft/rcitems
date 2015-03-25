@@ -7,7 +7,7 @@ import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
 import de.raidcraft.api.items.tooltip.SingleLineTooltip;
 import de.raidcraft.api.items.tooltip.Tooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
-import de.raidcraft.items.DatabaseEquipment;
+import de.raidcraft.items.items.DatabaseEquipment;
 import de.raidcraft.items.tables.items.TCustomArmor;
 
 /**

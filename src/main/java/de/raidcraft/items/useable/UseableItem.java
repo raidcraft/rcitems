@@ -9,7 +9,7 @@ import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.ItemAttachmentManager;
 import de.raidcraft.api.items.attachments.UseableCustomItem;
 import de.raidcraft.api.items.attachments.UseableItemAttachment;
-import de.raidcraft.items.DatabaseItem;
+import de.raidcraft.items.items.DatabaseItem;
 import de.raidcraft.items.tables.items.TCustomItem;
 import org.bukkit.entity.Player;
 

@@ -1,4 +1,4 @@
-package de.raidcraft.items;
+package de.raidcraft.items.items;
 
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.items.tables.items.TCustomItem;

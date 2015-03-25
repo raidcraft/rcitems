@@ -48,6 +48,7 @@ public class TCustomItem {
     private ItemBindType bindType = ItemBindType.NONE;
     @NotNull
     private ItemType itemType;
+    private boolean blockUsage = false;
     private String info;
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "item_id")

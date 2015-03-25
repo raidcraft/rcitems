@@ -6,7 +6,7 @@ import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
-import de.raidcraft.items.AbstractCustomItem;
+import de.raidcraft.items.items.AbstractCustomItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -29,6 +29,7 @@ public class NamedYAMLCustomItem extends AbstractCustomItem {
         if (config.isSet("price")) setSellPrice(RaidCraft.getEconomy().parseCurrencyInput(config.getString("price")));
         if (config.isSet("bind-type")) setBindType(ItemBindType.fromString(config.getString("bind-type")));
         if (config.isSet("quality")) setQuality(ItemQuality.fromString(config.getString("quality")));
+        if (config.isSet("block-usage")) setBlockingUsage(config.getBoolean("block-usage", false));
         buildTooltips();
     }
 }

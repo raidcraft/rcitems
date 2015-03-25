@@ -31,6 +31,8 @@ import de.raidcraft.items.configs.NamedYAMLCustomItem;
 import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.equipment.ConfiguredArmor;
 import de.raidcraft.items.equipment.ConfiguredWeapon;
+import de.raidcraft.items.items.DatabaseEquipment;
+import de.raidcraft.items.items.SimpleItem;
 import de.raidcraft.items.listener.PlayerListener;
 import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;

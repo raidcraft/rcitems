@@ -1,4 +1,4 @@
-package de.raidcraft.items;
+package de.raidcraft.items.items;
 
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.items.tables.items.TCustomItem;
@@ -14,6 +14,7 @@ public abstract class DatabaseItem extends AbstractCustomItem {
         super(item.getId(), item.getName(), type);
         setBindType(item.getBindType());
         setSellPrice(item.getSellPrice());
+        setBlockingUsage(item.isBlockUsage());
         setMaxStackSize(item.getMaxStackSize());
         setMinecraftId(item.getMinecraftId());
         setMinecraftItem(Material.getMaterial(item.getMinecraftItem()));

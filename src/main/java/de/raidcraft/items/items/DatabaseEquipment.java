@@ -1,4 +1,4 @@
-package de.raidcraft.items;
+package de.raidcraft.items.items;
 
 import de.raidcraft.api.items.AttributeType;
 import de.raidcraft.api.items.CustomEquipment;
