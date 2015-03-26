@@ -16,6 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author mdoering
@@ -66,12 +67,28 @@ public class FilteredItemsTable extends GenericRDSTable {
             }
         }
 
+        List<Integer> itemIds = config.getIntegerList("ids");
+
+        Pattern nameFilter;
+        if (config.isSet("name-filter")) {
+            nameFilter = Pattern.compile(config.getString("name-filter"));
+        } else {
+            nameFilter = null;
+        }
+
+        int idFilterMin = config.getInt("min-id", 0);
+        int idFilterMax = config.getInt("max-id", 0);
+
         RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().getLoadedCustomItems().stream()
                 .filter(item -> itemTypes.isEmpty() || itemTypes.contains(item.getType()))
                 .filter(item -> itemQualities.isEmpty() || itemQualities.contains(item.getQuality()))
                 .filter(item -> bindTypes.isEmpty() || bindTypes.contains(item.getBindType()))
+                .filter(item -> itemIds.isEmpty() || itemIds.contains(item.getId()))
                 .filter(item -> minItemLevel < 1 || item.getItemLevel() >= minItemLevel)
                 .filter(item -> maxItemLevel < 1 || item.getItemLevel() <= maxItemLevel)
+                .filter(item -> idFilterMin < 1 || item.getId() >= idFilterMin)
+                .filter(item -> idFilterMax < 1 || item.getId() <= idFilterMax)
+                .filter(item -> nameFilter == null || nameFilter.matcher(item.getName()).matches())
                 .forEach(item -> addEntry(new ItemLootObject(item)));
     }
 }
