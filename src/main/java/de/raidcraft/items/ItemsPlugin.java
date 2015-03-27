@@ -5,7 +5,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
-import de.raidcraft.api.action.trigger.TriggerManager;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.KeyValueMap;
 import de.raidcraft.api.config.Setting;
@@ -89,7 +89,8 @@ public class ItemsPlugin extends BasePlugin {
         // load the crafting manager after init of the custom items
         craftingManager = new CraftingManager(this);
         // register action api stuff
-        TriggerManager.getInstance().registerTrigger(this, new CustomItemTrigger());
+        ActionAPI.register(this)
+                .trigger(new CustomItemTrigger());
 
         Quests.registerQuestLoader(new QuestConfigLoader("item") {
             @Override
