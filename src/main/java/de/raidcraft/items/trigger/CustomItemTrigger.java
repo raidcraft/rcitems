@@ -119,22 +119,29 @@ public class CustomItemTrigger extends Trigger implements Listener {
             desc = "Listens for players that pickup custom items.",
             conf = {
                     "recipe(String): unique name of the recipe",
+                    "recipes(StringList): unique list of recipe names"
             }
     )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemCraft(CraftItemEvent event) {
 
+        if (event.getInventory() instanceof FurnaceInventory) {
+            return;
+        }
+        if (!CustomItemUtil.isCustomItem(event.getRecipe().getResult())) {
+            return;
+        }
+
         informListeners("craft", (Player) event.getWhoClicked(), config -> {
 
-            if (event.getInventory() instanceof FurnaceInventory) {
-                return false;
-            }
-            if (!CustomItemUtil.isCustomItem(event.getRecipe().getResult())) {
-                return false;
-            }
             CustomRecipe customRecipe = RaidCraft.getComponent(CraftingManager.class).getMatchingRecipe(event.getRecipe());
-            return customRecipe != null && (!config.isSet("recipe")
-                    || customRecipe.getName().equalsIgnoreCase(config.getString("recipe")));
+            if (config.isSet("recipe")) {
+                return customRecipe.getName().equalsIgnoreCase(config.getString("recipe"));
+            }
+            if (config.isList("recipes")) {
+                return config.getStringList("recipes").contains(customRecipe.getName().toLowerCase());
+            }
+            return true;
         });
     }
 }
