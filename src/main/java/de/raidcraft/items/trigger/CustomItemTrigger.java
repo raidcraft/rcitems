@@ -119,7 +119,8 @@ public class CustomItemTrigger extends Trigger implements Listener {
             desc = "Listens for players that pickup custom items.",
             conf = {
                     "recipe(String): unique name of the recipe",
-                    "recipes(StringList): unique list of recipe names"
+                    "recipes(StringList): unique list of recipe names",
+                    "name-filter(RegExPattern): regex for names"
             }
     )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -140,6 +141,9 @@ public class CustomItemTrigger extends Trigger implements Listener {
             }
             if (config.isList("recipes")) {
                 return config.getStringList("recipes").contains(customRecipe.getName().toLowerCase());
+            }
+            if (config.isSet("name-filter")) {
+                return Pattern.matches(config.getString("name-filter"), customRecipe.getName());
             }
             return true;
         });
