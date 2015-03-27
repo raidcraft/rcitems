@@ -36,20 +36,16 @@ public class CustomItemTrigger extends Trigger implements Listener {
     @Information(
             value = "item.pickup",
             desc = "Listens for players that pickup custom items.",
-            help = "Take the item you want to listen for into your hand. " +
-                    "You can then check for the complete id (-i), the armor type (-a), the weapon type (-w), normal type (-t) " +
-                    "or if the item needs to be useable.",
             conf = {
-                    "type: ItemType.java",
-                    "weapon-type: WeaponType.java",
-                    "armor-type: ArmorType.java",
-                    "id: (int) ItemID",
-                    "useable: true/false",
-                    "quality: ItemQuality.java"
-            },
-            usage = "[-u/-i/-t/-w/-a]",
-            flags = "uitwa",
-            multiSection = true
+                    "id(int): DatabaseID (if set will only listen for this item)",
+                    "types(StringList): <a href=\"https://git.raid-craft.de/raid-craft-de/raidcraft-api/blob/master/src/main/java/de/raidcraft/api/items/ItemType.java\">ItemType</a>",
+                    "qualities(StringList): <a href=\"https://git.raid-craft.de/raid-craft-de/raidcraft-api/blob/master/src/main/java/de/raidcraft/api/items/ItemQuality.java\">ItemQuality</a>",
+                    "bind-types(StringList): <a href=\"https://git.raid-craft.de/raid-craft-de/raidcraft-api/blob/master/src/main/java/de/raidcraft/api/items/ItemBindType.java\">BindType</a>",
+                    "ids(IntList): List of item ids (database ids)",
+                    "name-filter(RegExpPattern): Regex of Item Name",
+                    "min-id(int): item db id for range",
+                    "max-id(int): item db id for range"
+            }
     )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemPickup(PlayerPickupItemEvent event) {
@@ -118,6 +114,13 @@ public class CustomItemTrigger extends Trigger implements Listener {
         });
     }
 
+    @Information(
+            value = "item.pickup",
+            desc = "Listens for players that pickup custom items.",
+            conf = {
+                    "recipe(String): unique name of the recipe",
+            }
+    )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemCraft(CraftItemEvent event) {
 
