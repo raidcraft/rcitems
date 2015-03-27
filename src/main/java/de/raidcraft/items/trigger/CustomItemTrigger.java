@@ -3,17 +3,13 @@ package de.raidcraft.items.trigger;
 import com.sk89q.worldedit.entity.Player;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.trigger.Trigger;
-import de.raidcraft.api.items.ArmorType;
-import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.CustomItem;
-import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
-import de.raidcraft.api.items.WeaponType;
-import de.raidcraft.api.items.attachments.UseableCustomItem;
 import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.crafting.recipes.CustomRecipe;
+import de.raidcraft.util.ConfigUtil;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +17,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.FurnaceInventory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author mdoering
@@ -53,37 +54,67 @@ public class CustomItemTrigger extends Trigger implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onItemPickup(PlayerPickupItemEvent event) {
 
+        if (!RaidCraft.isCustomItem(event.getItem().getItemStack())) return;
+        CustomItem customItem = RaidCraft.getCustomItem(event.getItem().getItemStack()).getItem();
+
         informListeners("pickup", event.getPlayer(), config -> {
 
-            if (!RaidCraft.isCustomItem(event.getItem().getItemStack())) return false;
-            CustomItemStack customItem = RaidCraft.getCustomItem(event.getItem().getItemStack());
-            CustomItem item = customItem.getItem();
-            if (config.isSet("type")) {
-                ItemType type = ItemType.fromString(config.getString("type"));
-                return type != null && type == item.getType();
-            } else if (config.isSet("weapon-type")) {
-                WeaponType weaponType = WeaponType.fromString(config.getString("weapon-type"));
-                if (weaponType == null) {
-                    RaidCraft.LOGGER.warning("Invalid weapon type " + config.getString("weapon-type") + " in " + config.getRoot().getName());
-                    return false;
+            int id = config.getInt("id");
+
+            if (id > 0) return customItem.getId() == id;
+
+            List<ItemType> itemTypes = new ArrayList<>();
+            for (String type : config.getStringList("types")) {
+                ItemType itemType = ItemType.fromString(type);
+                if (itemType != null) {
+                    itemTypes.add(itemType);
+                } else {
+                    RaidCraft.LOGGER.warning("Invalid item type " + type + " in loot table " + ConfigUtil.getFileName(config));
                 }
-                return item instanceof CustomWeapon && ((CustomWeapon) item).getWeaponType() == weaponType;
-            } else if (config.isSet("armor-type")) {
-                ArmorType armorType = ArmorType.fromString(config.getString("armor-type"));
-                if (armorType == null) {
-                    RaidCraft.LOGGER.warning("Invalid armor type " + config.getString("armor-type") + " in " + config.getRoot().getName());
-                    return false;
-                }
-                return item instanceof CustomArmor && ((CustomArmor) item).getArmorType() == armorType;
-            } else if (config.isSet("id")) {
-                return item.getId() == config.getInt("id");
-            } else if (config.isSet("useable")) {
-                return config.getBoolean("useable") && item instanceof UseableCustomItem;
-            } else if (config.isSet("quality")) {
-                ItemQuality quality = ItemQuality.fromString(config.getString("quality"));
-                return quality != null && item.getQuality() == quality;
             }
-            return true;
+
+            List<ItemQuality> itemQualities = new ArrayList<>();
+            for (String quality : config.getStringList("qualities")) {
+                ItemQuality itemQuality = ItemQuality.fromString(quality);
+                if (itemQuality != null) {
+                    itemQualities.add(itemQuality);
+                } else {
+                    RaidCraft.LOGGER.warning("Invalid item quality " + quality + " in loot table " + ConfigUtil.getFileName(config));
+                }
+            }
+
+            List<ItemBindType> bindTypes = new ArrayList<>();
+            for (String binding : config.getStringList("bind-types")) {
+                ItemBindType itemBindType = ItemBindType.fromString(binding);
+                if (itemBindType != null) {
+                    bindTypes.add(itemBindType);
+                } else {
+                    RaidCraft.LOGGER.warning("Invalid item bind type " + binding + " in loot table " + ConfigUtil.getFileName(config));
+                }
+            }
+
+            List<Integer> itemIds = config.getIntegerList("ids");
+
+            Pattern nameFilter;
+            if (config.isSet("name-filter")) {
+                nameFilter = Pattern.compile(config.getString("name-filter"));
+            } else {
+                nameFilter = null;
+            }
+
+            int idFilterMin = config.getInt("min-id", 0);
+            int idFilterMax = config.getInt("max-id", 0);
+
+            Collection<CustomItem> items = new ArrayList<>();
+            items.add(customItem);
+            return items.stream()
+                    .filter(item -> itemTypes.isEmpty() || itemTypes.contains(item.getType()))
+                    .filter(item -> itemQualities.isEmpty() || itemQualities.contains(item.getQuality()))
+                    .filter(item -> bindTypes.isEmpty() || bindTypes.contains(item.getBindType()))
+                    .filter(item -> itemIds.isEmpty() || itemIds.contains(item.getId()))
+                    .filter(item -> idFilterMin < 1 || item.getId() >= idFilterMin)
+                    .filter(item -> idFilterMax < 1 || item.getId() <= idFilterMax)
+                    .filter(item -> nameFilter == null || nameFilter.matcher(item.getName()).matches()).count() > 0;
         });
     }
 
