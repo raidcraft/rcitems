@@ -1,5 +1,6 @@
 package de.raidcraft.items.crafting;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.items.crafting.recipes.CustomFurnaceRecipe;
 import de.raidcraft.items.crafting.recipes.CustomRecipe;
 import de.raidcraft.util.CustomItemUtil;
@@ -71,10 +72,12 @@ public class CraftingListener implements Listener {
         }
         CustomRecipe customRecipe = craftingManager.getMatchingRecipe(event.getRecipe());
         if (customRecipe == null) {
+            RaidCraft.LOGGER.info("No custom recipe found! Equal check failed");
             event.getInventory().setResult(null);
             return;
         }
         if (!customRecipe.isMatchingRecipe(event.getInventory())) {
+            RaidCraft.LOGGER.info("Recipes are not equal");
             event.getInventory().setResult(null);
         }
     }
