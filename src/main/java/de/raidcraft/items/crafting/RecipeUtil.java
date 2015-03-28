@@ -120,8 +120,10 @@ public class RecipeUtil {
             ShapelessRecipe r2 = (ShapelessRecipe) customRecipe;
 
             // get copies of the ingredient lists
-            List<ItemStack> find = r1.getIngredientList().stream().map(RaidCraft::getCustomItem).collect(Collectors.toList());
-            List<ItemStack> compare = r2.getIngredientList();
+            List<ItemStack> find = r1.getIngredientList();
+            List<ItemStack> compare = r2.getIngredientList().stream()
+                    .map(i -> new ItemStack(i.getType(), i.getAmount(), i.getDurability()))
+                    .collect(Collectors.toList());
 
             if (find.size() != compare.size()) {
                 return false; // if they don't have the same amount of ingredients they're not equal.
