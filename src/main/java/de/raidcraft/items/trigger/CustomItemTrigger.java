@@ -1,6 +1,5 @@
 package de.raidcraft.items.trigger;
 
-import com.sk89q.worldedit.entity.Player;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.trigger.Trigger;
 import de.raidcraft.api.items.CustomItem;
@@ -11,6 +10,7 @@ import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.crafting.recipes.CustomRecipe;
 import de.raidcraft.util.ConfigUtil;
 import de.raidcraft.util.CustomItemUtil;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
