@@ -71,11 +71,15 @@ public class CraftingListener implements Listener {
             return;
         }
         CustomRecipe customRecipe = craftingManager.getMatchingRecipe(event.getRecipe());
+        // in the first step we compare the two recipes with the basic minecraft items
+        // if the minecraft items are not equal we cancel the crafting process
         if (customRecipe == null) {
             RaidCraft.LOGGER.info("No custom recipe found! Equal check failed");
             event.getInventory().setResult(null);
             return;
         }
+        // in the second step we check the exact custom items against the inventory
+        // this needs to happen later because recipes do not save itemstacks
         if (!customRecipe.isMatchingRecipe(event.getInventory())) {
             RaidCraft.LOGGER.info("Recipes are not equal");
             event.getInventory().setResult(null);

@@ -13,7 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -22,7 +24,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
 
     private final String name;
     private final String permission;
-    private final List<String> ingredients = new ArrayList<>();
+    private final Map<String, Integer> ingredients = new HashMap<>();
 
     public CustomShapelessRecipe(String name, String permission, ItemStack result) {
 
@@ -57,7 +59,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
         // dont allow item amounts greater than nine, because that makes no sense...
         if (amount > 9) amount = 9;
         while (amount-- > 0) {
-            ingredients.add(item);
+            ingredients.put(item, amount);
         }
         return this;
     }
@@ -67,7 +69,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
         super.removeIngredient(amount, ingredient.getData());
         String item = RaidCraft.getItemIdString(ingredient);
         while (amount-- > 0) {
-            ingredients.remove(ingredients.lastIndexOf(item));
+            ingredients.remove(item);
         }
         return this;
     }
@@ -84,9 +86,10 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
     public List<ItemStack> getIngredientList() {
 
         ArrayList<ItemStack> items = new ArrayList<>();
-        for (String id : ingredients) {
+        for (String id : ingredients.keySet()) {
             try {
                 ItemStack item = RaidCraft.getItem(id);
+                item.setAmount(ingredients.get(id));
                 items.add(item);
             } catch (CustomItemException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
@@ -98,7 +101,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
     @Override
     public boolean isMatchingRecipe(CraftingInventory inventory) {
 
-        ArrayList<String> remainingIngredients = new ArrayList<>(ingredients);
+        ArrayList<String> remainingIngredients = new ArrayList<>(ingredients.keySet());
 
         for (ItemStack itemStack : inventory.getMatrix()) {
             if (!ItemUtils.isStackValid(itemStack)) {
@@ -106,6 +109,9 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
             }
             String id = RaidCraft.getItemIdString(itemStack);
             if (!remainingIngredients.remove(id)) {
+                return false;
+            }
+            if (itemStack.getAmount() < ingredients.get(id)) {
                 return false;
             }
         }
