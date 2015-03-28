@@ -36,12 +36,14 @@ public class CraftingManager implements Component {
     public CraftingManager(ItemsPlugin plugin) {
 
         this.plugin = plugin;
-        loadRecipes();
+        reload();
         plugin.registerEvents(new CraftingListener(this));
     }
 
     public void reload() {
 
+        loadedRecipes.clear();
+        furnaceRecipes.clear();
         Bukkit.resetRecipes();
         loadRecipes();
     }
