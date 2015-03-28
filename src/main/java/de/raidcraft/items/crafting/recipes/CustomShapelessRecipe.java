@@ -89,7 +89,6 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
         for (String id : ingredients.keySet()) {
             try {
                 ItemStack item = RaidCraft.getItem(id);
-                item.setAmount(ingredients.get(id));
                 items.add(item);
             } catch (CustomItemException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
@@ -141,7 +140,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
         for (ItemStack itemStack : getIngredientList()) {
             TCraftingRecipeIngredient ingredient = new TCraftingRecipeIngredient();
             ingredient.setItem(RaidCraft.getItemIdString(itemStack));
-            ingredient.setAmount(itemStack.getAmount());
+            ingredient.setAmount(ingredients.get(ingredient.getItem()));
             ingredient.setRecipe(recipe);
             database.save(ingredient);
         }
