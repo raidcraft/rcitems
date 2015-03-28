@@ -178,7 +178,6 @@ public class CraftingManager implements Component {
         return furnaceRecipes.get(input.getData());
     }
 
-    @SuppressWarnings("ConstantConditions")
     public CustomRecipe getMatchingRecipe(Recipe recipe) {
 
         for (CustomRecipe customRecipe : loadedRecipes.values()) {

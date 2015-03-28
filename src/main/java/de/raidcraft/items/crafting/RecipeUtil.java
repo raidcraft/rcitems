@@ -15,6 +15,7 @@ import org.bukkit.inventory.ShapelessRecipe;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Utility class to compare Bukkit recipes.<br>
@@ -38,28 +39,28 @@ public class RecipeUtil {
      * <br>
      * NOTE: If both arguments are null it returns true.
      *
-     * @param recipe1
-     * @param recipe2
+     * @param original
+     * @param customRecipe
      *
      * @return true if ingredients and results match, false otherwise.
      *
      * @throws IllegalArgumentException if recipe is other than ShapedRecipe, ShapelessRecipe or FurnaceRecipe.
      */
-    public static boolean areEqual(Recipe recipe1, Recipe recipe2) {
+    public static boolean areEqual(Recipe original, Recipe customRecipe) {
 
-        if (recipe1 == recipe2) {
+        if (original == customRecipe) {
             return true; // if they're the same instance (or both null) then they're equal.
         }
 
-        if (recipe1 == null || recipe2 == null) {
+        if (original == null || customRecipe == null) {
             return false; // if only one of them is null then they're surely not equal.
         }
 
-        if (!recipe1.getResult().equals(recipe2.getResult())) {
+        if (!original.getResult().equals(customRecipe.getResult())) {
             return false; // if results don't match then they're not equal.
         }
 
-        return match(recipe1, recipe2); // now check if ingredients match
+        return match(original, customRecipe); // now check if ingredients match
     }
 
     /**
@@ -88,15 +89,15 @@ public class RecipeUtil {
         return match(recipe1, recipe2); // now check if ingredients match
     }
 
-    private static boolean match(Recipe recipe1, Recipe recipe2) {
+    private static boolean match(Recipe original, Recipe customRecipe) {
 
-        if (recipe1 instanceof ShapedRecipe) {
-            if (!(recipe2 instanceof ShapedRecipe)) {
+        if (original instanceof ShapedRecipe) {
+            if (!(customRecipe instanceof ShapedRecipe)) {
                 return false; // if other recipe is not the same type then they're not equal.
             }
 
-            ShapedRecipe r1 = (ShapedRecipe) recipe1;
-            ShapedRecipe r2 = (ShapedRecipe) recipe2;
+            ShapedRecipe r1 = (ShapedRecipe) original;
+            ShapedRecipe r2 = (ShapedRecipe) customRecipe;
 
             // convert both shapes and ingredient maps to common ItemStack array.
             ItemStack[] matrix1 = shapeToMatrix(r1.getShape(), r1.getIngredientMap());
@@ -110,16 +111,16 @@ public class RecipeUtil {
             }
 
             return true; // ingredients match.
-        } else if (recipe1 instanceof ShapelessRecipe) {
-            if (!(recipe2 instanceof ShapelessRecipe)) {
+        } else if (original instanceof ShapelessRecipe) {
+            if (!(customRecipe instanceof ShapelessRecipe)) {
                 return false; // if other recipe is not the same type then they're not equal.
             }
 
-            ShapelessRecipe r1 = (ShapelessRecipe) recipe1;
-            ShapelessRecipe r2 = (ShapelessRecipe) recipe2;
+            ShapelessRecipe r1 = (ShapelessRecipe) original;
+            ShapelessRecipe r2 = (ShapelessRecipe) customRecipe;
 
             // get copies of the ingredient lists
-            List<ItemStack> find = r1.getIngredientList();
+            List<ItemStack> find = r1.getIngredientList().stream().map(RaidCraft::getCustomItem).collect(Collectors.toList());
             List<ItemStack> compare = r2.getIngredientList();
 
             if (find.size() != compare.size()) {
@@ -133,18 +134,18 @@ public class RecipeUtil {
             }
 
             return find.isEmpty(); // if there are any ingredients not removed then they're not equal.
-        } else if (recipe1 instanceof FurnaceRecipe) {
-            if (!(recipe2 instanceof FurnaceRecipe)) {
+        } else if (original instanceof FurnaceRecipe) {
+            if (!(customRecipe instanceof FurnaceRecipe)) {
                 return false; // if other recipe is not the same type then they're not equal.
             }
 
-            FurnaceRecipe r1 = (FurnaceRecipe) recipe1;
-            FurnaceRecipe r2 = (FurnaceRecipe) recipe2;
+            FurnaceRecipe r1 = (FurnaceRecipe) original;
+            FurnaceRecipe r2 = (FurnaceRecipe) customRecipe;
 
             //return (r1.getInput().equals(r2.getInput())); // TODO use this when furnace data PR is pulled
             return r1.getInput().getTypeId() == r2.getInput().getTypeId();
         } else {
-            throw new IllegalArgumentException("Unsupported recipe type: '" + recipe1 + "', update this class!");
+            throw new IllegalArgumentException("Unsupported recipe type: '" + original + "', update this class!");
         }
     }
 
