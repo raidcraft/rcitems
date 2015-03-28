@@ -41,6 +41,17 @@ public class RecipeCommands {
     }
 
     @Command(
+            aliases = {"reload"},
+            desc = "Reloads all crafting recipes"
+    )
+    @CommandPermissions("rcitems.reload")
+    public void reload(CommandContext args, CommandSender sender) {
+
+        plugin.getCraftingManager().reload();
+        sender.sendMessage(ChatColor.GREEN + "Reloaded all custom crafting recipes...");
+    }
+
+    @Command(
             aliases = {"create"},
             desc = "Creates a new recipe",
             min = 2,
