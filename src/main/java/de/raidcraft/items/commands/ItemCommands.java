@@ -75,7 +75,7 @@ public class ItemCommands {
             aliases = {"check", "checkitem", "info"},
             desc = "Checks an item and gives info about it."
     )
-    @CommandPermissions("rcitems.create")
+    @CommandPermissions("rcitems.info")
     public void info(CommandContext args, CommandSender sender) throws CommandException {
 
         if (!(sender instanceof Player)) {
@@ -87,6 +87,6 @@ public class ItemCommands {
             throw new CommandException("Item in deiner Hand ist kein Custom Item.");
         }
         CustomItemStack customItem = RaidCraft.getCustomItem(inHand);
-        sender.sendMessage(customItem.getItem().getName());
+        sender.sendMessage(customItem.toString());
     }
 }

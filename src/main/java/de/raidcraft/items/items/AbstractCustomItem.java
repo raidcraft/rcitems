@@ -1,5 +1,6 @@
 package de.raidcraft.items.items;
 
+import com.google.common.base.Objects;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
@@ -242,5 +243,24 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
                     .getItemAttachment(config.getProvider(), config.getAttachmentName(), player);
             attachment.removeAttachment(player);
         }
+    }
+
+    @Override
+    public String toString() {
+
+        return Objects.toStringHelper(this)
+                .add("id", id)
+                .add("name", name)
+                .add("minecraftItem", minecraftItem)
+                .add("type", type)
+                .add("minecraftDataValue", minecraftDataValue)
+                .add("lore", lore)
+                .add("quality", quality)
+                .add("maxStackSize", maxStackSize)
+                .add("sellPrice", sellPrice)
+                .add("blockingUsage", blockingUsage)
+                .add("bindType", bindType)
+                .add("itemLevel", itemLevel)
+                .toString();
     }
 }
