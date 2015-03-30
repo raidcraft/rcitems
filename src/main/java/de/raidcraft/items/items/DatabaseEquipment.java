@@ -84,4 +84,14 @@ public class DatabaseEquipment extends DatabaseItem implements CustomEquipment {
         Collections.sort(list);
         return list;
     }
+
+    @Override
+    public String toString() {
+
+        return "DatabaseEquipment{" +
+                "equipmentSlot=" + equipmentSlot +
+                ", maxDurability=" + maxDurability +
+                ", attributes=" + attributes +
+                "} " + super.toString();
+    }
 }

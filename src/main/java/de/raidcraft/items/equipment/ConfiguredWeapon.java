@@ -77,4 +77,15 @@ public class ConfiguredWeapon extends DatabaseEquipment implements CustomWeapon 
         double dps = averageDamage / getSwingTime();
         return ((int) (dps * 10) / 10.0);
     }
+
+    @Override
+    public String toString() {
+
+        return "ConfiguredWeapon{" +
+                "type=" + type +
+                ", minDamage=" + minDamage +
+                ", maxDamage=" + maxDamage +
+                ", swingTime=" + swingTime +
+                "} " + super.toString();
+    }
 }

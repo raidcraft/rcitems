@@ -44,4 +44,13 @@ public class ConfiguredArmor extends DatabaseEquipment implements CustomArmor {
 
         return armorValue;
     }
+
+    @Override
+    public String toString() {
+
+        return "ConfiguredArmor{" +
+                "armorType=" + armorType +
+                ", armorValue=" + armorValue +
+                "} " + super.toString();
+    }
 }
