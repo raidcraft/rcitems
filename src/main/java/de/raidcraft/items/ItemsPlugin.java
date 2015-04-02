@@ -21,6 +21,7 @@ import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.api.quests.QuestConfigLoader;
 import de.raidcraft.api.quests.Quests;
+import de.raidcraft.api.random.RDS;
 import de.raidcraft.items.commands.BookUtilCommands;
 import de.raidcraft.items.commands.ItemCommands;
 import de.raidcraft.items.commands.LoreCommands;
@@ -34,6 +35,7 @@ import de.raidcraft.items.equipment.ConfiguredWeapon;
 import de.raidcraft.items.items.DatabaseEquipment;
 import de.raidcraft.items.items.SimpleItem;
 import de.raidcraft.items.listener.PlayerListener;
+import de.raidcraft.items.loottables.FilteredItemsTable;
 import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
 import de.raidcraft.items.tables.items.TCustomArmor;
@@ -91,6 +93,8 @@ public class ItemsPlugin extends BasePlugin {
         // register action api stuff
         ActionAPI.register(this)
                 .trigger(new CustomItemTrigger());
+
+        RDS.registerObject(new FilteredItemsTable.Factory());
 
         Quests.registerQuestLoader(new QuestConfigLoader("item") {
             @Override
