@@ -6,7 +6,7 @@ import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
-import de.raidcraft.items.crafting.CraftingManager;
+import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.crafting.recipes.CustomRecipe;
 import de.raidcraft.util.ConfigUtil;
 import de.raidcraft.util.CustomItemUtil;
@@ -137,7 +137,7 @@ public class CustomItemTrigger extends Trigger implements Listener {
 
         informListeners("craft", (Player) event.getWhoClicked(), config -> {
 
-            CustomRecipe customRecipe = RaidCraft.getComponent(CraftingManager.class).getMatchingRecipe(event.getRecipe());
+            CustomRecipe customRecipe = RaidCraft.getComponent(ItemsPlugin.class).getCraftingManager().getMatchingRecipe(event.getRecipe());
             if (config.isSet("recipe")) {
                 return customRecipe.getName().equalsIgnoreCase(config.getString("recipe"));
             }
