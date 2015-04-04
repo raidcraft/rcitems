@@ -30,7 +30,7 @@ public class CustomItemTrigger extends Trigger implements Listener {
 
     public CustomItemTrigger() {
 
-        super("item", "pickup");
+        super("item", "pickup", "craft");
     }
 
     @Information(
@@ -47,11 +47,13 @@ public class CustomItemTrigger extends Trigger implements Listener {
                     "max-id(int): item db id for range"
             }
     )
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
     public void onItemPickup(PlayerPickupItemEvent event) {
 
         if (!RaidCraft.isCustomItem(event.getItem().getItemStack())) return;
         CustomItem customItem = RaidCraft.getCustomItem(event.getItem().getItemStack()).getItem();
+
+        if (customItem.getType() != ItemType.QUEST && event.isCancelled()) return;
 
         informListeners("pickup", event.getPlayer(), config -> {
 
