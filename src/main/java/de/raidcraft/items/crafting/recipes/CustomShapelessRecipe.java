@@ -53,6 +53,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
 
     public CustomShapelessRecipe addIngredient(int amount, ItemStack ingredient) {
 
+        if (amount < 1) amount = 1;
         super.addIngredient(amount, ingredient.getData());
         // lets query for the name of the custom item stack and add it to our list
         String item = RaidCraft.getItemIdString(ingredient);
@@ -140,7 +141,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
         for (ItemStack itemStack : getIngredientList()) {
             TCraftingRecipeIngredient ingredient = new TCraftingRecipeIngredient();
             ingredient.setItem(RaidCraft.getItemIdString(itemStack));
-            ingredient.setAmount(ingredients.get(ingredient.getItem()));
+            ingredient.setAmount(1);
             ingredient.setRecipe(recipe);
             database.save(ingredient);
         }
