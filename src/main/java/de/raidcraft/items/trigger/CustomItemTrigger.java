@@ -3,6 +3,7 @@ package de.raidcraft.items.trigger;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.trigger.Trigger;
 import de.raidcraft.api.items.CustomItem;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
@@ -17,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,13 +52,25 @@ public class CustomItemTrigger extends Trigger implements Listener {
     @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
     public void onItemPickup(PlayerPickupItemEvent event) {
 
-        if (!RaidCraft.isCustomItem(event.getItem().getItemStack())) return;
-        CustomItem customItem = RaidCraft.getCustomItem(event.getItem().getItemStack()).getItem();
-
-        if (customItem.getType() != ItemType.QUEST && event.isCancelled()) return;
+        CustomItem customItem;
+        if (RaidCraft.isCustomItem(event.getItem().getItemStack())) {
+            customItem = RaidCraft.getCustomItem(event.getItem().getItemStack()).getItem();
+            if (customItem.getType() != ItemType.QUEST && event.isCancelled()) return;
+        } else {
+            customItem = null;
+        }
 
         informListeners("pickup", event.getPlayer(), config -> {
 
+            if (config.isSet("item") || customItem == null) {
+                try {
+                    ItemStack item = RaidCraft.getItem(config.getString("item"));
+                    return item != null && item.equals(event.getItem().getItemStack());
+                } catch (CustomItemException e) {
+                    RaidCraft.LOGGER.warning("Wrong item " + e.getMessage() + " in " + ConfigUtil.getFileName(config));
+                }
+                return false;
+            }
             int id = config.getInt("id");
 
             if (id > 0) return customItem.getId() == id;
