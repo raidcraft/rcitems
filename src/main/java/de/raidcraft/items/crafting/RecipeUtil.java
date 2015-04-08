@@ -103,11 +103,11 @@ public class RecipeUtil {
             ItemStack[] matrix1 = shapeToMatrix(r1.getShape(), r1.getIngredientMap());
             ItemStack[] matrix2 = shapeToMatrix(r2.getShape(), r2.getIngredientMap());
 
-            if (!isEqualTypeMatrix(matrix1, matrix2)) // compare arrays and if they don't match run another check with one shape mirrored.
+            if (!isEqualMatrix(matrix1, matrix2)) // compare arrays and if they don't match run another check with one shape mirrored.
             {
                 mirrorMatrix(matrix1);
 
-                return isEqualTypeMatrix(matrix1, matrix2);
+                return isEqualMatrix(matrix1, matrix2);
             }
 
             return true; // ingredients match.
@@ -165,7 +165,7 @@ public class RecipeUtil {
                 }
                 return false;
             }
-            if (!matrix1[i].equals(matrix2[i])) {
+            if (!matrix1[i].getData().equals(matrix2[i].getData())) {
                 return false;
             }
         }
