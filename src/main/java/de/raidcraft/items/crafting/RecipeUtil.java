@@ -165,7 +165,7 @@ public class RecipeUtil {
                 }
                 return false;
             }
-            if (!matrix1[i].getData().equals(matrix2[i].getData())) {
+            if (!matrix1[i].equals(matrix2[i])) {
                 return false;
             }
         }
