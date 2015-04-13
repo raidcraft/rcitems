@@ -43,7 +43,7 @@ public class ItemCommands {
             aliases = {"give", "i", "g"},
             desc = "Gives a custom item to the player",
             min = 1,
-            flags = "p:"
+            flags = "p:a:"
     )
     @CommandPermissions("rcitems.give")
     public void give(CommandContext args, CommandSender sender) throws CommandException {

@@ -13,6 +13,7 @@ import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -176,6 +177,16 @@ public class CraftingManager implements Component {
     public CustomFurnaceRecipe getFurnaceRecipe(ItemStack input) {
 
         return furnaceRecipes.get(input.getData());
+    }
+
+    public CustomRecipe getMatchingRecipe(CraftingInventory input) {
+
+        for (CustomRecipe customRecipe : loadedRecipes.values()) {
+            if (customRecipe.isMatchingRecipe(input)) {
+                return customRecipe;
+            }
+        }
+        return null;
     }
 
     public CustomRecipe getMatchingRecipe(Recipe recipe) {

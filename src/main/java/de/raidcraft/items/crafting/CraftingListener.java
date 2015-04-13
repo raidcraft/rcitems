@@ -70,7 +70,7 @@ public class CraftingListener implements Listener {
         if (!CustomItemUtil.isCustomItem(event.getRecipe().getResult())) {
             return;
         }
-        CustomRecipe customRecipe = craftingManager.getMatchingRecipe(event.getRecipe());
+        CustomRecipe customRecipe = craftingManager.getMatchingRecipe(event.getInventory());
         // in the first step we compare the two recipes with the basic minecraft items
         // if the minecraft items are not equal we cancel the crafting process
         if (customRecipe == null) {
@@ -83,6 +83,8 @@ public class CraftingListener implements Listener {
         if (!customRecipe.isMatchingRecipe(event.getInventory())) {
             RaidCraft.LOGGER.info("Recipes are not equal");
             event.getInventory().setResult(null);
+        } else {
+            event.getInventory().setResult(customRecipe.getResult());
         }
     }
 
