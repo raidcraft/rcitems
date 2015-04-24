@@ -96,7 +96,7 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
         if (getLore() != null && !getLore().equals("")) {
             setTooltip(new VariableMultilineTooltip(TooltipSlot.LORE, getLore(), true, true, ChatColor.GOLD));
         }
-        if (getBindType() != ItemBindType.NONE) {
+        if (getBindType() != null && getBindType() != ItemBindType.NONE) {
             setTooltip(new BindTooltip(getBindType(), null));
         }
         updateAttachmentTooltip();
