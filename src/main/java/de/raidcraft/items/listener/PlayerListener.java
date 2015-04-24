@@ -72,9 +72,12 @@ public class PlayerListener implements Listener {
         if (event.getClick() == ClickType.MIDDLE && event.getWhoClicked() instanceof Player) {
             CustomItemStack customItem = RaidCraft.getCustomItem(event.getCurrentItem());
             if (customItem != null) {
-                new FancyMessage(ChatColor.YELLOW + "Nutze während dem Chatten ? [Tab] um alle Items die du " +
+                new FancyMessage("Nutze während dem Chatten ? [Tab] um alle Items die du " +
                         "mit Mittelklick angeklickt hast zu vervollständigen. Folgendes Item wurde hinzugefügt: ")
-                        .then(getItemTooltip(customItem).toJSONString())
+                        .color(ChatColor.YELLOW)
+                        .then("[" + customItem.getItem().getName() + "]")
+                        .color(customItem.getItem().getQuality().getColor())
+                        .itemTooltip(customItem)
                         .send((Player) event.getWhoClicked());
                 if (!autocompleteItems.containsKey(event.getWhoClicked().getUniqueId())) {
                     autocompleteItems.put(event.getWhoClicked().getUniqueId(), new ArrayList<>());
@@ -92,12 +95,12 @@ public class PlayerListener implements Listener {
             if (event.getLastToken().length() > 1) {
                 token = event.getLastToken().substring(1);
             } else {
-                token = event.getLastToken();
+                token = null;
             }
             List<CustomItemStack> items = autocompleteItems.get(event.getPlayer().getUniqueId());
             event.getTabCompletions().addAll(items.stream()
-                    .filter(i -> i.getItem().getName().startsWith(token))
-                    .map(i -> "\"" + i.getItem().getName() + "\"")
+                    .filter(i -> token == null || i.getItem().getName().startsWith(token))
+                    .map(i -> "?\"" + i.getItem().getName() + "\"")
                     .collect(Collectors.toList()));
         }
     }
