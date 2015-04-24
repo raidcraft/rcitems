@@ -1,5 +1,6 @@
 package de.raidcraft.items.listener;
 
+import com.sk89q.commandbook.util.ItemUtil;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
@@ -52,7 +53,17 @@ public class PlayerListener implements Listener {
     public void sendItemText(InventoryClickEvent event) {
 
         if (event.getClick() == ClickType.MIDDLE && event.getWhoClicked() instanceof Player) {
-            new FancyMessage("").itemTooltip(event.getCurrentItem()).send((Player) event.getWhoClicked());
+            CustomItemStack customItem = RaidCraft.getCustomItem(event.getCurrentItem());
+            if (customItem != null) {
+                new FancyMessage("[" + customItem.getItem().getName() + "]")
+                        .color(customItem.getItem().getQuality().getColor())
+                        .itemTooltip(event.getCurrentItem())
+                        .send((Player) event.getWhoClicked());
+            } else {
+                new FancyMessage("[" + ItemUtil.toItemName(event.getCurrentItem().getTypeId()) + "]")
+                        .itemTooltip(event.getCurrentItem())
+                        .send((Player) event.getWhoClicked());
+            }
         }
     }
 
