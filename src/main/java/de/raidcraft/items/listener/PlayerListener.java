@@ -52,10 +52,7 @@ public class PlayerListener implements Listener {
     public void sendItemText(InventoryClickEvent event) {
 
         if (event.getClick() == ClickType.MIDDLE && event.getWhoClicked() instanceof Player) {
-            new FancyMessage().itemTooltip(event.getCurrentItem())
-                    .suggest(new FancyMessage()
-                            .itemTooltip(event.getCurrentItem()).toJSONString())
-                    .send((Player) event.getWhoClicked());
+            new FancyMessage().itemTooltip(event.getCurrentItem()).send((Player) event.getWhoClicked());
         }
     }
 
