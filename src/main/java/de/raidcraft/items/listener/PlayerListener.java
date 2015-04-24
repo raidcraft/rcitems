@@ -12,6 +12,7 @@ import de.raidcraft.api.language.Translator;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.UUIDUtil;
+import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,6 +22,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -42,8 +45,19 @@ public class PlayerListener implements Listener {
     public PlayerListener(ItemsPlugin plugin) {
 
         this.plugin = plugin;
-    this.config = plugin.getConfig();
-}
+        this.config = plugin.getConfig();
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void sendItemText(InventoryClickEvent event) {
+
+        if (event.getClick() == ClickType.MIDDLE && event.getWhoClicked() instanceof Player) {
+            new FancyMessage().itemTooltip(event.getCurrentItem())
+                    .suggest(new FancyMessage()
+                            .itemTooltip(event.getCurrentItem()).toJSONString())
+                    .send((Player) event.getWhoClicked());
+        }
+    }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerPlaceBlock(BlockPlaceEvent event) {
