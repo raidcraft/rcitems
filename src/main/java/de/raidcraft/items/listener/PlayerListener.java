@@ -1,6 +1,5 @@
 package de.raidcraft.items.listener;
 
-import com.sk89q.commandbook.util.ItemUtil;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
@@ -26,14 +25,23 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerChatTabCompleteEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -42,11 +50,20 @@ public class PlayerListener implements Listener {
 
     private final ItemsPlugin plugin;
     private final ItemsPlugin.LocalConfiguration config;
+    private final Map<UUID, List<CustomItemStack>> autocompleteItems = new HashMap<>();
+    private final Pattern ITEM_COMPLETE_PATTERN = Pattern.compile("\\?\"([\\w\\s]+)\"");
 
     public PlayerListener(ItemsPlugin plugin) {
 
         this.plugin = plugin;
         this.config = plugin.getConfig();
+    }
+
+    private FancyMessage getItemTooltip(CustomItemStack customItemStack) {
+
+        return new FancyMessage("[" + customItemStack.getItem().getName() + "]")
+                .color(customItemStack.getItem().getQuality().getColor())
+                .itemTooltip(customItemStack);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -55,14 +72,47 @@ public class PlayerListener implements Listener {
         if (event.getClick() == ClickType.MIDDLE && event.getWhoClicked() instanceof Player) {
             CustomItemStack customItem = RaidCraft.getCustomItem(event.getCurrentItem());
             if (customItem != null) {
-                new FancyMessage("[" + customItem.getItem().getName() + "]")
-                        .color(customItem.getItem().getQuality().getColor())
-                        .itemTooltip(event.getCurrentItem())
+                new FancyMessage(ChatColor.YELLOW + "Nutze während dem Chatten ? [Tab] um alle Items die du " +
+                        "mit Mittelklick angeklickt hast zu vervollständigen. Folgendes Item wurde hinzugefügt: ")
+                        .then(getItemTooltip(customItem).toJSONString())
                         .send((Player) event.getWhoClicked());
+                if (!autocompleteItems.containsKey(event.getWhoClicked().getUniqueId())) {
+                    autocompleteItems.put(event.getWhoClicked().getUniqueId(), new ArrayList<>());
+                }
+                autocompleteItems.get(event.getWhoClicked().getUniqueId()).add(customItem);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onTabComplete(PlayerChatTabCompleteEvent event) {
+
+        if (autocompleteItems.containsKey(event.getPlayer().getUniqueId()) && event.getLastToken().startsWith("?")) {
+            String token;
+            if (event.getLastToken().length() > 1) {
+                token = event.getLastToken().substring(1);
             } else {
-                new FancyMessage("[" + ItemUtil.toItemName(event.getCurrentItem().getTypeId()) + "]")
-                        .itemTooltip(event.getCurrentItem())
-                        .send((Player) event.getWhoClicked());
+                token = event.getLastToken();
+            }
+            List<CustomItemStack> items = autocompleteItems.get(event.getPlayer().getUniqueId());
+            event.getTabCompletions().addAll(items.stream()
+                    .filter(i -> i.getItem().getName().startsWith(token))
+                    .map(i -> "\"" + i.getItem().getName() + "\"")
+                    .collect(Collectors.toList()));
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+
+        Matcher matcher = ITEM_COMPLETE_PATTERN.matcher(event.getMessage());
+        if (autocompleteItems.containsKey(event.getPlayer().getUniqueId()) && matcher.matches()) {
+            String itemName = matcher.group(1);
+            for (CustomItemStack itemStack : autocompleteItems.get(event.getPlayer().getUniqueId())) {
+                if (itemStack.getItem().getName().equals(itemName)) {
+                    event.setMessage(event.getMessage().replace("?\"" + itemName + "\"", getItemTooltip(itemStack).toJSONString()));
+                    return;
+                }
             }
         }
     }
@@ -193,6 +243,7 @@ public class PlayerListener implements Listener {
         }
     }
 
+
     private void rebuildInventory(Player player) {
 
         ItemStack[] contents = player.getInventory().getContents();
@@ -214,7 +265,6 @@ public class PlayerListener implements Listener {
         }
         player.getInventory().setContents(contents);
     }
-
 
     private CustomItemStack rebuildCustomItem(Player player, ItemStack itemStack) throws CustomItemException {
 
@@ -283,5 +333,4 @@ public class PlayerListener implements Listener {
             CustomItemUtil.denyItem(player, slot, customItemStack, e.getMessage());
         }
     }
-
 }
