@@ -30,6 +30,7 @@ public class NamedYAMLCustomItem extends AbstractCustomItem {
         if (config.isSet("bind-type")) setBindType(ItemBindType.fromString(config.getString("bind-type")));
         if (config.isSet("quality")) setQuality(ItemQuality.fromString(config.getString("quality")));
         if (config.isSet("block-usage")) setBlockingUsage(config.getBoolean("block-usage", false));
+        if (config.isSet("enchantment-effect")) setEnchantmentEffect(config.getBoolean("enchantment-effect", false));
         buildTooltips();
     }
 }

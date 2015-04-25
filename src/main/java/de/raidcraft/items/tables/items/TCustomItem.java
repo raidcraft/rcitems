@@ -49,6 +49,7 @@ public class TCustomItem {
     @NotNull
     private ItemType itemType;
     private boolean blockUsage = false;
+    private boolean enchantmentEffect = false;
     private String info;
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "item_id")

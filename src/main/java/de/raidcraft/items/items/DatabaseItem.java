@@ -22,6 +22,7 @@ public abstract class DatabaseItem extends AbstractCustomItem {
         setLore(item.getLore());
         setItemLevel(item.getItemLevel());
         setQuality(item.getQuality());
+        setEnchantmentEffect(item.isEnchantmentEffect());
         buildTooltips();
     }
 }
