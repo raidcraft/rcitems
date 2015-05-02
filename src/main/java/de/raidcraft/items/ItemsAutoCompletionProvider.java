@@ -34,16 +34,16 @@ public class ItemsAutoCompletionProvider extends AutoCompletionProvider {
         if (autoList == null) autoList = new ArrayList<>();
         if (!autoList.isEmpty()) {
             List<String> items = autoList.stream()
-                    .filter(i -> message == null || i.getItem().getName().toLowerCase().startsWith(message))
+                    .filter(i -> message == null || i.getItem().getName().toLowerCase().startsWith(message.toLowerCase()))
                     .map(i -> i.getItem().getName())
                     .collect(Collectors.toList());
             if (!items.isEmpty()) {
                 return items;
             }
         }
-        if (message != null && message.length() > 2) {
+        if (message != null) {
             return RaidCraft.getComponent(CustomItemManager.class).getLoadedCustomItems().stream()
-                    .filter(i -> i.getName().toLowerCase().startsWith(message))
+                    .filter(i -> i.getName().toLowerCase().startsWith(message.toLowerCase()))
                     .map(CustomItem::getName)
                     .collect(Collectors.toList());
         }
