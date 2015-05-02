@@ -12,6 +12,8 @@ import de.raidcraft.api.language.Translator;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.UUIDUtil;
+import lombok.Getter;
+import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,6 +23,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -28,6 +32,10 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,11 +46,35 @@ public class PlayerListener implements Listener {
 
     private final ItemsPlugin plugin;
     private final ItemsPlugin.LocalConfiguration config;
+    @Getter
+    private static final Map<UUID, List<CustomItemStack>> autoCompleteItems = new HashMap<>();
 
     public PlayerListener(ItemsPlugin plugin) {
 
         this.plugin = plugin;
         this.config = plugin.getConfig();
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void sendItemText(InventoryClickEvent event) {
+
+        if (event.getClick() == ClickType.MIDDLE && event.getWhoClicked() instanceof Player) {
+            CustomItemStack customItem = RaidCraft.getCustomItem(event.getCurrentItem());
+            if (customItem != null) {
+                new FancyMessage("Nutze während dem Chatten ?[Tab] um alle Items die du " +
+                        "mit Mittelklick angeklickt hast zu vervollständigen. Folgendes Item wurde hinzugefügt: ")
+                        .color(ChatColor.YELLOW)
+                        .then("[" + customItem.getItem().getName() + "]")
+                        .color(customItem.getItem().getQuality().getColor())
+                        .itemTooltip(customItem)
+                        .send((Player) event.getWhoClicked());
+                UUID uniqueId = event.getWhoClicked().getUniqueId();
+                if (!autoCompleteItems.containsKey(uniqueId)) {
+                    autoCompleteItems.put(uniqueId, new ArrayList<>());
+                }
+                autoCompleteItems.get(uniqueId).add(customItem);
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
