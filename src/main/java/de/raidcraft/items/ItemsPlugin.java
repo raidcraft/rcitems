@@ -6,6 +6,7 @@ import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.action.ActionAPI;
+import de.raidcraft.api.chat.Chat;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.KeyValueMap;
 import de.raidcraft.api.config.Setting;
@@ -93,6 +94,8 @@ public class ItemsPlugin extends BasePlugin {
         // register action api stuff
         ActionAPI.register(this)
                 .trigger(new CustomItemTrigger());
+
+        Chat.registerAutoCompletionProvider(this, new ItemsAutoCompletionProvider());
 
         RDS.registerObject(new FilteredItemsTable.Factory());
 
