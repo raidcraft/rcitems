@@ -56,6 +56,7 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
     protected int maxStackSize = 1;
     protected double sellPrice = 0;
     protected boolean blockingUsage = false;
+    protected boolean lootable = true;
     protected boolean enchantmentEffect = false;
     protected ItemBindType bindType = ItemBindType.NONE;
     private final Map<TooltipSlot, Tooltip> tooltips = new EnumMap<>(TooltipSlot.class);

@@ -79,6 +79,8 @@ public class FilteredItemsTable extends GenericRDSTable {
         int idFilterMin = config.getInt("min-id", 0);
         int idFilterMax = config.getInt("max-id", 0);
 
+        boolean ignoreUnlootable = config.getBoolean("ignore-unlootable", false);
+
         RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().getLoadedCustomItems().stream()
                 .filter(item -> itemTypes.isEmpty() || itemTypes.contains(item.getType()))
                 .filter(item -> itemQualities.isEmpty() || itemQualities.contains(item.getQuality()))
@@ -89,6 +91,7 @@ public class FilteredItemsTable extends GenericRDSTable {
                 .filter(item -> idFilterMin < 1 || item.getId() >= idFilterMin)
                 .filter(item -> idFilterMax < 1 || item.getId() <= idFilterMax)
                 .filter(item -> nameFilter == null || nameFilter.matcher(item.getName()).matches())
+                .filter(item -> ignoreUnlootable || item.isLootable())
                 .forEach(item -> addEntry(new ItemLootObject(item)));
     }
 }
