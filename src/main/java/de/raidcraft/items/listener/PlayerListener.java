@@ -3,9 +3,13 @@ package de.raidcraft.items.listener;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.InventorySlot;
 import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.UseableCustomItem;
+import de.raidcraft.api.items.events.EquipCustomArmorEvent;
+import de.raidcraft.api.items.events.EquipCustomItemEvent;
+import de.raidcraft.api.items.events.EquipCustomWeaponEvent;
 import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.api.language.Translator;
@@ -281,6 +285,19 @@ public class PlayerListener implements Listener {
             // bind the item if it is bind on equip
             if (customItemStack.getItem().getBindType() == ItemBindType.BIND_ON_EQUIP) {
                 customItemStack.setOwner(player);
+            }
+            EquipCustomItemEvent event;
+            if (CustomItemUtil.isArmor(customItemStack)) {
+                event = new EquipCustomArmorEvent(player, CustomItemUtil.getArmor(customItemStack), InventorySlot.fromSlot(slot));
+            } else if (CustomItemUtil.isWeapon(customItemStack)) {
+                event = new EquipCustomWeaponEvent(player, CustomItemUtil.getWeapon(customItemStack), InventorySlot.fromSlot(slot));
+            } else {
+                event = new EquipCustomItemEvent(player, customItemStack.getItem(), InventorySlot.fromSlot(slot));
+            }
+            RaidCraft.callEvent(event);
+            if (event.isCancelled()) {
+                CustomItemUtil.denyItem(player, slot, customItemStack, "Item kann nicht angelegt werden.");
+                return;
             }
             if (CustomItemUtil.isArmorSlot(slot)) {
                 ItemStack[] armor = player.getInventory().getArmorContents();
