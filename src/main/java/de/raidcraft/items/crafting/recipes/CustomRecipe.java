@@ -9,13 +9,13 @@ import org.bukkit.inventory.Recipe;
  */
 public interface CustomRecipe extends Recipe {
 
-    public String getName();
+    String getName();
 
-    public CraftingRecipeType getType();
+    CraftingRecipeType getType();
 
-    public String getPermission();
+    String getPermission();
 
-    public boolean isMatchingRecipe(CraftingInventory inventory);
+    boolean isMatchingRecipe(CraftingInventory inventory);
 
-    public void save();
+    void save();
 }
