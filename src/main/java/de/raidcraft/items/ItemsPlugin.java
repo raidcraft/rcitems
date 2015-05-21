@@ -39,6 +39,7 @@ import de.raidcraft.items.listener.PlayerListener;
 import de.raidcraft.items.loottables.FilteredItemsTable;
 import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
+import de.raidcraft.items.tables.items.TItemCategory;
 import de.raidcraft.items.tables.items.TCustomArmor;
 import de.raidcraft.items.tables.items.TCustomEquipment;
 import de.raidcraft.items.tables.items.TCustomItem;
@@ -336,6 +337,7 @@ public class ItemsPlugin extends BasePlugin {
         tables.add(TCustomArmor.class);
         tables.add(TCustomItemAttachment.class);
         tables.add(TItemAttachmentData.class);
+        tables.add(TItemCategory.class);
         // custom crafting
         tables.add(TCraftingRecipe.class);
         tables.add(TCraftingRecipeIngredient.class);

@@ -6,6 +6,7 @@ import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemBindType;
+import de.raidcraft.api.items.ItemCategory;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
@@ -33,8 +34,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author mdoering
@@ -61,6 +64,7 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
     protected ItemBindType bindType = ItemBindType.NONE;
     private final Map<TooltipSlot, Tooltip> tooltips = new EnumMap<>(TooltipSlot.class);
     private final List<Requirement<Player>> requirements = new ArrayList<>();
+    private final Set<ItemCategory> categories = new HashSet<>();
     protected final Map<String, ConfiguredAttachment> attachments = new HashMap<>();
     protected int itemLevel = 1;
 
@@ -111,6 +115,12 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
                 setTooltip(new VariableMultilineTooltip(TooltipSlot.ATTACHMENT, attachment.getDescription(), false, false, attachment.getColor()));
             }
         }
+    }
+
+    @Override
+    public void addCategory(ItemCategory category) {
+
+        this.categories.add(category);
     }
 
     @Override

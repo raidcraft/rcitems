@@ -12,8 +12,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,5 +57,11 @@ public class TCustomItem {
     private String info;
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "item_id")
-    private List<TCustomItemAttachment> attachments;
+    private List<TCustomItemAttachment> attachments = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "rcitems_item_categories",
+            joinColumns=@JoinColumn(name="item_id", referencedColumnName="id"),
+            inverseJoinColumns=@JoinColumn(name="category_id", referencedColumnName="id")
+    )
+    private List<TItemCategory> categories = new ArrayList<>();
 }

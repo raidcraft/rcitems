@@ -2,6 +2,7 @@ package de.raidcraft.items.loottables;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.ItemBindType;
+import de.raidcraft.api.items.ItemCategory;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.api.random.GenericRDSTable;
@@ -67,6 +68,9 @@ public class FilteredItemsTable extends GenericRDSTable {
             }
         }
 
+        List<String> includeCategories = config.getStringList("include-categories");
+        List<String> excludeCategories = config.getStringList("exclude-categories");
+
         List<Integer> itemIds = config.getIntegerList("ids");
 
         Pattern nameFilter;
@@ -91,6 +95,8 @@ public class FilteredItemsTable extends GenericRDSTable {
                 .filter(item -> idFilterMin < 1 || item.getId() >= idFilterMin)
                 .filter(item -> idFilterMax < 1 || item.getId() <= idFilterMax)
                 .filter(item -> nameFilter == null || nameFilter.matcher(item.getName()).matches())
+                .filter(item -> includeCategories.isEmpty() || item.getCategories().stream().map(ItemCategory::getName).anyMatch(includeCategories::contains))
+                .filter(item -> excludeCategories.isEmpty() || item.getCategories().stream().map(ItemCategory::getName).noneMatch(excludeCategories::contains))
                 .filter(item -> ignoreUnlootable || item.isLootable())
                 .forEach(item -> addEntry(new ItemLootObject(item)));
     }
