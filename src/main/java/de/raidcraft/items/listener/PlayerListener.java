@@ -12,14 +12,16 @@ import de.raidcraft.api.items.events.EquipCustomItemEvent;
 import de.raidcraft.api.items.events.EquipCustomWeaponEvent;
 import de.raidcraft.api.items.tooltip.EquipmentTypeTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
-import de.raidcraft.api.language.Translator;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
+import de.raidcraft.util.TimeUtil;
 import de.raidcraft.util.UUIDUtil;
 import lombok.Getter;
 import mkremins.fanciful.FancyMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,6 +54,7 @@ public class PlayerListener implements Listener {
     private final ItemsPlugin.LocalConfiguration config;
     @Getter
     private static final Map<UUID, List<CustomItemStack>> autoCompleteItems = new HashMap<>();
+    private static final Map<UUID, List<Item>> warnedPickupItems = new HashMap<>();
 
     public PlayerListener(ItemsPlugin plugin) {
 
@@ -158,10 +161,21 @@ public class PlayerListener implements Listener {
                 }
                 Optional<UUID> owner = customItemStack.getOwner();
                 if (owner.isPresent() && !owner.get().equals(event.getPlayer().getUniqueId())) {
-                    Translator.msg(ItemsPlugin.class, event.getPlayer(), "itempickup.deny-soulbound",
-                            ChatColor.RED + "Das Item %s ist an %s gebunden und kann nicht aufgenommen werden!",
-                            customItemStack.getItemMeta().getDisplayName(), UUIDUtil.getNameFromUUID(owner.get()));
                     event.setCancelled(true);
+                    if (warnedPickupItems.getOrDefault(event.getPlayer().getUniqueId(), new ArrayList<>()).contains(event.getItem())) {
+                        return;
+                    }
+                    FancyMessage message = CustomItemUtil.getFormattedItemTooltip(new FancyMessage(""), customItemStack);
+                    message.then(" ist an ").color(ChatColor.RED).then(UUIDUtil.getNameFromUUID(owner.get())).color(ChatColor.AQUA)
+                            .then(" gebunden und kann nicht aufgenommen werden!").color(ChatColor.RED)
+                            .send(event.getPlayer());
+                    if (!warnedPickupItems.containsKey(event.getPlayer().getUniqueId())) {
+                        warnedPickupItems.put(event.getPlayer().getUniqueId(), new ArrayList<>());
+                    }
+                    warnedPickupItems.get(event.getPlayer().getUniqueId()).add(event.getItem());
+                    Bukkit.getScheduler().runTaskLater(plugin,
+                            () -> warnedPickupItems.getOrDefault(event.getPlayer().getUniqueId(), new ArrayList<>()).remove(event.getItem()),
+                            TimeUtil.secondsToTicks(plugin.getConfig().soulboundItemPickupWarnInterval));
                     return;
                 }
                 if (customItemStack.getItem().getBindType() == ItemBindType.BIND_ON_PICKUP) {

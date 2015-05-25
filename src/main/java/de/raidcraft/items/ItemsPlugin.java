@@ -379,6 +379,8 @@ public class ItemsPlugin extends BasePlugin {
         public double durabilityLossChanceOnDamage = 0.0001;
         @Setting("hide-item-level")
         public boolean hideItemLevel = true;
+        @Setting("soulbound-item-warn-interval")
+        public double soulboundItemPickupWarnInterval = 60;
 
         public int getDefaultCustomItem(int minecraftId) {
 
