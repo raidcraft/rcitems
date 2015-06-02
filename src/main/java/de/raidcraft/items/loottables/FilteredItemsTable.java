@@ -6,6 +6,7 @@ import de.raidcraft.api.items.ItemCategory;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.api.random.GenericRDSTable;
+import de.raidcraft.api.random.Loadable;
 import de.raidcraft.api.random.RDSObject;
 import de.raidcraft.api.random.RDSObjectFactory;
 import de.raidcraft.api.random.objects.ItemLootObject;
@@ -24,7 +25,7 @@ import java.util.regex.Pattern;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FilteredItemsTable extends GenericRDSTable {
+public class FilteredItemsTable extends GenericRDSTable implements Loadable {
 
     @RDSObjectFactory.Name("filtered-custom-items")
     public static class Factory implements RDSObjectFactory {
@@ -37,6 +38,21 @@ public class FilteredItemsTable extends GenericRDSTable {
     }
 
     public FilteredItemsTable(ConfigurationSection config, int minItemLevel, int maxItemLevel) {
+
+        super(null, config.getInt("count", 1),
+                config.getDouble("probability", 1.0),
+                config.getBoolean("enabled", true),
+                config.getBoolean("always", false),
+                config.getBoolean("unique", false));
+        config.set("min-level", minItemLevel);
+        config.set("max-level", maxItemLevel);
+        load(config);
+    }
+
+    public void load(ConfigurationSection config) {
+
+        int minItemLevel = config.getInt("min-level", 1);
+        int maxItemLevel = config.getInt("max-level", 1);
 
         List<ItemType> itemTypes = new ArrayList<>();
         for (String type : config.getStringList("types")) {
