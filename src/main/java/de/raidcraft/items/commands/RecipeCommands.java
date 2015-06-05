@@ -55,7 +55,7 @@ public class RecipeCommands {
             aliases = {"create"},
             desc = "Creates a new recipe",
             min = 2,
-            flags = "p:",
+            flags = "p",
             usage = "<name> <type[SHAPED,SHAPELESS,FURNACE]>"
     )
     @CommandPermissions("rcitems.recipe.create")
@@ -64,11 +64,6 @@ public class RecipeCommands {
         Player player = (Player) sender;
         String name = args.getString(0);
         CraftingRecipeType type = CraftingRecipeType.fromString(args.getString(1));
-        String permission = null;
-
-        if (args.hasFlag('p')) {
-            permission = args.getFlag('p');
-        }
 
         if (type == null) {
             throw new CommandException("Ungültiger Rezept Typ: " + args.getString(1));
@@ -130,7 +125,7 @@ public class RecipeCommands {
                 }
             }
 
-            CustomShapedRecipe recipe = new CustomShapedRecipe(name, permission, result);
+            CustomShapedRecipe recipe = new CustomShapedRecipe(name, args.hasFlag('p') ? name : null, result);
             recipe.shape(shape);
             for (Map.Entry<ItemStack, Character> entry : items.entrySet()) {
                 recipe.setIngredient(entry.getValue(), new ItemStack(entry.getKey()));
@@ -165,7 +160,7 @@ public class RecipeCommands {
                 }
             }
 
-            CustomShapelessRecipe recipe = new CustomShapelessRecipe(name, permission, result);
+            CustomShapelessRecipe recipe = new CustomShapelessRecipe(name, args.hasFlag('p') ? name : null, result);
             for (Map.Entry<ItemStack, Integer> entry : ingredients.entrySet()) {
                 recipe.addIngredient(entry.getValue(), entry.getKey());
             }
@@ -183,7 +178,7 @@ public class RecipeCommands {
                 }
                 input = slot;
             }
-            CustomFurnaceRecipe recipe = new CustomFurnaceRecipe(name, permission, result, input);
+            CustomFurnaceRecipe recipe = new CustomFurnaceRecipe(name, args.hasFlag('p') ? name : null, result, input);
             plugin.getCraftingManager().loadRecipe(recipe);
             recipe.save();
         }
