@@ -8,9 +8,9 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.Skull;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
+import de.raidcraft.util.customheadapi.CustomHeadApi;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -98,16 +98,15 @@ public class ItemCommands {
     @Command(
             aliases = {"fakeskull"},
             desc = "Creates a fake skull from a custom url",
-            usage = "<name> <url>",
-            min = 2
+            usage = "<url>",
+            min = 1
     )
     @CommandPermissions("rcitems.fakeskull")
     public void fakeSkull(CommandContext args, CommandSender sender) {
 
-        ItemStack skull = Skull.getSkull(args.getString(0));
-        Skull.injectCustomSkin(args.getJoinedStrings(1), args.getString(0), skull);
+        ItemStack skull = CustomHeadApi.getHeadCreator().createItemStack(args.getJoinedStrings(0));
         Player player = (Player) sender;
-        Inventory inventory = Bukkit.createInventory(player, 9, "Custom Skull for " + args.getString(0));
+        Inventory inventory = Bukkit.createInventory(player, 9);
         inventory.addItem(skull);
         player.openInventory(inventory);
     }
