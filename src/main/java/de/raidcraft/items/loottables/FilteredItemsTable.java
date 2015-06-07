@@ -39,11 +39,6 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
 
     public FilteredItemsTable(ConfigurationSection config, int minItemLevel, int maxItemLevel) {
 
-        super(null, config.getInt("count", 1),
-                config.getDouble("probability", 1.0),
-                config.getBoolean("enabled", true),
-                config.getBoolean("always", false),
-                config.getBoolean("unique", false));
         config.set("min-level", minItemLevel);
         config.set("max-level", maxItemLevel);
         load(config);
