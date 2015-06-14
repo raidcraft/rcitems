@@ -113,6 +113,7 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
                 .filter(item -> excludeCategories.isEmpty() || item.getCategories().stream().map(ItemCategory::getName).noneMatch(excludeCategories::contains))
                 .filter(item -> ignoreUnlootable || item.isLootable())
                 .collect(Collectors.toList());
+        items.size();
         items.forEach(item -> addEntry(new ItemLootObject(item)));
     }
 }
