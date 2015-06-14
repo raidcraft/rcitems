@@ -37,17 +37,18 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
         }
     }
 
+    protected ConfigurationSection args;
+    protected int minItemLevel;
+    protected int maxItemLevel;
+
     public FilteredItemsTable(ConfigurationSection config, int minItemLevel, int maxItemLevel) {
 
-        config.set("min-level", minItemLevel);
-        config.set("max-level", maxItemLevel);
+        this.minItemLevel = minItemLevel;
+        this.maxItemLevel = maxItemLevel;
         load(config);
     }
 
     public void load(ConfigurationSection config) {
-
-        int minItemLevel = config.getInt("min-level", 0);
-        int maxItemLevel = config.getInt("max-level", 0);
 
         List<ItemType> itemTypes = new ArrayList<>();
         for (String type : config.getStringList("types")) {
