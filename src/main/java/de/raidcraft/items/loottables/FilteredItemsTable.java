@@ -1,6 +1,7 @@
 package de.raidcraft.items.loottables;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemCategory;
 import de.raidcraft.api.items.ItemQuality;
@@ -19,6 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author mdoering
@@ -97,7 +99,7 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
 
         boolean ignoreUnlootable = config.getBoolean("ignore-unlootable", false);
 
-        RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().getLoadedCustomItems().stream()
+        List<CustomItem> items = RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().getLoadedCustomItems().stream()
                 .filter(item -> itemTypes.isEmpty() || itemTypes.contains(item.getType()))
                 .filter(item -> itemQualities.isEmpty() || itemQualities.contains(item.getQuality()))
                 .filter(item -> bindTypes.isEmpty() || bindTypes.contains(item.getBindType()))
@@ -110,6 +112,7 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
                 .filter(item -> includeCategories.isEmpty() || item.getCategories().stream().map(ItemCategory::getName).anyMatch(includeCategories::contains))
                 .filter(item -> excludeCategories.isEmpty() || item.getCategories().stream().map(ItemCategory::getName).noneMatch(excludeCategories::contains))
                 .filter(item -> ignoreUnlootable || item.isLootable())
-                .forEach(item -> addEntry(new ItemLootObject(item)));
+                .collect(Collectors.toList());
+        items.forEach(item -> addEntry(new ItemLootObject(item)));
     }
 }
