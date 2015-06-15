@@ -113,6 +113,8 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
     public void loadItems() {
 
         clearContents();
+        if (minItemLevel < 1) minItemLevel = 1;
+        if (maxItemLevel < 1) maxItemLevel = 1;
         RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().getLoadedCustomItems().stream()
                 .filter(item -> itemTypes.isEmpty() || itemTypes.contains(item.getType()))
                 .filter(item -> itemQualities.isEmpty() || itemQualities.contains(item.getQuality()))
