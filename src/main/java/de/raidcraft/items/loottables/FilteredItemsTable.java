@@ -1,7 +1,6 @@
 package de.raidcraft.items.loottables;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemCategory;
 import de.raidcraft.api.items.ItemQuality;
@@ -15,13 +14,11 @@ import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.ConfigUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * @author mdoering
@@ -36,25 +33,32 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
         @Override
         public RDSObject createInstance(ConfigurationSection config) {
 
-            return new FilteredItemsTable(config, config.getInt("min-level", 0), config.getInt("max-level", 0));
+            return new FilteredItemsTable(config.getInt("min-level", 0), config.getInt("max-level", 0));
         }
     }
 
-    @Getter
-    protected ConfigurationSection args;
     protected int minItemLevel;
     protected int maxItemLevel;
+    protected List<ItemType> itemTypes = new ArrayList<>();
+    protected List<ItemQuality> itemQualities = new ArrayList<>();
+    protected List<ItemBindType> bindTypes = new ArrayList<>();
+    protected List<String> includeCategories = new ArrayList<>();
+    protected List<String> excludeCategories = new ArrayList<>();
+    protected List<Integer> itemIds = new ArrayList<>();
+    protected Pattern nameFilter;
+    protected int idFilterMin;
+    protected int idFilterMax;
+    protected boolean ignoreUnlootable;
 
-    public FilteredItemsTable(ConfigurationSection config, int minItemLevel, int maxItemLevel) {
+    public FilteredItemsTable(int minItemLevel, int maxItemLevel) {
 
         this.minItemLevel = minItemLevel;
         this.maxItemLevel = maxItemLevel;
-        load(config);
     }
 
     public void load(ConfigurationSection config) {
 
-        List<ItemType> itemTypes = new ArrayList<>();
+        itemTypes = new ArrayList<>();
         for (String type : config.getStringList("types")) {
             ItemType itemType = ItemType.fromString(type);
             if (itemType != null) {
@@ -64,7 +68,7 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
             }
         }
 
-        List<ItemQuality> itemQualities = new ArrayList<>();
+        itemQualities = new ArrayList<>();
         for (String quality : config.getStringList("qualities")) {
             ItemQuality itemQuality = ItemQuality.fromString(quality);
             if (itemQuality != null) {
@@ -74,7 +78,7 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
             }
         }
 
-        List<ItemBindType> bindTypes = new ArrayList<>();
+        bindTypes = new ArrayList<>();
         for (String binding : config.getStringList("bind-types")) {
             ItemBindType itemBindType = ItemBindType.fromString(binding);
             if (itemBindType != null) {
@@ -84,24 +88,29 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
             }
         }
 
-        List<String> includeCategories = config.getStringList("include-categories");
-        List<String> excludeCategories = config.getStringList("exclude-categories");
+        includeCategories = config.getStringList("include-categories");
+        excludeCategories = config.getStringList("exclude-categories");
 
-        List<Integer> itemIds = config.getIntegerList("ids");
+        itemIds = config.getIntegerList("ids");
 
-        Pattern nameFilter;
         if (config.isSet("name-filter")) {
             nameFilter = Pattern.compile(config.getString("name-filter"));
         } else {
             nameFilter = null;
         }
 
-        int idFilterMin = config.getInt("min-id", 0);
-        int idFilterMax = config.getInt("max-id", 0);
+        idFilterMin = config.getInt("min-id", 0);
+        idFilterMax = config.getInt("max-id", 0);
 
-        boolean ignoreUnlootable = config.getBoolean("ignore-unlootable", false);
+        ignoreUnlootable = config.getBoolean("ignore-unlootable", false);
 
-        List<CustomItem> items = RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().getLoadedCustomItems().stream()
+        loadItems();
+    }
+
+    public void loadItems() {
+
+        clearContents();
+        RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().getLoadedCustomItems().stream()
                 .filter(item -> itemTypes.isEmpty() || itemTypes.contains(item.getType()))
                 .filter(item -> itemQualities.isEmpty() || itemQualities.contains(item.getQuality()))
                 .filter(item -> bindTypes.isEmpty() || bindTypes.contains(item.getBindType()))
@@ -114,8 +123,6 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
                 .filter(item -> includeCategories.isEmpty() || item.getCategories().stream().map(ItemCategory::getName).anyMatch(includeCategories::contains))
                 .filter(item -> excludeCategories.isEmpty() || item.getCategories().stream().map(ItemCategory::getName).noneMatch(excludeCategories::contains))
                 .filter(item -> ignoreUnlootable || item.isLootable())
-                .collect(Collectors.toList());
-        items.size();
-        items.forEach(item -> addEntry(new ItemLootObject(item)));
+                .forEach(item -> addEntry(new ItemLootObject(item)));
     }
 }
