@@ -15,6 +15,7 @@ import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.ConfigUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
         }
     }
 
+    @Getter
     protected ConfigurationSection args;
     protected int minItemLevel;
     protected int maxItemLevel;
