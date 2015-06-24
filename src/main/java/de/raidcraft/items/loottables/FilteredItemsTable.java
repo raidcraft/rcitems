@@ -33,7 +33,9 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
         @Override
         public RDSObject createInstance(ConfigurationSection config) {
 
-            return new FilteredItemsTable(config.getInt("min-level", 0), config.getInt("max-level", 0));
+            FilteredItemsTable filteredItemsTable = new FilteredItemsTable(config.getInt("min-level", 0), config.getInt("max-level", 0));
+            filteredItemsTable.load(config);
+            return filteredItemsTable;
         }
     }
 
@@ -57,9 +59,6 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
     }
 
     public void load(ConfigurationSection config) {
-
-        ConfigurationSection args = config.getConfigurationSection("args");
-        if (args == null) return;
 
         itemTypes = new ArrayList<>();
         for (String type : config.getStringList("types")) {
