@@ -94,6 +94,7 @@ public class ItemsPlugin extends BasePlugin {
         craftingManager = new CraftingManager(this);
         // register action api stuff
         ActionAPI.register(this)
+                .global()
                 .trigger(new CustomItemTrigger());
 
         Chat.registerAutoCompletionProvider(this, new ItemsAutoCompletionProvider());

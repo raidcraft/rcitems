@@ -131,8 +131,8 @@ public class CustomItemTrigger extends Trigger implements Listener {
     }
 
     @Information(
-            value = "item.pickup",
-            desc = "Listens for players that pickup custom items.",
+            value = "item.craft",
+            desc = "Listens for players that craft items.",
             conf = {
                     "recipe(String): unique name of the recipe",
                     "recipes(StringList): unique list of recipe names",
