@@ -22,22 +22,17 @@
     <name>RCItems</name>
 
     <parent>
-        <groupId>de.raidcraft</groupId>
-        <artifactId>masterpom</artifactId>
-        <version>5.0.0-SNAPSHOT</version>
+        <groupId>de.faldoria</groupId>
+        <artifactId>FaldoriaMasterPom</artifactId>
+        <version>1.12-0.1</version>
     </parent>
 
     <repositories>
         <repository>
-            <id>raidcraft</id>
-            <url>http://repo.raid-craft.de/artifactory/repo/</url>
+            <id>faldoria-deps</id>
+            <url>https://repo.faldoria.de/artifactory/faldoria-repo/</url>
         </repository>
     </repositories>
-
-    <scm>
-        <developerConnection>scm:git:ssh://git@raid-craft.de:22109/raid-craft-de/${project.artifactId}.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
 
     <dependencies>
         <dependency>
