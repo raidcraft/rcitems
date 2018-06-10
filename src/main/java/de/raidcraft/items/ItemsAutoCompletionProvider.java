@@ -7,7 +7,7 @@ import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.items.listener.PlayerListener;
 import de.raidcraft.util.CustomItemUtil;
-import mkremins.fanciful.FancyMessage;
+import de.raidcraft.util.fanciful.FancyMessage;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;

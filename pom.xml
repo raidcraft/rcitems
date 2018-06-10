@@ -18,7 +18,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>items</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.12-0.1-SNAPSHOT</version>
     <name>RCItems</name>
 
     <parent>
@@ -36,14 +36,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.raidcraft</groupId>
+            <groupId>de.faldoria</groupId>
             <artifactId>raidcraft-api</artifactId>
-            <version>1.6.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>de.raidcraft</groupId>
-            <artifactId>rcconversations</artifactId>
-            <version>1.2.0</version>
+            <version>1.12-0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
