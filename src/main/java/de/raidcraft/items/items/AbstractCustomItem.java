@@ -1,26 +1,10 @@
 package de.raidcraft.items.items;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomItem;
-import de.raidcraft.api.items.CustomItemException;
-import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.ItemBindType;
-import de.raidcraft.api.items.ItemCategory;
-import de.raidcraft.api.items.ItemQuality;
-import de.raidcraft.api.items.ItemType;
-import de.raidcraft.api.items.attachments.AttachableCustomItem;
-import de.raidcraft.api.items.attachments.ConfiguredAttachment;
-import de.raidcraft.api.items.attachments.ItemAttachment;
-import de.raidcraft.api.items.attachments.ItemAttachmentException;
-import de.raidcraft.api.items.attachments.ItemAttachmentManager;
-import de.raidcraft.api.items.attachments.RequiredItemAttachment;
-import de.raidcraft.api.items.tooltip.BindTooltip;
-import de.raidcraft.api.items.tooltip.NameTooltip;
-import de.raidcraft.api.items.tooltip.SingleLineTooltip;
-import de.raidcraft.api.items.tooltip.Tooltip;
-import de.raidcraft.api.items.tooltip.TooltipSlot;
-import de.raidcraft.api.items.tooltip.VariableMultilineTooltip;
+import de.raidcraft.api.items.*;
+import de.raidcraft.api.items.attachments.*;
+import de.raidcraft.api.items.tooltip.*;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
@@ -31,13 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author mdoering
@@ -260,7 +238,7 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
     @Override
     public String toString() {
 
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("name", name)
                 .add("minecraftItem", minecraftItem)
