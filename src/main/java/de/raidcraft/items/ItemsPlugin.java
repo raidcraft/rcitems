@@ -3,6 +3,7 @@ package de.raidcraft.items;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.NestedCommand;
+import de.raidcraft.CommonConfig;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.action.ActionAPI;
@@ -10,24 +11,13 @@ import de.raidcraft.api.chat.Chat;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.KeyValueMap;
 import de.raidcraft.api.config.Setting;
-import de.raidcraft.api.items.CustomArmor;
-import de.raidcraft.api.items.CustomEquipment;
-import de.raidcraft.api.items.CustomItem;
-import de.raidcraft.api.items.CustomItemException;
-import de.raidcraft.api.items.CustomItemManager;
-import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.DuplicateCustomItemException;
-import de.raidcraft.api.items.ItemAttribute;
+import de.raidcraft.api.items.*;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
 import de.raidcraft.api.quests.QuestConfigLoader;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.api.random.RDS;
-import de.raidcraft.items.commands.BookUtilCommands;
-import de.raidcraft.items.commands.ItemCommands;
-import de.raidcraft.items.commands.LoreCommands;
-import de.raidcraft.items.commands.RecipeCommands;
-import de.raidcraft.items.commands.StorageCommands;
+import de.raidcraft.items.commands.*;
 import de.raidcraft.items.configs.AttachmentConfig;
 import de.raidcraft.items.configs.NamedYAMLCustomItem;
 import de.raidcraft.items.crafting.CraftingManager;
@@ -39,14 +29,7 @@ import de.raidcraft.items.listener.PlayerListener;
 import de.raidcraft.items.loottables.FilteredItemsTable;
 import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
-import de.raidcraft.items.tables.items.TItemCategory;
-import de.raidcraft.items.tables.items.TCustomArmor;
-import de.raidcraft.items.tables.items.TCustomEquipment;
-import de.raidcraft.items.tables.items.TCustomItem;
-import de.raidcraft.items.tables.items.TCustomItemAttachment;
-import de.raidcraft.items.tables.items.TCustomWeapon;
-import de.raidcraft.items.tables.items.TEquipmentAttribute;
-import de.raidcraft.items.tables.items.TItemAttachmentData;
+import de.raidcraft.items.tables.items.*;
 import de.raidcraft.items.trigger.CustomItemTrigger;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.ConfigUtil;
@@ -62,12 +45,7 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -75,6 +53,7 @@ import java.util.Set;
 public class ItemsPlugin extends BasePlugin {
 
     private final Set<Integer> loadedCustomItems = new HashSet<>();
+    private final Set<String> loadedConfigCustomItems = new HashSet<>();
     private final Map<String, AttachmentConfig> loadedAttachments = new HashMap<>();
     private LocalConfiguration config;
     private CraftingManager craftingManager;
@@ -90,6 +69,7 @@ public class ItemsPlugin extends BasePlugin {
         // the attachments need to load before the custom items because we use them in there
         loadAttachments();
         loadCustomItems();
+        loadConfiguredCustomItems();
         // load the crafting manager after init of the custom items
         craftingManager = new CraftingManager(this);
         // register action api stuff
@@ -104,14 +84,7 @@ public class ItemsPlugin extends BasePlugin {
         Quests.registerQuestLoader(new QuestConfigLoader("item") {
             @Override
             public void loadConfig(String id, ConfigurationSection config) {
-
-                try {
-                    CustomItem customItem = new NamedYAMLCustomItem(config.getString("name", id), config);
-                    RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().registerNamedCustomItem(id, customItem);
-                    getLogger().info("Loaded custom quest item: " + id + " (" + customItem.getName() + ")");
-                } catch (CustomItemException e) {
-                    getLogger().warning(e.getMessage());
-                }
+                registerNamedCustomItem(id, config);
             }
 
             @Override
@@ -150,6 +123,7 @@ public class ItemsPlugin extends BasePlugin {
         // the attachments need to load before the custom items because we use them in there
         loadAttachments();
         loadCustomItems();
+        loadConfiguredCustomItems();
         // load the crafting manager after init of the custom items
         craftingManager.reload();
     }
@@ -192,6 +166,40 @@ public class ItemsPlugin extends BasePlugin {
             AttachmentConfig config = configure(new AttachmentConfig(this, file));
             loadedAttachments.put(config.getName(), config);
             info("Loaded item attachment config: " + config.getName());
+        }
+    }
+
+    private void loadConfiguredCustomItems() {
+        loadedConfigCustomItems.clear();
+        File dir = new File(getDataFolder(), getConfig().customItemConfigDir);
+        dir.mkdirs();
+        loadConfiguredCustomItems(dir);
+    }
+
+    // TODO: rework custom item handling of configs
+    private void loadConfiguredCustomItems(File dir) {
+
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                loadConfiguredCustomItems(file);
+            }
+            if (!file.getName().endsWith(".yml")) {
+                continue;
+            }
+            CommonConfig config = new CommonConfig(this, file);
+            config.load();
+            registerNamedCustomItem(file.getName().replace(".yml", ""), config);
+        }
+    }
+
+    private void registerNamedCustomItem(String id, ConfigurationSection config) {
+        try {
+            CustomItem customItem = new NamedYAMLCustomItem(config.getString("name", id), config);
+            RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().registerNamedCustomItem(id, customItem);
+            loadedConfigCustomItems.add(id);
+            getLogger().info("Loaded custom config item: " + id + " (" + customItem.getName() + ")");
+        } catch (CustomItemException e) {
+            getLogger().warning(e.getMessage());
         }
     }
 
@@ -382,6 +390,8 @@ public class ItemsPlugin extends BasePlugin {
         public boolean hideItemLevel = true;
         @Setting("soulbound-item-warn-interval")
         public double soulboundItemPickupWarnInterval = 60;
+        @Setting("custom-items")
+        public String customItemConfigDir = "custom-items/";
 
         public int getDefaultCustomItem(int minecraftId) {
 
