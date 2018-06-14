@@ -8,13 +8,10 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.chat.Chat;
-import de.raidcraft.api.config.ConfigurationBase;
-import de.raidcraft.api.config.KeyValueMap;
-import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.config.*;
 import de.raidcraft.api.items.*;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
-import de.raidcraft.api.quests.QuestConfigLoader;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.items.commands.*;
@@ -81,7 +78,7 @@ public class ItemsPlugin extends BasePlugin {
 
         RDS.registerObject(new FilteredItemsTable.Factory());
 
-        Quests.registerQuestLoader(new QuestConfigLoader("item") {
+        Quests.registerQuestLoader(new ConfigLoader(this, "item") {
             @Override
             public void loadConfig(String id, ConfigurationSection config) {
                 registerNamedCustomItem(id, config);
@@ -390,8 +387,14 @@ public class ItemsPlugin extends BasePlugin {
         public boolean hideItemLevel = true;
         @Setting("soulbound-item-warn-interval")
         public double soulboundItemPickupWarnInterval = 60;
-        @Setting("custom-items")
+        @Setting("configured-custom-items.path")
+        @Comment("Where are you storing your custom item configs?")
         public String customItemConfigDir = "custom-items/";
+        @Setting("configured-custom-items.start-id")
+        @Comment("Config custom items will get a assigned a unique id from this pool.")
+        public int customItemStartId = 900000;
+        @Setting("configured-custom-items.end-id")
+        public int customItemEndId = 999999;
 
         public int getDefaultCustomItem(int minecraftId) {
 
