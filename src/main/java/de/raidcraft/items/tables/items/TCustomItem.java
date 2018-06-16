@@ -7,15 +7,7 @@ import de.raidcraft.api.items.ItemType;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +26,6 @@ public class TCustomItem {
     @Column(unique = true)
     private String name;
     private String lore;
-    @NotNull
-    private int minecraftId;
     private String minecraftItem;
     @NotNull
     private int minecraftDataValue;

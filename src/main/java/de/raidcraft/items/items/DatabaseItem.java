@@ -18,7 +18,6 @@ public abstract class DatabaseItem extends AbstractCustomItem {
         setBlockingUsage(item.isBlockUsage());
         setLootable(item.isLootable());
         setMaxStackSize(item.getMaxStackSize());
-        setMinecraftId(item.getMinecraftId());
         setMinecraftItem(Material.getMaterial(item.getMinecraftItem()));
         setMinecraftDataValue((short) item.getMinecraftDataValue());
         setLore(item.getLore());

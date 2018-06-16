@@ -34,7 +34,6 @@ import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.StringUtils;
 import lombok.Getter;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -208,14 +207,6 @@ public class ItemsPlugin extends BasePlugin {
         // lets load all custom items that are defined in the database
         Set<TCustomItem> customItems = getDatabase().find(TCustomItem.class).findSet();
         for (TCustomItem item : customItems) {
-            if (item.getMinecraftId() < 1) {
-                continue;
-            } else if (item.getMinecraftItem() == null || item.getMinecraftItem().equals("")) {
-                // convert to new minecraft name format
-                item.setMinecraftItem(Material.getMaterial(item.getMinecraftId()).name());
-                getDatabase().save(item);
-                getLogger().info("Item ID Converter: id " + item.getId() + " -> " + item.getMinecraftItem());
-            }
             CustomItem customItem = loadCustomDatabaseItem(item);
             if (customItem == null) {
                 continue;
