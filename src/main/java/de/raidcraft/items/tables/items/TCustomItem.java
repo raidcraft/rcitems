@@ -26,6 +26,7 @@ public class TCustomItem {
     @Column(unique = true)
     private String name;
     private String lore;
+    @NotNull
     private String minecraftItem;
     @NotNull
     private int minecraftDataValue;

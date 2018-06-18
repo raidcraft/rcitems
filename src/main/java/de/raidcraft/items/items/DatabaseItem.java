@@ -13,13 +13,13 @@ public abstract class DatabaseItem extends AbstractCustomItem {
     public DatabaseItem(TCustomItem item, ItemType type) {
 
         super(item.getId(), item.getName(), type);
+        setMinecraftItem(Material.matchMaterial(item.getMinecraftItem()));
+        setMinecraftDataValue((short) item.getMinecraftDataValue());
         setBindType(item.getBindType());
         setSellPrice(item.getSellPrice());
         setBlockingUsage(item.isBlockUsage());
         setLootable(item.isLootable());
         setMaxStackSize(item.getMaxStackSize());
-        setMinecraftItem(Material.getMaterial(item.getMinecraftItem()));
-        setMinecraftDataValue((short) item.getMinecraftDataValue());
         setLore(item.getLore());
         setItemLevel(item.getItemLevel());
         setQuality(item.getQuality());

@@ -28,8 +28,6 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
     private final String encodedId;
     private final String name;
     protected Material minecraftItem;
-    @Deprecated
-    protected int minecraftId;
     private ItemType type;
     protected short minecraftDataValue;
     protected String lore = "";
@@ -54,18 +52,10 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
         this.type = type;
     }
 
-    @Deprecated
-    protected void setMinecraftId(int id) {
-
-        this.minecraftId = id;
-        setMinecraftItem(Material.getMaterial(id));
-    }
-
     protected void setMinecraftItem(Material minecraftItem) {
 
         if (minecraftItem == null) return;
         this.minecraftItem = minecraftItem;
-        this.minecraftId = minecraftItem.getId();
     }
 
     protected void buildTooltips() {
