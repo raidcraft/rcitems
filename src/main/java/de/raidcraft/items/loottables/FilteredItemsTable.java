@@ -95,8 +95,8 @@ public class FilteredItemsTable extends GenericRDSTable implements Loadable {
 
         itemIds = config.getIntegerList("ids");
 
-        if (config.isSet("name-filter")) {
-            nameFilter = Pattern.compile(config.getString("name-filter"));
+        if (config.isSet("displayName-filter")) {
+            nameFilter = Pattern.compile(config.getString("displayName-filter"));
         } else {
             nameFilter = null;
         }

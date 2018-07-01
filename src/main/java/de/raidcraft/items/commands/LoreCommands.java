@@ -90,9 +90,9 @@ public class LoreCommands {
 
     @Command(
             aliases = {"setname", "name"},
-            desc = "Set display name",
+            desc = "Set display displayName",
             min = 1,
-            usage = "<new name>"
+            usage = "<new displayName>"
     )
     @CommandPermissions("rcitems.lore")
     public void setName(CommandContext args, CommandSender sender) throws CommandException {

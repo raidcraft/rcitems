@@ -13,11 +13,7 @@ import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.Bukkit;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.*;
 import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
@@ -159,9 +155,9 @@ public class CraftingManager implements Component {
             return foundRecipes.get(0);
         }
         if (foundRecipes.isEmpty()) {
-            throw new UnknownRecipeException("There is no recipe with the name " + name);
+            throw new UnknownRecipeException("There is no recipe with the displayName " + name);
         }
-        throw new UnknownRecipeException("Found multiple recipes with the name " + name + ": "
+        throw new UnknownRecipeException("Found multiple recipes with the displayName " + name + ": "
                 + StringUtil.joinString(foundRecipes, ", ", 0));
     }
 

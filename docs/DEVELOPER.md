@@ -24,7 +24,7 @@ Um ein `ItemStack`, z.B. von einer Spielereingabe zu erhalten, kann folgende Fun
 ItemStack customItemFromId = RaidCraft.getItem("rc1234");
 // can get a custom stored object by its id starting with so
 ItemStack storedObjectFromId = RaidCraft.getItem("so1234");
-// can get a custom item by its full name
+// can get a custom item by its full displayName
 ItemStack namedCustomItem = RaidCraft.getItem("Vase aus Faldoria");
 // can get normal vanilla minecraft items
 ItemStack minecraftItem = RaidCraft.getItem("wool");

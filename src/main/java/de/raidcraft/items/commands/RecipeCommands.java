@@ -56,7 +56,7 @@ public class RecipeCommands {
             desc = "Creates a new recipe",
             min = 2,
             flags = "p",
-            usage = "<name> <type[SHAPED,SHAPELESS,FURNACE]>"
+            usage = "<displayName> <type[SHAPED,SHAPELESS,FURNACE]>"
     )
     @CommandPermissions("rcitems.recipe.create")
     public void create(CommandContext args, CommandSender sender) throws CommandException {
@@ -189,7 +189,7 @@ public class RecipeCommands {
             aliases = {"remove", "delete", "del"},
             desc = "Removes the given recipe",
             min = 1,
-            usage = "<name>"
+            usage = "<displayName>"
     )
     @CommandPermissions("rcitems.recipe.remove")
     public void remove(CommandContext args, CommandSender sender) throws CommandException {

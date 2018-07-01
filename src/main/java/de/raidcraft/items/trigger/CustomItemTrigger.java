@@ -2,16 +2,11 @@ package de.raidcraft.items.trigger;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.trigger.Trigger;
-import de.raidcraft.api.items.CustomItem;
-import de.raidcraft.api.items.CustomItemException;
-import de.raidcraft.api.items.ItemBindType;
-import de.raidcraft.api.items.ItemQuality;
-import de.raidcraft.api.items.ItemType;
+import de.raidcraft.api.items.*;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.crafting.recipes.CustomRecipe;
 import de.raidcraft.util.ConfigUtil;
 import de.raidcraft.util.CustomItemUtil;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -44,7 +39,7 @@ public class CustomItemTrigger extends Trigger implements Listener {
                     "qualities(StringList): <a href=\"https://git.raid-craft.de/raid-craft-de/raidcraft-api/blob/master/src/main/java/de/raidcraft/api/items/ItemQuality.java\">ItemQuality</a>",
                     "bind-types(StringList): <a href=\"https://git.raid-craft.de/raid-craft-de/raidcraft-api/blob/master/src/main/java/de/raidcraft/api/items/ItemBindType.java\">BindType</a>",
                     "ids(IntList): List of item ids (database ids)",
-                    "name-filter(RegExpPattern): Regex of Item Name",
+                    "displayName-filter(RegExpPattern): Regex of Item Name",
                     "min-id(int): item db id for range",
                     "max-id(int): item db id for range"
             }
@@ -108,8 +103,8 @@ public class CustomItemTrigger extends Trigger implements Listener {
             List<Integer> itemIds = config.getIntegerList("ids");
 
             Pattern nameFilter;
-            if (config.isSet("name-filter")) {
-                nameFilter = Pattern.compile(config.getString("name-filter"));
+            if (config.isSet("displayName-filter")) {
+                nameFilter = Pattern.compile(config.getString("displayName-filter"));
             } else {
                 nameFilter = null;
             }
@@ -134,9 +129,9 @@ public class CustomItemTrigger extends Trigger implements Listener {
             value = "item.craft",
             desc = "Listens for players that craft items.",
             conf = {
-                    "recipe(String): unique name of the recipe",
+                    "recipe(String): unique displayName of the recipe",
                     "recipes(StringList): unique list of recipe names",
-                    "name-filter(RegExPattern): regex for names"
+                    "displayName-filter(RegExPattern): regex for names"
             }
     )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -149,7 +144,7 @@ public class CustomItemTrigger extends Trigger implements Listener {
             return;
         }
 
-        informListeners("craft", (Player) event.getWhoClicked(), config -> {
+        informListeners("craft", event.getWhoClicked(), config -> {
 
             CustomRecipe customRecipe = RaidCraft.getComponent(ItemsPlugin.class).getCraftingManager().getMatchingRecipe(event.getRecipe());
             if (config.isSet("recipe")) {
@@ -158,8 +153,8 @@ public class CustomItemTrigger extends Trigger implements Listener {
             if (config.isList("recipes")) {
                 return config.getStringList("recipes").contains(customRecipe.getName().toLowerCase());
             }
-            if (config.isSet("name-filter")) {
-                return Pattern.matches(config.getString("name-filter"), customRecipe.getName());
+            if (config.isSet("displayName-filter")) {
+                return Pattern.matches(config.getString("displayName-filter"), customRecipe.getName());
             }
             return true;
         });

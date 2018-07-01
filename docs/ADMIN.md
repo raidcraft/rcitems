@@ -40,12 +40,12 @@ Hier finden Server Admins alle wichtigen Informationen um das [RCItems](../READM
 | ------- | ----- | --------- | ----------- | ---------- |
 | help    |       |           | Zeigt die Hilfe an | |
 | reload    |   |   | Lädt alle Crafting Rezepte neu. | `rcitems.reload` |
-| create | `<name>` `<SHAPED|SHAPELESS|FURNACE>` | -p | Erstellt aus speziell angeordneten Items im Inventar ein [Custom Crafting Rezept](#custom-crafting-rezepte). Mit dem Flag `-p` wird festgelegt, dass man das Rezept nur mit der entsprechenden Permission (`rcitems.recipes.<recipe-name>`) craften kann. | `rcitems.recipe.create` |
-| delete | `<name>` | | Löscht das angegebene Rezept aus der Datenbank. | `rcitems.recipe.remove` |
+| create | `<displayName>` `<SHAPED|SHAPELESS|FURNACE>` | -p | Erstellt aus speziell angeordneten Items im Inventar ein [Custom Crafting Rezept](#custom-crafting-rezepte). Mit dem Flag `-p` wird festgelegt, dass man das Rezept nur mit der entsprechenden Permission (`rcitems.recipes.<recipe-displayName>`) craften kann. | `rcitems.recipe.create` |
+| delete | `<displayName>` | | Löscht das angegebene Rezept aus der Datenbank. | `rcitems.recipe.remove` |
 
 ### Book Commands
 
-> Mit `/book autor <name>` lässt sich der Autor von Büchern ändern die man in der Hand hält.
+> Mit `/book autor <displayName>` lässt sich der Autor von Büchern ändern die man in der Hand hält.
 
 ### Storage Commands
 
@@ -69,7 +69,7 @@ Mit den `Lore` oder auch `Legende` Commands lassen sich die Beschreibungen von C
 | ------- | ----- | --------- | ----------- | ---------- |
 | addline | `<text>` | | Fügt dem Item eine Zeile mit dem Text hinzu. | `rcitems.lore` |
 | remove | | | Löscht sämtliche Lore von dem Item. | `rcitems.lore` |
-| name | `<name>` | | Gibt dem Item einen speziellen Namen | `rcitems.lore` |
+| displayName | `<displayName>` | | Gibt dem Item einen speziellen Namen | `rcitems.lore` |
 
 ## Custom Items
 
@@ -91,7 +91,7 @@ Folgendes ist ein Beispiel Item mit allen möglichen Eigenschaften. Alle Eigensc
 
 ```yml
 # der Name des Items wie ihn der Spieler zu sehen bekommt
-name: Heu Lieferung
+displayName: Heu Lieferung
 # der Item Type (siehe unten)
 type: QUEST
 # die Qualität des Items (siehe unten)

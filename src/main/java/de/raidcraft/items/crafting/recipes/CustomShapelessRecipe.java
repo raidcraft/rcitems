@@ -55,7 +55,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
 
         if (amount < 1) amount = 1;
         super.addIngredient(amount, ingredient.getData());
-        // lets query for the name of the custom item stack and add it to our list
+        // lets query for the displayName of the custom item stack and add it to our list
         String item = RaidCraft.getItemIdString(ingredient);
         // dont allow item amounts greater than nine, because that makes no sense...
         if (amount > 9) amount = 9;
