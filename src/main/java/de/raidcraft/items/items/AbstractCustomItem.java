@@ -73,6 +73,10 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
         if (getBindType() != null && getBindType() != ItemBindType.NONE) {
             setTooltip(new BindTooltip(getBindType(), null));
         }
+        if (getType() == ItemType.QUEST) {
+            // needed for BetonQuest Plugin
+            setTooltip(new SingleLineTooltip(TooltipSlot.TYPE, getType().getGermanName(), ChatColor.GRAY));
+        }
         updateAttachmentTooltip();
     }
 
