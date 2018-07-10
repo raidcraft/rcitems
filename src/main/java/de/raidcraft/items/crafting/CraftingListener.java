@@ -54,7 +54,7 @@ public class CraftingListener implements Listener {
         }
         if (recipe.getPermission() != null && !event.getWhoClicked().hasPermission(recipe.getPermission())) {
             if (event.getWhoClicked() instanceof Player) {
-                ((Player) event.getWhoClicked()).sendMessage(
+                event.getWhoClicked().sendMessage(
                         ChatColor.RED + "Du bist noch nicht erfahren genug um dieses Gegenstand einzuschmelzen.");
             }
             event.setCancelled(true);
@@ -65,6 +65,9 @@ public class CraftingListener implements Listener {
     public void onPrepareCrafting(PrepareItemCraftEvent event) {
 
         if (event.getInventory() instanceof FurnaceInventory) {
+            return;
+        }
+        if (event.getRecipe() == null || event.getRecipe().getResult() == null) {
             return;
         }
         if (!CustomItemUtil.isCustomItem(event.getRecipe().getResult())) {
@@ -101,7 +104,7 @@ public class CraftingListener implements Listener {
         if (customRecipe != null) {
             if (customRecipe.getPermission() != null && !event.getWhoClicked().hasPermission(customRecipe.getPermission())) {
                 if (event.getWhoClicked() instanceof Player) {
-                    ((Player) event.getWhoClicked()).sendMessage(
+                    event.getWhoClicked().sendMessage(
                             ChatColor.RED + "Du verfügst noch nicht über genug Wissen um diesen Gegenstand herzustellen.");
                 }
                 event.setCancelled(true);
