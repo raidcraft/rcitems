@@ -59,7 +59,7 @@ public class CustomItemTrigger extends Trigger implements Listener {
 
             if (config.isSet("item") || customItem == null) {
                 try {
-                    ItemStack item = RaidCraft.getItem(config.getString("item"));
+                    ItemStack item = RaidCraft.getSafeItem(config.getString("item"));
                     return item != null && item.equals(event.getItem().getItemStack());
                 } catch (CustomItemException e) {
                     RaidCraft.LOGGER.warning("Wrong item " + e.getMessage() + " in " + ConfigUtil.getFileName(config));

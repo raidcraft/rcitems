@@ -89,7 +89,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
         ArrayList<ItemStack> items = new ArrayList<>();
         for (String id : ingredients.keySet()) {
             try {
-                ItemStack item = RaidCraft.getItem(id);
+                ItemStack item = RaidCraft.getSafeItem(id);
                 items.add(item);
             } catch (CustomItemException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());

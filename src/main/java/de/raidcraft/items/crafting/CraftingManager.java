@@ -54,7 +54,7 @@ public class CraftingManager implements Component {
         for (TCraftingRecipe craftingRecipe : recipes) {
             try {
                 // lets parse the result item id string
-                result = RaidCraft.getItem(craftingRecipe.getResult());
+                result = RaidCraft.getSafeItem(craftingRecipe.getResult());
                 result.setAmount(craftingRecipe.getAmount());
                 // lets check what we need as ingredients
                 List<TCraftingRecipeIngredient> ingredients = craftingRecipe.getIngredients();
@@ -70,7 +70,7 @@ public class CraftingManager implements Component {
                                 craftingRecipe.getName(),
                                 craftingRecipe.getPermission(),
                                 result,
-                                new ItemStack(RaidCraft.getItem(ingredients.get(0).getItem()))
+                                new ItemStack(RaidCraft.getSafeItem(ingredients.get(0).getItem()))
                         );
                         break;
                     case SHAPELESS:
@@ -80,7 +80,7 @@ public class CraftingManager implements Component {
                                 result
                         );
                         for (TCraftingRecipeIngredient ingredient : ingredients) {
-                            shapelessRecipe.addIngredient(ingredient.getAmount(), new ItemStack(RaidCraft.getItem(ingredient.getItem())));
+                            shapelessRecipe.addIngredient(ingredient.getAmount(), new ItemStack(RaidCraft.getSafeItem(ingredient.getItem())));
                         }
                         recipe = shapelessRecipe;
                         break;
@@ -92,7 +92,7 @@ public class CraftingManager implements Component {
                         );
                         shapedRecipe.shape(craftingRecipe.getShape().split("\\|"));
                         for (TCraftingRecipeIngredient ingredient : ingredients) {
-                            shapedRecipe.setIngredient(ingredient.getSlot(), new ItemStack(RaidCraft.getItem(ingredient.getItem())));
+                            shapedRecipe.setIngredient(ingredient.getSlot(), new ItemStack(RaidCraft.getSafeItem(ingredient.getItem())));
                         }
                         recipe = shapedRecipe;
                         break;
