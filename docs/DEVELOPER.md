@@ -9,11 +9,11 @@ Die eigentliche Implementierung von Custom Items befindet sich im [RCItems](../R
 
 ## Getting started
 
-Um die Custom Items API zu nutzen muss nur die [RaidCraft API](https://git.faldoria.de/raidcraft/raidcraft-api) als Dependency hinzugefügt werden.
+Um die Custom Items API zu nutzen muss nur die [RaidCraft API](https://git.faldoria.de/tof/plugins/raidcraft/raidcraft-api) als Dependency hinzugefügt werden.
 
-Damit das System normale Items von Custom Items unterscheiden kann wird bei jedem Custom Item eine [MetaDataTooltip](https://git.faldoria.de/raidcraft/raidcraft-api/tree/master/src/main/java/de/raidcraft/api/items/tooltip/MetaDataTooltip.java) Zeile hinzugefügt in der eine unsichtbare ID kodiert ist.
+Damit das System normale Items von Custom Items unterscheiden kann wird bei jedem Custom Item eine [MetaDataTooltip](https://git.faldoria.de/tof/plugins/raidcraft/raidcraft-api/tree/master/src/main/java/de/raidcraft/api/items/tooltip/MetaDataTooltip.java) Zeile hinzugefügt in der eine unsichtbare ID kodiert ist.
 
-Außerdem wurde direkt der `ItemStack` um einen [CustomItemStack](https://git.faldoria.de/raidcraft/raidcraft-api/tree/master/src/main/java/de/raidcraft/api/items/CustomItemStack.java) erweitert, der sich um die Anwendung der Tooltips und Metadaten kümmert.
+Außerdem wurde direkt der `ItemStack` um einen [CustomItemStack](https://git.faldoria.de/tof/plugins/raidcraft/raidcraft-api/tree/master/src/main/java/de/raidcraft/api/items/CustomItemStack.java) erweitert, der sich um die Anwendung der Tooltips und Metadaten kümmert.
 
 ## Useage
 
@@ -30,7 +30,7 @@ ItemStack namedCustomItem = RaidCraft.getItem("Vase aus Faldoria");
 ItemStack minecraftItem = RaidCraft.getItem("wool");
 ```
 
-Um mit der [CustomItem](https://git.faldoria.de/raidcraft/raidcraft-api/tree/master/src/main/java/de/raidcraft/api/items/CustomItem.java) API zu interagieren kann anstatt einem `ItemStack` ein `CustomItem` oder ein `CustomItemStack` abgefragt werden.
+Um mit der [CustomItem](https://git.faldoria.de/tof/plugins/raidcraft/raidcraft-api/tree/master/src/main/java/de/raidcraft/api/items/CustomItem.java) API zu interagieren kann anstatt einem `ItemStack` ein `CustomItem` oder ein `CustomItemStack` abgefragt werden.
 
 ```java
 // gets the raw model of the given custom item

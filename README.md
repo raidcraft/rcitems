@@ -9,16 +9,16 @@ Das Custom Items Plugin wurde entwickelt um Spielern mehr Möglichkeiten zu gebe
 
 ## Getting Started
 
-* [Project Details](https://git.faldoria.de/raidcraft/rcitems)
-* [Source Code](https://git.faldoria.de/raidcraft/rcitems/tree/master)
+* [Project Details](https://git.faldoria.de/tof/plugins/raidcraft/rcitems)
+* [Source Code](https://git.faldoria.de/tof/plugins/raidcraft/rcitems/tree/master)
 * [Latest Stable Download](https://ci.faldoria.de/view/RaidCraft/job/RCItems/lastStableBuild)
-* [Issue Tracker](https://git.faldoria.de/raidcraft/rcitems/issues)
+* [Issue Tracker](https://git.faldoria.de/tof/plugins/raidcraft/rcitems/issues)
 * [Developer Documentation](docs/DEVELOPER.md)
 * [Admin Documentation](docs/ADMIN.md)
 
 ### Prerequisites
 
-Das `RCItems` Plugin ist nur von der [RaidCraft API](https://git.faldoria.de/raidcraft/raidcraft-api) abhängig und benötigt eine Verbindung zu einer MySQL Datenbank.
+Das `RCItems` Plugin ist nur von der [RaidCraft API](https://git.faldoria.de/tof/plugins/raidcraft/raidcraft-api) abhängig und benötigt eine Verbindung zu einer MySQL Datenbank.
 
 Optional: [Webinterface](https://git.faldoria.de/raidcraft/rcwebinterface) zur Erstellung und Verwaltung der Items.
 
