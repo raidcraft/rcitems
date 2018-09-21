@@ -1,13 +1,9 @@
 package de.raidcraft.items.tables.items;
 
-import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.items.ArmorType;
+import io.ebean.annotation.NotNull;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Silthus

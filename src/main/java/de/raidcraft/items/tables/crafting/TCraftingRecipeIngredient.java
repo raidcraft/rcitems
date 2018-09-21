@@ -1,6 +1,6 @@
 package de.raidcraft.items.tables.crafting;
 
-import com.avaje.ebean.validation.NotNull;
+import io.ebean.annotation.NotNull;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

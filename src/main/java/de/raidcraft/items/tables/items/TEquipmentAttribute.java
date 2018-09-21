@@ -1,7 +1,7 @@
 package de.raidcraft.items.tables.items;
 
-import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.items.AttributeType;
+import io.ebean.annotation.NotNull;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

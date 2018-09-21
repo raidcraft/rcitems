@@ -1,15 +1,9 @@
 package de.raidcraft.items.tables.crafting;
 
-import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.items.crafting.CraftingRecipeType;
+import io.ebean.annotation.NotNull;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 /**

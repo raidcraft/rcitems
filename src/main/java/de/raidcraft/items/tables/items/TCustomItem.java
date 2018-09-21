@@ -1,9 +1,9 @@
 package de.raidcraft.items.tables.items;
 
-import com.avaje.ebean.validation.NotNull;
 import de.raidcraft.api.items.ItemBindType;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
+import io.ebean.annotation.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
