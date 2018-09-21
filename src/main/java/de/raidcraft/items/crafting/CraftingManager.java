@@ -164,7 +164,7 @@ public class CraftingManager implements Component {
     public CustomRecipe deleteRecipe(String name) throws UnknownRecipeException {
 
         CustomRecipe recipe = getRecipe(name);
-        TCraftingRecipe table = plugin.getDatabase().find(TCraftingRecipe.class).where().eq("name", recipe.getName()).findUnique();
+        TCraftingRecipe table = plugin.getDatabase().find(TCraftingRecipe.class).where().eq("name", recipe.getName()).findOne();
         plugin.getDatabase().delete(table);
         loadedRecipes.remove(recipe.getName());
         return recipe;

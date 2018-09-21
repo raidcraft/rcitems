@@ -1,6 +1,5 @@
 package de.raidcraft.items.crafting.recipes;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.items.ItemsPlugin;
@@ -8,6 +7,7 @@ import de.raidcraft.items.crafting.CraftingRecipeType;
 import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
 import de.raidcraft.util.ItemUtils;
+import io.ebean.EbeanServer;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -122,7 +122,7 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements CustomReci
     public void save() {
 
         EbeanServer database = RaidCraft.getDatabase(ItemsPlugin.class);
-        TCraftingRecipe recipe = database.find(TCraftingRecipe.class).where().eq("name", getName()).findUnique();
+        TCraftingRecipe recipe = database.find(TCraftingRecipe.class).where().eq("name", getName()).findOne();
         if (recipe == null) {
             // create new
             recipe = new TCraftingRecipe();

@@ -1,9 +1,9 @@
 package de.raidcraft.items.crafting.recipes;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.tables.crafting.TCraftingRecipe;
+import io.ebean.EbeanServer;
 
 /**
  * @author Silthus

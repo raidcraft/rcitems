@@ -228,17 +228,17 @@ public class ItemsPlugin extends BasePlugin {
     private CustomItem createCustomItemFromType(TCustomItem item) {
 
         CustomItem customItem;
-        TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findUnique();
+        TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findOne();
         switch (item.getItemType()) {
             case WEAPON:
                 if (equipment == null) return null;
-                TCustomWeapon weapon = getDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findUnique();
+                TCustomWeapon weapon = getDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findOne();
                 if (weapon == null) return null;
                 customItem = new ConfiguredWeapon(weapon);
                 break;
             case ARMOR:
                 if (equipment == null) return null;
-                TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findUnique();
+                TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findOne();
                 if (armor == null) return null;
                 customItem = new ConfiguredArmor(armor);
                 // lets calculate the armor value if its an item

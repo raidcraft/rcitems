@@ -1,12 +1,12 @@
 package de.raidcraft.items.crafting.recipes;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.crafting.CraftingRecipeType;
 import de.raidcraft.items.crafting.RecipeUtil;
 import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
+import io.ebean.EbeanServer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
@@ -79,7 +79,7 @@ public class CustomShapedRecipe extends ShapedRecipe implements CustomRecipe {
     public void save() {
 
         EbeanServer database = RaidCraft.getDatabase(ItemsPlugin.class);
-        TCraftingRecipe recipe = database.find(TCraftingRecipe.class).where().eq("name", getName()).findUnique();
+        TCraftingRecipe recipe = database.find(TCraftingRecipe.class).where().eq("name", getName()).findOne();
         if (recipe == null) {
             // create new
             recipe = new TCraftingRecipe();

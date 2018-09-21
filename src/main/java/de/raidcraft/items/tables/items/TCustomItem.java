@@ -33,7 +33,7 @@ public class TCustomItem {
     @NotNull
     private int itemLevel;
     @NotNull
-    private ItemQuality quality;
+    private ItemQuality quality = ItemQuality.COMMON;
     @NotNull
     private int maxStackSize;
     @NotNull
