@@ -3,10 +3,7 @@ package de.raidcraft.items.tables.items;
 import de.raidcraft.api.items.AttributeType;
 import io.ebean.annotation.NotNull;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Silthus
@@ -18,10 +15,10 @@ public class TEquipmentAttribute {
     @Id
     private int id;
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private TCustomEquipment equipment;
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private AttributeType attribute;
     @NotNull
     private int attributeValue;

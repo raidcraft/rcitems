@@ -14,7 +14,7 @@ public class TCustomArmor {
 
     @Id
     private int id;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @Column(unique = true)
     private TCustomEquipment equipment;
     @NotNull

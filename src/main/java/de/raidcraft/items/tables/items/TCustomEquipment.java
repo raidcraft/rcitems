@@ -19,7 +19,7 @@ public class TCustomEquipment {
 
     @Id
     private int id;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @NotNull
     @Column(unique = true)
     private TCustomItem item;

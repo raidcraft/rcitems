@@ -15,7 +15,7 @@ public class TCustomItemAttachment {
     @Id
     private int id;
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private TCustomItem item;
     @NotNull
     private String attachmentName;
@@ -23,7 +23,7 @@ public class TCustomItemAttachment {
     private String providerName;
     private String description;
     private String color;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "attachment_id")
     private List<TItemAttachmentData> itemAttachmentDataList;
 

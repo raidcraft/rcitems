@@ -2,11 +2,7 @@ package de.raidcraft.items.tables.items;
 
 import de.raidcraft.api.config.KeyValueMap;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Silthus
@@ -17,7 +13,7 @@ public class TItemAttachmentData implements KeyValueMap {
 
     @Id
     private int id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @Column(name = "attachment_id")
     private TCustomItemAttachment attachment;
     private String dataKey;
