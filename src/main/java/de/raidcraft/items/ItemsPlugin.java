@@ -189,12 +189,27 @@ public class ItemsPlugin extends BasePlugin {
     }
 
     private void registerNamedCustomItem(String id, ConfigurationSection config) {
+        if (config.isSet("id")) {
+            registerCustomItemAlias(config.getInt("id"), id);
+            return;
+        }
         try {
             CustomItem customItem = new NamedYAMLCustomItem(config.getString("name", id), config);
             RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().registerNamedCustomItem(id, customItem);
             loadedConfigCustomItems.add(id);
             getLogger().info("Loaded custom config item: " + id + " (" + customItem.getName() + ")");
         } catch (CustomItemException e) {
+            getLogger().warning(e.getMessage());
+        }
+    }
+
+    private void registerCustomItemAlias(int id, String alias) {
+
+        try {
+            getCustomItemManager().registerCustomItemAlias(id, alias);
+            loadedConfigCustomItems.add(alias);
+            getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
+        } catch (DuplicateCustomItemException e) {
             getLogger().warning(e.getMessage());
         }
     }
