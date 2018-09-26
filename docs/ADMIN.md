@@ -2,21 +2,22 @@
 
 Hier finden Server Admins alle wichtigen Informationen um das [RCItems](../README.md) Plugin zu konfigurieren und zu nutzen. Es wird beschrieben wie man Custom Items und Crafting Rezepte erstellt.
 
-- [Commands](#commands)
-    - [Item Commands](#item-commands)
-    - [Custom Recipe Commands](#custom-recipe-commands)
-    - [Book Commands](#book-commands)
-    - [Storage Commands](#storage-commands)
-    - [Lore Commands](#lore-commands)
-- [Custom Items](#custom-items)
-    - [Webinterface](#webinterface)
-    - [Config Dateien](#config-dateien)
-- [Item Categories and Types](#item-categories-and-types)
-    - [Item Type](#item-type)
-    - [Equipment Slot](#equipment-slot)
-    - [Weapon Type](#weapon-type)
-    - [Armor Type](#armor-type)
-- [Custom Crafting Rezepte](#custom-crafting-rezepte)
+* [Commands](#commands)
+    * [Item Commands](#item-commands)
+    * [Custom Recipe Commands](#custom-recipe-commands)
+    * [Book Commands](#book-commands)
+    * [Storage Commands](#storage-commands)
+    * [Lore Commands](#lore-commands)
+* [Custom Items](#custom-items)
+    * [Webinterface](#webinterface)
+    * [Config Dateien](#config-dateien)
+    * [Alias Items](#alias-items)
+* [Item Categories and Types](#item-categories-and-types)
+    * [Item Type](#item-type)
+    * [Equipment Slot](#equipment-slot)
+    * [Weapon Type](#weapon-type)
+    * [Armor Type](#armor-type)
+* [Custom Crafting Rezepte](#custom-crafting-rezepte)
 
 ## Commands
 
@@ -114,6 +115,40 @@ bind-type: SOULBOUND
 block-usage: false
 # lässt das Item verzaubert ausschauen
 enchantment-effect: false
+```
+
+### Alias Items
+
+Zusätzlich zu einer *normalen* Item Config kann man eine Alias Config anlegen die nur dafür da ist um auf eine Item ID in der Datenbank zu referenzieren. Das Item kann dann in der [Quest Config](https://git.faldoria.de/tof/plugin-configs/quests/blob/develop/docs/QUEST-CONFIG.md) anstatt der Id mit dem Alias Namen referenziert werden.
+
+`foobar.item.yml`
+
+```yml
+id: 123
+```
+
+```yml
+requirements:
+  flow:
+    - '?player.has-item this.foobar'
+```
+
+Damit bei einer Quest mit vielen Items nicht ein Dateien Wildwuchs entsteht, gibt es die Möglichkeit mehrere Item Aliase in einer `.items.yml` Datei zusammen zu fassen.
+
+`foobar.items.yml`
+
+```yml
+mein-item: 123
+zweites-item: 456
+drittes-item: 111
+```
+
+Dabei können diese Items dann in einer Quest direkt mit dem Namen aus der Datei referenziert werden, so wenn es eigenständige `.item.yml` Dateien wären. Der Name der Datei `foobar` muss also weggelassen werden.
+
+```yml
+requirements:
+  flow:
+    - '?player.has-item this.mein-item'
 ```
 
 ## Item Categories and Types
