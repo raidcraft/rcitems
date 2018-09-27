@@ -143,12 +143,12 @@ zweites-item: 456
 drittes-item: 111
 ```
 
-Dabei können diese Items dann in einer Quest direkt mit dem Namen aus der Datei referenziert werden, so wenn es eigenständige `.item.yml` Dateien wären. Der Name der Datei `foobar` muss also weggelassen werden.
+Dabei können diese Items dann in einer Quest direkt mit dem Namen aus der Datei referenziert werden, so wenn es eigenständige `.item.yml` Dateien wären. Allerdings muss der Name der Datei vorne angehängt werden.
 
 ```yml
 requirements:
   flow:
-    - '?player.has-item this.mein-item'
+    - '?player.has-item this.foobar.mein-item'
 ```
 
 ## Item Categories and Types

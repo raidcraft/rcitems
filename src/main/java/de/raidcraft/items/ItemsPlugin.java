@@ -86,14 +86,25 @@ public class ItemsPlugin extends BasePlugin {
             @Override
             public String replaceReference(String key) {
 
-                ItemStack unsafeItem = RaidCraft.getUnsafeItem(key);
-                if (unsafeItem != null) {
-                    if (unsafeItem instanceof CustomItemStack) {
-                        return ((CustomItemStack) unsafeItem).getItem().getName();
-                    }
-                    return unsafeItem.getType().name();
-                }
-                return key;
+                return RaidCraft.getItem(key)
+                        .filter(itemStack -> itemStack instanceof CustomItemStack)
+                        .map(itemStack -> ((CustomItemStack) itemStack).getItem().getName())
+                        .orElse(key);
+            }
+        });
+
+        Quests.registerQuestLoader(new ConfigLoader(this, "items") {
+            @Override
+            public void loadConfig(String id, ConfigurationSection config) {
+                registerCustomItemAlias(id, config);
+            }
+
+            @Override
+            public String replaceReference(String key) {
+                return RaidCraft.getItem(key)
+                        .filter(itemStack -> itemStack instanceof CustomItemStack)
+                        .map(itemStack -> ((CustomItemStack) itemStack).getItem().getName())
+                        .orElse(key);
             }
         });
     }
@@ -211,6 +222,22 @@ public class ItemsPlugin extends BasePlugin {
             getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
         } catch (DuplicateCustomItemException e) {
             getLogger().warning(e.getMessage());
+        }
+    }
+
+    private void registerCustomItemAlias(String path, ConfigurationSection config) {
+        for (String key : config.getKeys(false)) {
+            try {
+                if (!config.isInt(key)) {
+                    getLogger().warning("The item with the name " + config.get(key) + " ist not an INT");
+                }
+                int id = config.getInt(key);
+                getCustomItemManager().registerCustomItemAlias(id, key);
+                loadedConfigCustomItems.add(key);
+                getLogger().info("Loaded custom item alias " + key + " for item with id " + id);
+            } catch (DuplicateCustomItemException e) {
+                getLogger().warning(e.getMessage());
+            }
         }
     }
 
