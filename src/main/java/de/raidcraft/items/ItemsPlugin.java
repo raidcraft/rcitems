@@ -247,7 +247,7 @@ public class ItemsPlugin extends BasePlugin {
         int failed = 0;
         loadedCustomItems.clear();
         // lets load all custom items that are defined in the database
-        Set<TCustomItem> customItems = getDatabase().find(TCustomItem.class).findSet();
+        Set<TCustomItem> customItems = getRcDatabase().find(TCustomItem.class).findSet();
         for (TCustomItem item : customItems) {
             CustomItem customItem = loadCustomDatabaseItem(item);
             if (customItem == null) {
@@ -270,17 +270,17 @@ public class ItemsPlugin extends BasePlugin {
     private CustomItem createCustomItemFromType(TCustomItem item) {
 
         CustomItem customItem;
-        TCustomEquipment equipment = getDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findOne();
+        TCustomEquipment equipment = getRcDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findOne();
         switch (item.getItemType()) {
             case WEAPON:
                 if (equipment == null) return null;
-                TCustomWeapon weapon = getDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findOne();
+                TCustomWeapon weapon = getRcDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findOne();
                 if (weapon == null) return null;
                 customItem = new ConfiguredWeapon(weapon);
                 break;
             case ARMOR:
                 if (equipment == null) return null;
-                TCustomArmor armor = getDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findOne();
+                TCustomArmor armor = getRcDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findOne();
                 if (armor == null) return null;
                 customItem = new ConfiguredArmor(armor);
                 // lets calculate the armor value if its an item
@@ -289,7 +289,7 @@ public class ItemsPlugin extends BasePlugin {
                     double armorValue = ((CustomArmor) customItem).getEquipmentSlot().getArmorSlotModifier() * armorModifier;
                     ((CustomArmor) customItem).setArmorValue((int) armorValue);
                     armor.setArmorValue((int) armorValue);
-                    getDatabase().save(armor);
+                    getRcDatabase().save(armor);
                 }
                 break;
             case USEABLE:
@@ -307,7 +307,7 @@ public class ItemsPlugin extends BasePlugin {
         if (customItem instanceof CustomEquipment && customItem.getItemLevel() < 1) {
             int itemLevel = calculateItemLevel((CustomEquipment) customItem);
             item.setItemLevel(itemLevel);
-            getDatabase().save(item);
+            getRcDatabase().save(item);
         }
         return customItem;
     }

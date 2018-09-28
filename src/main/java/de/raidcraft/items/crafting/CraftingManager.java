@@ -50,7 +50,7 @@ public class CraftingManager implements Component {
         int loadedRecipes = 0;
         CustomRecipe recipe = null;
         ItemStack result;
-        List<TCraftingRecipe> recipes = plugin.getDatabase().find(TCraftingRecipe.class).findList();
+        List<TCraftingRecipe> recipes = plugin.getRcDatabase().find(TCraftingRecipe.class).findList();
         for (TCraftingRecipe craftingRecipe : recipes) {
             try {
                 // lets parse the result item id string
@@ -164,8 +164,8 @@ public class CraftingManager implements Component {
     public CustomRecipe deleteRecipe(String name) throws UnknownRecipeException {
 
         CustomRecipe recipe = getRecipe(name);
-        TCraftingRecipe table = plugin.getDatabase().find(TCraftingRecipe.class).where().eq("name", recipe.getName()).findOne();
-        plugin.getDatabase().delete(table);
+        TCraftingRecipe table = plugin.getRcDatabase().find(TCraftingRecipe.class).where().eq("name", recipe.getName()).findOne();
+        plugin.getRcDatabase().delete(table);
         loadedRecipes.remove(recipe.getName());
         return recipe;
     }
