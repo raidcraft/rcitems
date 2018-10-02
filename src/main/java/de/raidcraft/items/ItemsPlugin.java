@@ -9,6 +9,7 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.chat.Chat;
 import de.raidcraft.api.config.*;
+import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.api.items.*;
 import de.raidcraft.api.items.attachments.AttachableCustomItem;
 import de.raidcraft.api.items.attachments.ConfiguredAttachment;
@@ -31,7 +32,9 @@ import de.raidcraft.items.trigger.CustomItemTrigger;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.ConfigUtil;
 import de.raidcraft.util.CustomItemUtil;
+import de.raidcraft.util.ItemUtils;
 import de.raidcraft.util.StringUtils;
+import de.raidcraft.util.fanciful.FancyMessage;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -42,6 +45,7 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @author Silthus
@@ -76,6 +80,11 @@ public class ItemsPlugin extends BasePlugin {
         Chat.registerAutoCompletionProvider(this, new ItemsAutoCompletionProvider());
 
         RDS.registerObject(new FilteredItemsTable.Factory());
+
+        Conversations.registerConversationVariable(Pattern.compile("\\[([\\w-_\\.]+)]"), (matcher, conversation) -> {
+            String group = matcher.group(1);
+            return RaidCraft.getItem(group).map(CustomItemUtil::getFormattedItemTooltip).map(FancyMessage::toJSONString).orElse(matcher.group(0));
+        });
 
         Quests.registerQuestLoader(new ConfigLoader(this, "item") {
             @Override
@@ -232,9 +241,10 @@ public class ItemsPlugin extends BasePlugin {
                     getLogger().warning("The item with the name " + config.get(key) + " ist not an INT");
                 }
                 int id = config.getInt(key);
-                getCustomItemManager().registerCustomItemAlias(id, key);
-                loadedConfigCustomItems.add(key);
-                getLogger().info("Loaded custom item alias " + key + " for item with id " + id);
+                String alias = path + "." + key;
+                getCustomItemManager().registerCustomItemAlias(id, alias);
+                loadedConfigCustomItems.add(alias);
+                getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
             } catch (DuplicateCustomItemException e) {
                 getLogger().warning(e.getMessage());
             }
