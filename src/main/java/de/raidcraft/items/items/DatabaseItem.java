@@ -14,7 +14,7 @@ public abstract class DatabaseItem extends AbstractCustomItem {
     public DatabaseItem(TCustomItem item, ItemType type) {
 
         super(item.getId(), item.getName(), type);
-        Material material = Material.getMaterial(item.getMinecraftItem());
+        Material material = Material.matchMaterial(item.getMinecraftItem());
         if (material == null) {
             RaidCraft.LOGGER.warning("INVALID minecraft material " + item.getMinecraftItem() + " in custom item " + getName() + "(ID: " + getId() + ")");
         }
