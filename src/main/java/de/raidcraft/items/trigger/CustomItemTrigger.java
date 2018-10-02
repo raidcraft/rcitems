@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -44,7 +45,7 @@ public class CustomItemTrigger extends Trigger implements Listener {
                     "max-id(int): item db id for range"
             }
     )
-    @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onItemPickup(PlayerPickupItemEvent event) {
 
         CustomItem customItem;
@@ -57,18 +58,11 @@ public class CustomItemTrigger extends Trigger implements Listener {
 
         informListeners("pickup", event.getPlayer(), config -> {
 
-            if (config.isSet("item") || customItem == null) {
-                try {
-                    ItemStack item = RaidCraft.getSafeItem(config.getString("item"));
-                    return item != null && item.equals(event.getItem().getItemStack());
-                } catch (CustomItemException e) {
-                    RaidCraft.LOGGER.warning("Wrong item " + e.getMessage() + " in " + ConfigUtil.getFileName(config));
-                }
-                return false;
+            if (config.isSet("item")) {
+                return RaidCraft.getItem(config.getString("item"))
+                        .map(itemStack -> itemStack.isSimilar(event.getItem().getItemStack()))
+                        .orElse(false);
             }
-            int id = config.getInt("id");
-
-            if (id > 0) return customItem.getId() == id;
 
             List<ItemType> itemTypes = new ArrayList<>();
             for (String type : config.getStringList("types")) {
@@ -115,13 +109,14 @@ public class CustomItemTrigger extends Trigger implements Listener {
             Collection<CustomItem> items = new ArrayList<>();
             items.add(customItem);
             return items.stream()
+                    .filter(Objects::nonNull)
                     .filter(item -> itemTypes.isEmpty() || itemTypes.contains(item.getType()))
                     .filter(item -> itemQualities.isEmpty() || itemQualities.contains(item.getQuality()))
                     .filter(item -> bindTypes.isEmpty() || bindTypes.contains(item.getBindType()))
                     .filter(item -> itemIds.isEmpty() || itemIds.contains(item.getId()))
                     .filter(item -> idFilterMin < 1 || item.getId() >= idFilterMin)
                     .filter(item -> idFilterMax < 1 || item.getId() <= idFilterMax)
-                    .filter(item -> nameFilter == null || nameFilter.matcher(item.getName()).matches()).count() > 0;
+                    .anyMatch(item -> nameFilter == null || nameFilter.matcher(item.getName()).matches());
         });
     }
 
