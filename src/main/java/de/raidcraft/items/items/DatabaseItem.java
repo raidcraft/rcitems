@@ -1,5 +1,6 @@
 package de.raidcraft.items.items;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.ItemCategory;
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.items.tables.items.TCustomItem;
@@ -13,7 +14,11 @@ public abstract class DatabaseItem extends AbstractCustomItem {
     public DatabaseItem(TCustomItem item, ItemType type) {
 
         super(item.getId(), item.getName(), type);
-        setMinecraftItem(Material.matchMaterial(item.getMinecraftItem()));
+        Material material = Material.getMaterial(item.getMinecraftItem());
+        if (material == null) {
+            RaidCraft.LOGGER.warning("INVALID minecraft material " + item.getMinecraftItem() + " in custom item " + getName() + "(ID: " + getId() + ")");
+        }
+        setMinecraftItem(material);
         setMinecraftDataValue((short) item.getMinecraftDataValue());
         setBindType(item.getBindType());
         setSellPrice(item.getSellPrice());
