@@ -219,7 +219,7 @@ public class ItemsPlugin extends BasePlugin {
             loadedConfigCustomItems.add(id);
             getLogger().info("Loaded custom config item: " + id + " (" + customItem.getName() + ")");
         } catch (CustomItemException e) {
-            getLogger().warning(e.getMessage());
+            // ignore
         }
     }
 
@@ -230,7 +230,7 @@ public class ItemsPlugin extends BasePlugin {
             loadedConfigCustomItems.add(alias);
             getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
         } catch (DuplicateCustomItemException e) {
-            getLogger().warning(e.getMessage());
+            // ignore
         }
     }
 
@@ -246,7 +246,7 @@ public class ItemsPlugin extends BasePlugin {
                 loadedConfigCustomItems.add(alias);
                 getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
             } catch (DuplicateCustomItemException e) {
-                getLogger().warning(e.getMessage());
+                // ignore
             }
         }
     }
