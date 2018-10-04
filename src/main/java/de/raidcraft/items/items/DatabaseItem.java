@@ -14,12 +14,30 @@ public abstract class DatabaseItem extends AbstractCustomItem {
     public DatabaseItem(TCustomItem item, ItemType type) {
 
         super(item.getId(), item.getName(), type);
-        Material material = Material.matchMaterial(item.getMinecraftItem());
+        String[] strings = item.getMinecraftItem().split("\\:");
+        if (strings.length > 1) {
+            try {
+                if (strings[0].equalsIgnoreCase("minecraft") && strings.length > 2) {
+                    setMinecraftDataValue(Short.parseShort(strings[2]));
+                } else {
+                    setMinecraftDataValue(Short.parseShort(strings[1]));
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        } else {
+            setMinecraftDataValue((short) item.getMinecraftDataValue());
+        }
+        Material material;
+        if (item.getMinecraftItem().endsWith(":" + item.getMinecraftDataValue())) {
+            material = Material.matchMaterial(item.getMinecraftItem().replace(":" + item.getMinecraftDataValue(), ""));
+        } else {
+            material = Material.matchMaterial(item.getMinecraftItem());
+        }
         if (material == null) {
             RaidCraft.LOGGER.warning("INVALID minecraft material " + item.getMinecraftItem() + " in custom item " + getName() + "(ID: " + getId() + ")");
         }
         setMinecraftItem(material);
-        setMinecraftDataValue((short) item.getMinecraftDataValue());
         setBindType(item.getBindType());
         setSellPrice(item.getSellPrice());
         setBlockingUsage(item.isBlockUsage());
