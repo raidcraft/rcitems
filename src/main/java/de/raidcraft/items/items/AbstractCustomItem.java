@@ -61,6 +61,7 @@ public abstract class AbstractCustomItem implements CustomItem, AttachableCustom
     protected void buildTooltips() {
 
         setTooltip(new NameTooltip(getId(), getName(), getQuality().getColor()));
+        setTooltip(new SingleLineTooltip(TooltipSlot.TYPE, getType().getGermanName()));
         if (getItemLevel() > 0 && !RaidCraft.getComponent(ItemsPlugin.class).getConfig().hideItemLevel) {
             setTooltip(new SingleLineTooltip(TooltipSlot.ITEM_LEVEL, "Gegenstandsstufe " + getItemLevel(), ChatColor.GOLD));
         }

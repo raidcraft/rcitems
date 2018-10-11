@@ -30,9 +30,9 @@ public abstract class DatabaseItem extends AbstractCustomItem {
         }
         Material material;
         if (item.getMinecraftItem().endsWith(":" + item.getMinecraftDataValue())) {
-            material = Material.matchMaterial(item.getMinecraftItem().replace(":" + item.getMinecraftDataValue(), ""));
+            material = Material.matchMaterial(item.getMinecraftItem().replace(":" + item.getMinecraftDataValue(), "").trim());
         } else {
-            material = Material.matchMaterial(item.getMinecraftItem());
+            material = Material.matchMaterial(item.getMinecraftItem().trim());
         }
         if (material == null) {
             RaidCraft.LOGGER.warning("INVALID minecraft material " + item.getMinecraftItem() + " in custom item " + getName() + "(ID: " + getId() + ")");
