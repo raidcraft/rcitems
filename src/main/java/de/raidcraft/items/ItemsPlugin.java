@@ -37,6 +37,7 @@ import de.raidcraft.util.StringUtils;
 import de.raidcraft.util.fanciful.FancyMessage;
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -259,14 +260,15 @@ public class ItemsPlugin extends BasePlugin {
         // lets load all custom items that are defined in the database
         Set<TCustomItem> customItems = getRcDatabase().find(TCustomItem.class).findSet();
         for (TCustomItem item : customItems) {
-            CustomItem customItem = loadCustomDatabaseItem(item);
-            if (customItem == null) {
+            Optional<CustomItem> itemOptional = loadCustomDatabaseItem(item);
+            if (!itemOptional.isPresent()) {
+                failed++;
                 continue;
             }
             try {
                 // register the actual custom item
-                getCustomItemManager().registerCustomItem(customItem);
-                loadedCustomItems.add(customItem.getId());
+                getCustomItemManager().registerCustomItem(itemOptional.get());
+                loadedCustomItems.add(itemOptional.get().getId());
                 loaded++;
             } catch (DuplicateCustomItemException e) {
                 failed++;
@@ -322,11 +324,15 @@ public class ItemsPlugin extends BasePlugin {
         return customItem;
     }
 
-    @Nullable
-    private CustomItem loadCustomDatabaseItem(TCustomItem item) {
+    private Optional<CustomItem> loadCustomDatabaseItem(TCustomItem item) {
+
+        if (Material.matchMaterial(item.getMinecraftItem()) == null) {
+            getLogger().warning("Invalid Minecraft Item " + item.getMinecraftItem() + " in Custom Item: " + item.getName() + " (ID: " + item.getId() + ")");
+            return Optional.empty();
+        }
 
         CustomItem customItem = createCustomItemFromType(item);
-        if (customItem == null) return null;
+        if (customItem == null) return Optional.empty();
         // lets check for custom item attachments
         if (item.getAttachments() != null && !item.getAttachments().isEmpty()) {
             for (TCustomItemAttachment attachment : item.getAttachments()) {
@@ -344,16 +350,13 @@ public class ItemsPlugin extends BasePlugin {
                     configuredAttachment.merge(loadedAttachments.get(attachmentName));
                 }
                 // also merge our database
-                ArrayList<KeyValueMap> dataList = new ArrayList<>();
-                for (TItemAttachmentData data : attachment.getItemAttachmentDataList()) {
-                    dataList.add(data);
-                }
+                ArrayList<KeyValueMap> dataList = new ArrayList<>(attachment.getItemAttachmentDataList());
                 configuredAttachment.merge(ConfigUtil.parseKeyValueTable(dataList));
 
                 ((AttachableCustomItem) customItem).addAttachment(configuredAttachment);
             }
         }
-        return customItem;
+        return Optional.of(customItem);
     }
 
     /**
