@@ -29,6 +29,7 @@ import de.raidcraft.items.tables.crafting.TCraftingRecipe;
 import de.raidcraft.items.tables.crafting.TCraftingRecipeIngredient;
 import de.raidcraft.items.tables.items.*;
 import de.raidcraft.items.trigger.CustomItemTrigger;
+import de.raidcraft.items.trigger.InventoryTrigger;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.ConfigUtil;
 import de.raidcraft.util.CustomItemUtil;
@@ -76,6 +77,7 @@ public class ItemsPlugin extends BasePlugin {
         // register action api stuff
         ActionAPI.register(this)
                 .global()
+                .trigger(new InventoryTrigger(this))
                 .trigger(new CustomItemTrigger());
 
         Chat.registerAutoCompletionProvider(this, new ItemsAutoCompletionProvider());
