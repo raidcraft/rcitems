@@ -40,9 +40,9 @@ public class InventoryTrigger extends Trigger {
     public void registerPacketListener() {
 
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin, PacketType.Play.Server.SET_SLOT) {
-            @Override
-            public void onPacketReceiving(PacketEvent event) {
 
+            @Override
+            public void onPacketSending(PacketEvent event) {
                 WrapperPlayServerSetSlot packet = new WrapperPlayServerSetSlot(event.getPacket());
                 if (packet.getWindowId() != PLAYER_INVENTORY_ID) return;
                 if (packet.getSlotData() == null || packet.getSlotData().getType() == Material.AIR) return;
