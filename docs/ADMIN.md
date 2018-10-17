@@ -14,9 +14,11 @@ Hier finden Server Admins alle wichtigen Informationen um das [RCItems](../READM
     * [Alias Items](#alias-items)
 * [Item Categories and Types](#item-categories-and-types)
     * [Item Type](#item-type)
+    * [Item Quality](#item-quality)
     * [Equipment Slot](#equipment-slot)
     * [Weapon Type](#weapon-type)
     * [Armor Type](#armor-type)
+* [Item Level](#item-level)
 * [Custom Crafting Rezepte](#custom-crafting-rezepte)
 
 ## Commands
@@ -177,10 +179,22 @@ Jedes Item kann verschiedene Eigenschaften annehmen und ist immer von einem best
 | CLASS | Ein Item was für eine bestimmte Klasse. | |
 | UNDEFINED | Default Typ für alles andere. | |
 
+### Item Quality
+
 ### Equipment Slot
 
 ### Weapon Type
 
 ### Armor Type
+
+## Item Level
+
+Basierend auf dem [Item Typ](#item-type), [Equipment Slot](#equipment-slot), [Qualität](#item-quality) und den [Attributen](#attributes) eines Items wird das Item Level berechnet. Das Item Level dient als Referenz für die Stärke eines Items und kann in [Loot-Tabellen](https://git.faldoria.de/tof/plugins/raidcraft/rcloot/blob/master/docs/ADMIN.md) zur Einschränkung von Drops genutzt werden.
+
+Das Item Level wird wie folgt berechnet:
+
+```math
+Item Level = ((([(StatValue[1]*StatMod[1])^1.7095 + (StatValue[2]*StatMod[2])^1.7095 + ...]^1/1.7095) / Slot Modifier ) * Quality Multiplier) + Quality Modifier
+```
 
 ## Custom Crafting Rezepte
