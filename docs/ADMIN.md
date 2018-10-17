@@ -194,7 +194,7 @@ Basierend auf dem [Item Typ](#item-type), [Equipment Slot](#equipment-slot), [Qu
 Das Item Level wird wie folgt berechnet:
 
 ```math
-Item Level = ((([(StatValue[1]*StatMod[1])^(1.7095) + (StatValue[2]*StatMod[2])^(1.7095) + ...]^(1/1.7095)) / Slot Modifier ) * Quality Multiplier) + Quality Modifier
+Item Level = \left(\frac{[(StatValue[1]*StatMod[1])^{1.7095} + ... + (StatValue[n]*StatMod[n])^{1.7095}] ^{\frac{1}{1.7095}}}{Slot Modifier}\right) * Quality Multiplier + Quality Modifier
 ```
 
 ## Custom Crafting Rezepte
