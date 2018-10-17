@@ -16,6 +16,7 @@ Hier finden Server Admins alle wichtigen Informationen um das [RCItems](../READM
     * [Item Type](#item-type)
     * [Item Quality](#item-quality)
     * [Equipment Slot](#equipment-slot)
+    * [Item Attribute](#item-attribute)
     * [Weapon Type](#weapon-type)
     * [Armor Type](#armor-type)
 * [Item Level](#item-level)
@@ -27,24 +28,24 @@ Hier finden Server Admins alle wichtigen Informationen um das [RCItems](../READM
 
 > Alle der folgenden Befehle beginnen mit `/rci`.
 
-| Command | Arguments | Flags | Description | Permission |
-| ------- | ----- | --------- | ----------- | ---------- |
-| help    |       |           | Zeigt die Hilfe an | |
-| reload  |       |           | Lädt alle Configs und Items neu. | `rcitems.reload` |
-| give   | `<item_name>`  | -p `<player_name>`<br> -a `<item_amount>` | Gibt sich selbst oder einem anderen Spieler das entsprechende Custom Item mit der ID oder dem Namen. | `rcitems.give` |
-| info |  | | Zeigt detailierte Informationen über das Item in der Hand an. | `rcitems.info` |
-| fakeskull | `<url>`| | Erzeugt einen Totenkopf mit dem Skin aus der Web URL. | `rcitems.fakeskull` |
+| Command   | Arguments     | Flags                                     | Description                                                                                          | Permission          |
+| --------- | ------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------- |
+| help      |               |                                           | Zeigt die Hilfe an                                                                                   |                     |
+| reload    |               |                                           | Lädt alle Configs und Items neu.                                                                     | `rcitems.reload`    |
+| give      | `<item_name>` | -p `<player_name>`<br> -a `<item_amount>` | Gibt sich selbst oder einem anderen Spieler das entsprechende Custom Item mit der ID oder dem Namen. | `rcitems.give`      |
+| info      |               |                                           | Zeigt detailierte Informationen über das Item in der Hand an.                                        | `rcitems.info`      |
+| fakeskull | `<url>`       |                                           | Erzeugt einen Totenkopf mit dem Skin aus der Web URL.                                                | `rcitems.fakeskull` |
 
 ### Custom Recipe Commands
 
 > Alle der folgenden Befehle beginnen mit `/recipe` oder `/rezept`.
 
-| Command | Arguments | Flags | Description | Permission |
-| ------- | ----- | --------- | ----------- | ---------- |
-| help    |       |           | Zeigt die Hilfe an | |
-| reload    |   |   | Lädt alle Crafting Rezepte neu. | `rcitems.reload` |
-| create | `<displayName>` `<SHAPED|SHAPELESS|FURNACE>` | -p | Erstellt aus speziell angeordneten Items im Inventar ein [Custom Crafting Rezept](#custom-crafting-rezepte). Mit dem Flag `-p` wird festgelegt, dass man das Rezept nur mit der entsprechenden Permission (`rcitems.recipes.<recipe-displayName>`) craften kann. | `rcitems.recipe.create` |
-| delete | `<displayName>` | | Löscht das angegebene Rezept aus der Datenbank. | `rcitems.recipe.remove` |
+| Command | Arguments                                    | Flags | Description                                                                                                                                                                                                                                                      | Permission              |
+| ------- | -------------------------------------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| help    |                                              |       | Zeigt die Hilfe an                                                                                                                                                                                                                                               |                         |
+| reload  |                                              |       | Lädt alle Crafting Rezepte neu.                                                                                                                                                                                                                                  | `rcitems.reload`        |
+| create  | `<displayName>` `<SHAPED|SHAPELESS|FURNACE>` | -p    | Erstellt aus speziell angeordneten Items im Inventar ein [Custom Crafting Rezept](#custom-crafting-rezepte). Mit dem Flag `-p` wird festgelegt, dass man das Rezept nur mit der entsprechenden Permission (`rcitems.recipes.<recipe-displayName>`) craften kann. | `rcitems.recipe.create` |
+| delete  | `<displayName>`                              |       | Löscht das angegebene Rezept aus der Datenbank.                                                                                                                                                                                                                  | `rcitems.recipe.remove` |
 
 ### Book Commands
 
@@ -56,11 +57,11 @@ Mit den RCItems Storage Commands kann man Items 1:1 in die Datenbank speichern u
 
 > Alle der folgenden Befehle beginnen mit `/storage`.
 
-| Command | Arguments | Flags | Description | Permission |
-| ------- | ----- | --------- | ----------- | ---------- |
-| save    |     |   | Speichert das aktuelle Item in der Datenbank. | `rcitems.store` |
-| delete | `<stored_item>` | | Löscht das angegebene Item aus der Datenbank. | `rcitems.delete` |
-| give | `<stored_item>` | | Gibt dem ausführendem Spieler das gespeicherte Item. | `rcitems.give` |
+| Command | Arguments       | Flags | Description                                          | Permission       |
+| ------- | --------------- | ----- | ---------------------------------------------------- | ---------------- |
+| save    |                 |       | Speichert das aktuelle Item in der Datenbank.        | `rcitems.store`  |
+| delete  | `<stored_item>` |       | Löscht das angegebene Item aus der Datenbank.        | `rcitems.delete` |
+| give    | `<stored_item>` |       | Gibt dem ausführendem Spieler das gespeicherte Item. | `rcitems.give`   |
 
 ### Lore Commands
 
@@ -68,11 +69,11 @@ Mit den `Lore` oder auch `Legende` Commands lassen sich die Beschreibungen von C
 
 > Alle der folgenden Befehle beginnen mit `/lore`.
 
-| Command | Arguments | Flags | Description | Permission |
-| ------- | ----- | --------- | ----------- | ---------- |
-| addline | `<text>` | | Fügt dem Item eine Zeile mit dem Text hinzu. | `rcitems.lore` |
-| remove | | | Löscht sämtliche Lore von dem Item. | `rcitems.lore` |
-| displayName | `<displayName>` | | Gibt dem Item einen speziellen Namen | `rcitems.lore` |
+| Command     | Arguments       | Flags | Description                                  | Permission     |
+| ----------- | --------------- | ----- | -------------------------------------------- | -------------- |
+| addline     | `<text>`        |       | Fügt dem Item eine Zeile mit dem Text hinzu. | `rcitems.lore` |
+| remove      |                 |       | Löscht sämtliche Lore von dem Item.          | `rcitems.lore` |
+| displayName | `<displayName>` |       | Gibt dem Item einen speziellen Namen         | `rcitems.lore` |
 
 ## Custom Items
 
@@ -159,29 +160,67 @@ Jedes Item kann verschiedene Eigenschaften annehmen und ist immer von einem best
 
 ### Item Type
 
-> Jedes Item kann immer nur von einem Typ sein. Je nach Typ erhält das Item Zugriff auf bestimmte Eigenschaften, wie z.B. einen Rüstungswert.
+Jedes Item kann immer nur von einem Typ sein. Je nach Typ erhält das Item Zugriff auf bestimmte Eigenschaften, wie z.B. einen Rüstungswert.
 
-| Item Type | Beschreibung | Eigenschaften |
-| --------- | ------------ | ------------- |
-| EQUIPMENT | Der Grund Typ für alle ausrüstbaren Items. | - [EquipmentSlot](#equipment-slot)<br>- Haltbarkeit |
-| WEAPON    | Mit dem Item kann angegriffen werden | - [WeaponType](weapon-type)<br>- Angriffszeit<br>- Min. Damage<br>- Max. Damage |
-| ARMOR | Schützt vor Angriffen | - [ArmorType](armor-type)<br>- Rüstungswert |
-| USEABLE | Das Item kann benutzt werden. | - z.B. Ausführung eines Skills |
-| QUEST | Ein Quest Item, dass im Quest Inventar landet. | |
-| ENCHANTMENT | Eine Verzauberung die auf Items angewandt werden kann. | |
-| GEM | Ein Edelstein, der in Sockel angebracht werden kann. | |
-| ENHANCEMENT | Eine Verbesserung für den Spieler, z.B. ein Kleinod. | |
-| CRAFTING | Ein Item was nur im [Custom Crafting](#custom-crafting) Verwendung findet. | |
-| CONSUMEABLE | Ein benutztbares Item was aufgebraucht wird | |
-| TRASH | Für nichts zu gebrauchen, außer zum Verkaufen. | |
-| SPECIAL | Ein spezial Item. | |
-| PROFESSION | Ein Item für einen bestimmten Beruf. | |
-| CLASS | Ein Item was für eine bestimmte Klasse. | |
-| UNDEFINED | Default Typ für alles andere. | |
+| Item Type   | Beschreibung                                                               | Eigenschaften                                                                   |
+| ----------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| EQUIPMENT   | Der Grund Typ für alle ausrüstbaren Items.                                 | - [EquipmentSlot](#equipment-slot)<br>- Haltbarkeit                             |
+| WEAPON      | Mit dem Item kann angegriffen werden                                       | - [WeaponType](weapon-type)<br>- Angriffszeit<br>- Min. Damage<br>- Max. Damage |
+| ARMOR       | Schützt vor Angriffen                                                      | - [ArmorType](armor-type)<br>- Rüstungswert                                     |
+| USEABLE     | Das Item kann benutzt werden.                                              | - z.B. Ausführung eines Skills                                                  |
+| QUEST       | Ein Quest Item, dass im Quest Inventar landet.                             |                                                                                 |
+| ENCHANTMENT | Eine Verzauberung die auf Items angewandt werden kann.                     |                                                                                 |
+| GEM         | Ein Edelstein, der in Sockel angebracht werden kann.                       |                                                                                 |
+| ENHANCEMENT | Eine Verbesserung für den Spieler, z.B. ein Kleinod.                       |                                                                                 |
+| CRAFTING    | Ein Item was nur im [Custom Crafting](#custom-crafting) Verwendung findet. |                                                                                 |
+| CONSUMEABLE | Ein benutztbares Item was aufgebraucht wird                                |                                                                                 |
+| TRASH       | Für nichts zu gebrauchen, außer zum Verkaufen.                             |                                                                                 |
+| SPECIAL     | Ein spezial Item.                                                          |                                                                                 |
+| PROFESSION  | Ein Item für einen bestimmten Beruf.                                       |                                                                                 |
+| CLASS       | Ein Item was für eine bestimmte Klasse.                                    |                                                                                 |
+| UNDEFINED   | Default Typ für alles andere.                                              |                                                                                 |
 
 ### Item Quality
 
+Jedes Item benötigt ein Qualitäts Level. Das Level sollte gleichzeitig ein Indiz für die Seltenheit des Items sein.
+
+| Item Qualität        | Farbe  | Quality Multiplier | Quality Modifier |
+| -------------------- | ------ | ------------------ | ---------------- |
+| Schlecht (POOR)      | `#A5A` | $0$                | $0$              |
+| Verbreitet (COMMON)  | `#fff` | $0$                | $0$              |
+| Selten (UNCOMMON)    | `#1e9` | $2.0$              | $8.0$            |
+| Rar (RARE)           | `#002` | $1.8$              | $0.75$           |
+| Episch (EPIC)        | `#740` | $1.2$              | $26$             |
+| Legendär (LEGENDARY) | `#d5d` | $1.0$              | $50$             |
+
 ### Equipment Slot
+
+Damit Items ausgerüstet werden können muss ihnen ein Equipment Slot zugewiesen werden.
+
+| Equipment Slot           | Slot Modifier | Armor Modifier |
+| ------------------------ | ------------- | -------------- |
+| Einhändig (ONE_HANDED)   | $0.4129$      | $0.0$          |
+| Schildhand (SHIELD_HAND) | $0.4129$      | $0.0$          |
+| Zweihändig (TWO_HANDED)  | $1.0$         | $0.0$          |
+| Kopf (HEAD)              | $0.75$        | $0.8125$       |
+| Brust (CHEST)            | $1.0$         | $1.0$          |
+| Beine (LEGS)             | $1.0$         | $0.875$        |
+| Füße (FEET)              | $0.5625$      | $0.6875$       |
+| Hände (HANDS)            | $0.4129$      | $0.0$          |
+| Inventar (INVENTORY)     | $1.0$         | $0.0$          |
+| Undefiniert (UNDEFINED)  | $1.0$         | $0.0$          |
+
+### Item Attribute
+
+Ausrüstbare Items können Attribute erhalten, welche die Werte des Spielers verbessern.
+
+| Attribut                 | Item Level Modifier |
+| ------------------------ | ------------------- |
+| Stärke (STRENGTH)        | $1.0$               |
+| Beweglichtkeit (AGILITY) | $1.0$               |
+| Ausdauer (STAMINA)       | $1.0$               |
+| Intelligenz (INTELLECT)  | $1.0$               |
+| Willenskraft (SPIRIT)    | $1.0$               |
 
 ### Weapon Type
 
@@ -189,7 +228,7 @@ Jedes Item kann verschiedene Eigenschaften annehmen und ist immer von einem best
 
 ## Item Level
 
-Basierend auf dem [Item Typ](#item-type), [Equipment Slot](#equipment-slot), [Qualität](#item-quality) und den [Attributen](#attributes) eines Items wird das Item Level berechnet. Das Item Level dient als Referenz für die Stärke eines Items und kann in [Loot-Tabellen](https://git.faldoria.de/tof/plugins/raidcraft/rcloot/blob/master/docs/ADMIN.md) zur Einschränkung von Drops genutzt werden.
+Basierend auf dem [Item Typ](#item-type), [Equipment Slot](#equipment-slot), [Qualität](#item-quality) und den [Attributen](#item-attribute) eines Items wird das Item Level berechnet. Das Item Level dient als Referenz für die Stärke eines Items und kann in [Loot-Tabellen](https://git.faldoria.de/tof/plugins/raidcraft/rcloot/blob/master/docs/ADMIN.md) zur Einschränkung von Drops genutzt werden.
 
 Das Item Level wird wie folgt berechnet:
 
