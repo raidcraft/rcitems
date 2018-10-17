@@ -186,12 +186,12 @@ Jedes Item benötigt ein Qualitäts Level. Das Level sollte gleichzeitig ein Ind
 
 | Item Qualität        | Farbe  | Quality Multiplier | Quality Modifier |
 | -------------------- | ------ | ------------------ | ---------------- |
-| Schlecht (POOR)      | `#A5A` | $0$                | $0$              |
-| Verbreitet (COMMON)  | `#fff` | $0$                | $0$              |
-| Selten (UNCOMMON)    | `#1e9` | $2.0$              | $8.0$            |
-| Rar (RARE)           | `#002` | $1.8$              | $0.75$           |
-| Episch (EPIC)        | `#740` | $1.2$              | $26$             |
-| Legendär (LEGENDARY) | `#d5d` | $1.0$              | $50$             |
+| Schlecht (POOR)      | `#A5A` | `0`                | `0`              |
+| Verbreitet (COMMON)  | `#fff` | `0`                | `0`              |
+| Selten (UNCOMMON)    | `#1e9` | `2.0`              | `8.0`            |
+| Rar (RARE)           | `#002` | `1.8`              | `0.75`           |
+| Episch (EPIC)        | `#740` | `1.2`              | `26`             |
+| Legendär (LEGENDARY) | `#d5d` | `1.0`              | `50`             |
 
 ### Equipment Slot
 
@@ -199,16 +199,16 @@ Damit Items ausgerüstet werden können muss ihnen ein Equipment Slot zugewiesen
 
 | Equipment Slot           | Slot Modifier | Armor Modifier |
 | ------------------------ | ------------- | -------------- |
-| Einhändig (ONE_HANDED)   | $0.4129$      | $0.0$          |
-| Schildhand (SHIELD_HAND) | $0.4129$      | $0.0$          |
-| Zweihändig (TWO_HANDED)  | $1.0$         | $0.0$          |
-| Kopf (HEAD)              | $0.75$        | $0.8125$       |
-| Brust (CHEST)            | $1.0$         | $1.0$          |
-| Beine (LEGS)             | $1.0$         | $0.875$        |
-| Füße (FEET)              | $0.5625$      | $0.6875$       |
-| Hände (HANDS)            | $0.4129$      | $0.0$          |
-| Inventar (INVENTORY)     | $1.0$         | $0.0$          |
-| Undefiniert (UNDEFINED)  | $1.0$         | $0.0$          |
+| Einhändig (ONE_HANDED)   | `0.4129`      | `0.0`          |
+| Schildhand (SHIELD_HAND) | `0.4129`      | `0.0`          |
+| Zweihändig (TWO_HANDED)  | `1.0`         | `0.0`          |
+| Kopf (HEAD)              | `0.75`        | `0.8125`       |
+| Brust (CHEST)            | `1.0`         | `1.0`          |
+| Beine (LEGS)             | `1.0`         | `0.875`        |
+| Füße (FEET)              | `0.5625`      | `0.6875`       |
+| Hände (HANDS)            | `0.4129`      | `0.0`          |
+| Inventar (INVENTORY)     | `1.0`         | `0.0`          |
+| Undefiniert (UNDEFINED)  | `1.0`         | `0.0`          |
 
 ### Item Attribute
 
@@ -216,11 +216,11 @@ Ausrüstbare Items können Attribute erhalten, welche die Werte des Spielers ver
 
 | Attribut                 | Item Level Modifier |
 | ------------------------ | ------------------- |
-| Stärke (STRENGTH)        | $1.0$               |
-| Beweglichtkeit (AGILITY) | $1.0$               |
-| Ausdauer (STAMINA)       | $1.0$               |
-| Intelligenz (INTELLECT)  | $1.0$               |
-| Willenskraft (SPIRIT)    | $1.0$               |
+| Stärke (STRENGTH)        | `1.0`               |
+| Beweglichtkeit (AGILITY) | `1.0`               |
+| Ausdauer (STAMINA)       | `1.0`               |
+| Intelligenz (INTELLECT)  | `1.0`               |
+| Willenskraft (SPIRIT)    | `1.0`               |
 
 ### Weapon Type
 
