@@ -392,6 +392,7 @@ public class ItemsPlugin extends BasePlugin {
         tables.add(TCustomItemAttachment.class);
         tables.add(TItemAttachmentData.class);
         tables.add(TItemCategory.class);
+        tables.add(TConsumeableItem.class);
         // custom crafting
         tables.add(TCraftingRecipe.class);
         tables.add(TCraftingRecipeIngredient.class);
