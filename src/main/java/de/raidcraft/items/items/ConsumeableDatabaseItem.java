@@ -10,7 +10,7 @@ import lombok.Data;
 import org.bukkit.ChatColor;
 
 @Data
-public class DatabaseConsumeable extends DatabaseItem implements Consumeable {
+public class ConsumeableDatabaseItem extends DatabaseItem implements Consumeable {
 
     private final Type consumeableType;
     private final String resourceName;
@@ -19,7 +19,7 @@ public class DatabaseConsumeable extends DatabaseItem implements Consumeable {
     private final double resourceGain;
     private final boolean percentage;
 
-    public DatabaseConsumeable(TConsumeableItem item, ItemType type) {
+    public ConsumeableDatabaseItem(TConsumeableItem item, ItemType type) {
         super(item.getItem(), type);
         this.consumeableType = item.getType();
         this.resourceName = item.getResourceName();

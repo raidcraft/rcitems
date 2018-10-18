@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply" dropsFor="1.32">
+        <dropColumn columnName="version" tableName="rcitems_consumeables"/>
+        <dropColumn columnName="when_created" tableName="rcitems_consumeables"/>
+        <dropColumn columnName="when_modified" tableName="rcitems_consumeables"/>
+    </changeSet>
+</migration>

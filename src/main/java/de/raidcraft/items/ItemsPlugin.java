@@ -21,6 +21,7 @@ import de.raidcraft.items.configs.NamedYAMLCustomItem;
 import de.raidcraft.items.crafting.CraftingManager;
 import de.raidcraft.items.equipment.ConfiguredArmor;
 import de.raidcraft.items.equipment.ConfiguredWeapon;
+import de.raidcraft.items.items.ConsumeableDatabaseItem;
 import de.raidcraft.items.items.DatabaseEquipment;
 import de.raidcraft.items.items.SimpleItem;
 import de.raidcraft.items.listener.PlayerListener;
@@ -33,9 +34,9 @@ import de.raidcraft.items.trigger.InventoryTrigger;
 import de.raidcraft.items.useable.UseableItem;
 import de.raidcraft.util.ConfigUtil;
 import de.raidcraft.util.CustomItemUtil;
-import de.raidcraft.util.ItemUtils;
 import de.raidcraft.util.StringUtils;
 import de.raidcraft.util.fanciful.FancyMessage;
+import io.ebean.EbeanServer;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -284,17 +285,18 @@ public class ItemsPlugin extends BasePlugin {
     private CustomItem createCustomItemFromType(TCustomItem item) {
 
         CustomItem customItem;
-        TCustomEquipment equipment = getRcDatabase().find(TCustomEquipment.class).where().eq("item_id", item.getId()).findOne();
+        EbeanServer database = getRcDatabase();
+        TCustomEquipment equipment = database.find(TCustomEquipment.class).where().eq("item_id", item.getId()).findOne();
         switch (item.getItemType()) {
             case WEAPON:
                 if (equipment == null) return null;
-                TCustomWeapon weapon = getRcDatabase().find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findOne();
+                TCustomWeapon weapon = database.find(TCustomWeapon.class).where().eq("equipment_id", equipment.getId()).findOne();
                 if (weapon == null) return null;
                 customItem = new ConfiguredWeapon(weapon);
                 break;
             case ARMOR:
                 if (equipment == null) return null;
-                TCustomArmor armor = getRcDatabase().find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findOne();
+                TCustomArmor armor = database.find(TCustomArmor.class).where().eq("equipment_id", equipment.getId()).findOne();
                 if (armor == null) return null;
                 customItem = new ConfiguredArmor(armor);
                 // lets calculate the armor value if its an item
@@ -303,7 +305,7 @@ public class ItemsPlugin extends BasePlugin {
                     double armorValue = ((CustomArmor) customItem).getEquipmentSlot().getArmorSlotModifier() * armorModifier;
                     ((CustomArmor) customItem).setArmorValue((int) armorValue);
                     armor.setArmorValue((int) armorValue);
-                    getRcDatabase().save(armor);
+                    database.save(armor);
                 }
                 break;
             case USEABLE:
@@ -313,6 +315,12 @@ public class ItemsPlugin extends BasePlugin {
                 if (equipment == null) return null;
                 customItem = new DatabaseEquipment(equipment);
                 break;
+            case CONSUMEABLE:
+                TConsumeableItem consumeableItem = database.find(TConsumeableItem.class).where().eq("item_id", item.getId()).findOne();
+                if (consumeableItem != null) {
+                    customItem = new ConsumeableDatabaseItem(consumeableItem, item.getItemType());
+                    break;
+                }
             default:
                 customItem = new SimpleItem(item, item.getItemType());
                 break;
@@ -321,7 +329,7 @@ public class ItemsPlugin extends BasePlugin {
         if (customItem instanceof CustomEquipment && customItem.getItemLevel() < 1) {
             int itemLevel = calculateItemLevel((CustomEquipment) customItem);
             item.setItemLevel(itemLevel);
-            getRcDatabase().save(item);
+            database.save(item);
         }
         return customItem;
     }

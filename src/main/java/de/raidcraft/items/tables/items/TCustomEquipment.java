@@ -3,6 +3,7 @@ package de.raidcraft.items.tables.items;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.api.items.ItemAttribute;
 import io.ebean.annotation.NotNull;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "rcitems_equipment")
+@Data
 public class TCustomEquipment {
 
     @Id
@@ -31,56 +33,6 @@ public class TCustomEquipment {
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "equipment_id")
     private List<TEquipmentAttribute> attributes = new ArrayList<>();
-
-    public int getId() {
-
-        return id;
-    }
-
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
-    public TCustomItem getItem() {
-
-        return item;
-    }
-
-    public void setItem(TCustomItem item) {
-
-        this.item = item;
-    }
-
-    public EquipmentSlot getEquipmentSlot() {
-
-        return equipmentSlot;
-    }
-
-    public void setEquipmentSlot(EquipmentSlot equipmentSlot) {
-
-        this.equipmentSlot = equipmentSlot;
-    }
-
-    public int getDurability() {
-
-        return durability;
-    }
-
-    public void setDurability(int durability) {
-
-        this.durability = durability;
-    }
-
-    public List<TEquipmentAttribute> getAttributes() {
-
-        return attributes;
-    }
-
-    public void setAttributes(List<TEquipmentAttribute> attributes) {
-
-        this.attributes = attributes;
-    }
 
     public Set<ItemAttribute> createAttributes() {
 

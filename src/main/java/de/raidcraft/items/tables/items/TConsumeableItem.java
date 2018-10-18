@@ -10,8 +10,10 @@ import javax.persistence.*;
 @Entity
 @Data
 @Table(name = "rcitems_consumeables")
-public class TConsumeableItem extends BaseModel {
+public class TConsumeableItem {
 
+    @Id
+    private int id;
     @OneToOne(cascade = CascadeType.REMOVE)
     @NotNull
     @Column(unique = true)
