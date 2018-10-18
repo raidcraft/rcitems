@@ -24,6 +24,6 @@ public class TConsumeableItem extends BaseModel {
     private double resourceGain = 0;
     private boolean percentage = false;
     private boolean instant = false;
-    private long interval = 0;
-    private String duration = "0";
+    private String interval = null;
+    private String duration = null;
 }

@@ -26,7 +26,7 @@ public class DatabaseConsumeable extends DatabaseItem implements Consumeable {
         this.consumeableType = item.getType();
         this.resourceName = item.getResourceName();
         this.duration = TimeUtil.parseTimeAsSeconds(item.getDuration());
-        this.interval = item.getInterval();
+        this.interval = TimeUtil.parseTimeAsTicks(item.getInterval());
         this.resourceGain = item.getResourceGain();
         this.percentage = item.isPercentage();
     }
