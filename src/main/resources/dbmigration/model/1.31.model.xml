@@ -9,7 +9,7 @@
             <column name="resource_gain" type="double" notnull="true"/>
             <column name="percentage" type="boolean" defaultValue="false" notnull="true"/>
             <column name="instant" type="boolean" defaultValue="false" notnull="true"/>
-            <column name="interval" type="bigint" notnull="true"/>
+            <column name="intervall" type="varchar"/>
             <column name="duration" type="varchar"/>
             <column name="version" type="bigint" notnull="true"/>
             <column name="when_created" type="timestamp" notnull="true"/>

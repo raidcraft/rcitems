@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
-    <changeSet type="apply">
-        <alterColumn columnName="interval" tableName="rcitems_consumeables" type="varchar" currentType="bigint" notnull="false" currentNotnull="true"/>
-    </changeSet>
-</migration>

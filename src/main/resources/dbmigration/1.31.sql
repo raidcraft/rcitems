@@ -7,7 +7,7 @@ create table rcitems_consumeables (
   resource_gain                 double not null,
   percentage                    tinyint(1) default 0 not null,
   instant                       tinyint(1) default 0 not null,
-  interval                      bigint not null,
+  intervall                     varchar(255),
   duration                      varchar(255),
   version                       bigint not null,
   when_created                  datetime(6) not null,

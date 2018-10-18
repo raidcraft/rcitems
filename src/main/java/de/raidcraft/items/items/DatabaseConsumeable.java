@@ -5,11 +5,9 @@ import de.raidcraft.api.items.attachments.Consumeable;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.api.items.tooltip.VariableMultilineTooltip;
 import de.raidcraft.items.tables.items.TConsumeableItem;
-import de.raidcraft.items.tables.items.TCustomItem;
 import de.raidcraft.util.TimeUtil;
 import lombok.Data;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 
 @Data
 public class DatabaseConsumeable extends DatabaseItem implements Consumeable {
@@ -26,7 +24,7 @@ public class DatabaseConsumeable extends DatabaseItem implements Consumeable {
         this.consumeableType = item.getType();
         this.resourceName = item.getResourceName();
         this.duration = TimeUtil.parseTimeAsSeconds(item.getDuration());
-        this.interval = TimeUtil.parseTimeAsTicks(item.getInterval());
+        this.interval = TimeUtil.parseTimeAsTicks(item.getIntervall());
         this.resourceGain = item.getResourceGain();
         this.percentage = item.isPercentage();
     }
