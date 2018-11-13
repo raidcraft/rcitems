@@ -144,8 +144,7 @@ public class RecipeUtil {
             FurnaceRecipe r1 = (FurnaceRecipe) original;
             FurnaceRecipe r2 = (FurnaceRecipe) customRecipe;
 
-            //return (r1.getInput().equals(r2.getInput())); // TODO use this when furnace data PR is pulled
-            return r1.getInput().getTypeId() == r2.getInput().getTypeId();
+            return r1.getInput().equals(r2.getInput());
         } else {
             throw new IllegalArgumentException("Unsupported recipe type: '" + original + "', update this class!");
         }
