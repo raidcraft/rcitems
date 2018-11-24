@@ -199,7 +199,7 @@ public class PlayerListener implements Listener {
 
         if (event.getPlayer().hasMetadata("NPC")) return;
         ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getNewSlot());
-        if (itemStack == null || itemStack.getTypeId() == 0) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return;
         }
         equipCustomWeapons(event.getPlayer());
@@ -222,7 +222,7 @@ public class PlayerListener implements Listener {
         ItemStack[] contents = player.getInventory().getContents();
         for (int i = 0; i < contents.length; i++) {
             ItemStack itemStack = contents[i];
-            if (itemStack == null || itemStack.getTypeId() == 0) {
+            if (itemStack == null || itemStack.getType() == Material.AIR) {
                 continue;
             }
             try {
@@ -246,8 +246,8 @@ public class PlayerListener implements Listener {
         }
         CustomItemStack customItemStack = null;
 
-        if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getTypeId()) != 0) {
-            customItemStack = RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getTypeId())).createNewItem();
+        if (!CustomItemUtil.isCustomItem(itemStack) && config.getDefaultCustomItem(itemStack.getType()) != 0) {
+            customItemStack = RaidCraft.getCustomItem(config.getDefaultCustomItem(itemStack.getType())).createNewItem();
         } else if (CustomItemUtil.isCustomItem(itemStack)) {
             customItemStack = RaidCraft.getCustomItem(itemStack);
             if (customItemStack == null) return null;

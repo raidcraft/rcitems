@@ -453,12 +453,12 @@ public class ItemsPlugin extends BasePlugin {
         @Setting("configured-custom-items.end-id")
         public int customItemEndId = 999999;
 
-        public int getDefaultCustomItem(int minecraftId) {
+        public int getDefaultCustomItem(Material material) {
 
-            if (!isSet("defaults." + minecraftId)) {
+            if (!isSet("defaults." + material.name())) {
                 return 0;
             }
-            return getInt("defaults." + minecraftId, 0);
+            return getInt("defaults." + material.name(), 0);
         }
     }
 
