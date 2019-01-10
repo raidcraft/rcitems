@@ -10,12 +10,10 @@ import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.util.CustomItemUtil;
-import de.raidcraft.util.customheadapi.CustomHeadApi;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -93,21 +91,5 @@ public class ItemCommands {
         }
         CustomItemStack customItem = RaidCraft.getCustomItem(inHand);
         sender.sendMessage(customItem.toString());
-    }
-
-    @Command(
-            aliases = {"fakeskull"},
-            desc = "Creates a fake skull from a custom url",
-            usage = "<url>",
-            min = 1
-    )
-    @CommandPermissions("rcitems.fakeskull")
-    public void fakeSkull(CommandContext args, CommandSender sender) {
-
-        ItemStack skull = CustomHeadApi.getHeadCreator().createItemStack(args.getJoinedStrings(0));
-        Player player = (Player) sender;
-        Inventory inventory = Bukkit.createInventory(player, 9);
-        inventory.addItem(skull);
-        player.openInventory(inventory);
     }
 }
