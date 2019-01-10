@@ -104,6 +104,11 @@ public class ItemsPlugin extends BasePlugin {
                         .map(itemStack -> ((CustomItemStack) itemStack).getItem().getName())
                         .orElse(key);
             }
+
+            @Override
+            public void unloadConfig(String id) {
+                getCustomItemManager().unregisterNamedCustomItem(id);
+            }
         });
 
         Quests.registerQuestLoader(new ConfigLoader(this, "items") {
@@ -118,6 +123,11 @@ public class ItemsPlugin extends BasePlugin {
                         .filter(itemStack -> itemStack instanceof CustomItemStack)
                         .map(itemStack -> ((CustomItemStack) itemStack).getItem().getName())
                         .orElse(key);
+            }
+
+            @Override
+            public void unloadConfig(String id) {
+                getCustomItemManager().unregisterNamedCustomItem(id, true);
             }
         });
     }
@@ -213,28 +223,30 @@ public class ItemsPlugin extends BasePlugin {
     }
 
     private void registerNamedCustomItem(String id, ConfigurationSection config) {
-        if (config.isSet("id")) {
-            registerCustomItemAlias(config.getInt("id"), id);
-            return;
-        }
+
         try {
+            if (config.isSet("id")) {
+                registerCustomItemAlias(config.getInt("id"), id);
+                return;
+            }
             CustomItem customItem = new NamedYAMLCustomItem(config.getString("name", id), config);
-            RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().registerNamedCustomItem(id, customItem);
+            getCustomItemManager().registerNamedCustomItem(id, customItem);
             loadedConfigCustomItems.add(id);
             getLogger().info("Loaded custom config item: " + id + " (" + customItem.getName() + ")");
         } catch (CustomItemException e) {
-            // ignore
+            getLogger().warning("Failed to load custom item " + id + " from " + ConfigUtil.getFileName(config) + ": " + e.getMessage());
         }
     }
 
-    private void registerCustomItemAlias(int id, String alias) {
+    private void registerCustomItemAlias(int id, String alias) throws CustomItemException {
 
         try {
+            if (id < 0) throw new CustomItemException("Item with alias " + alias + " has a -1 id!");
             getCustomItemManager().registerCustomItemAlias(id, alias);
             loadedConfigCustomItems.add(alias);
             getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
         } catch (DuplicateCustomItemException e) {
-            // ignore
+            getLogger().warning(e.getMessage());
         }
     }
 
@@ -249,8 +261,8 @@ public class ItemsPlugin extends BasePlugin {
                 getCustomItemManager().registerCustomItemAlias(id, alias);
                 loadedConfigCustomItems.add(alias);
                 getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
-            } catch (DuplicateCustomItemException e) {
-                // ignore
+            } catch (CustomItemException e) {
+                getLogger().warning("Failed to load Custom Item " + key + " from " + ConfigUtil.getFileName(config) + ": " + e.getMessage());
             }
         }
     }
