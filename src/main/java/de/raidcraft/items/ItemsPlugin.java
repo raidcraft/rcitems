@@ -78,7 +78,7 @@ public class ItemsPlugin extends BasePlugin {
         // register action api stuff
         ActionAPI.register(this)
                 .global()
-                .trigger(new InventoryTrigger(this))
+//                .trigger(new InventoryTrigger(this))
                 .trigger(new CustomItemTrigger());
 
         Chat.registerAutoCompletionProvider(this, new ItemsAutoCompletionProvider());
