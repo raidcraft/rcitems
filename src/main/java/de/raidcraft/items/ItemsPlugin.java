@@ -186,6 +186,7 @@ public class ItemsPlugin extends BasePlugin {
 
     private void loadAttachments(File dir) {
 
+        int attachments = 0;
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
                 loadAttachments(file);
@@ -195,8 +196,9 @@ public class ItemsPlugin extends BasePlugin {
             }
             AttachmentConfig config = configure(new AttachmentConfig(this, file));
             loadedAttachments.put(config.getName(), config);
-            info("Loaded item attachment config: " + config.getName());
+            if (getConfig().debugItemsLoading) info("Loaded item attachment config: " + config.getName());
         }
+        info("Loaded " + attachments + " item attachment configs.");
     }
 
     private void loadConfiguredCustomItems() {
@@ -232,7 +234,7 @@ public class ItemsPlugin extends BasePlugin {
             CustomItem customItem = new NamedYAMLCustomItem(config.getString("name", id), config);
             getCustomItemManager().registerNamedCustomItem(id, customItem);
             loadedConfigCustomItems.add(id);
-            getLogger().info("Loaded custom config item: " + id + " (" + customItem.getName() + ")");
+            if (getConfig().debugItemsLoading) getLogger().info("Loaded custom config item: " + id + " (" + customItem.getName() + ")");
         } catch (CustomItemException e) {
             getLogger().warning("Failed to load custom item " + id + " from " + ConfigUtil.getFileName(config) + ": " + e.getMessage());
         }
@@ -244,7 +246,7 @@ public class ItemsPlugin extends BasePlugin {
             if (id < 0) throw new CustomItemException("Item with alias " + alias + " has a -1 id!");
             getCustomItemManager().registerCustomItemAlias(id, alias);
             loadedConfigCustomItems.add(alias);
-            getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
+            if (getConfig().debugItemsLoading) getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
         } catch (DuplicateCustomItemException e) {
             getLogger().warning(e.getMessage());
         }
@@ -254,13 +256,16 @@ public class ItemsPlugin extends BasePlugin {
         for (String key : config.getKeys(false)) {
             try {
                 if (!config.isInt(key)) {
-                    getLogger().warning("The item with the name " + config.get(key) + " ist not an INT");
+                    throw new CustomItemException("The item with the name " + config.get(key) + " ist not an INT");
                 }
                 int id = config.getInt(key);
                 String alias = path + "." + key;
+                if (id < 0) {
+                    throw new CustomItemException("Item with alias " + alias + " has ID: -1");
+                }
                 getCustomItemManager().registerCustomItemAlias(id, alias);
                 loadedConfigCustomItems.add(alias);
-                getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
+                if (getConfig().debugItemsLoading) getLogger().info("Loaded custom item alias " + alias + " for item with id " + id);
             } catch (CustomItemException e) {
                 getLogger().warning("Failed to load Custom Item " + key + " from " + ConfigUtil.getFileName(config) + ": " + e.getMessage());
             }
@@ -464,6 +469,8 @@ public class ItemsPlugin extends BasePlugin {
         public int customItemStartId = 900000;
         @Setting("configured-custom-items.end-id")
         public int customItemEndId = 999999;
+        @Setting("debug-items-loading")
+        public boolean debugItemsLoading = false;
 
         public int getDefaultCustomItem(Material material) {
 
