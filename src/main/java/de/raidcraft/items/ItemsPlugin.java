@@ -90,9 +90,9 @@ public class ItemsPlugin extends BasePlugin {
             return RaidCraft.getItem(group).map(CustomItemUtil::getFormattedItemTooltip).map(FancyMessage::toJSONString).orElse(matcher.group(0));
         });
 
-        Quests.registerQuestLoader(new ConfigLoader(this, "item") {
+        Quests.registerQuestLoader(new ConfigLoader<ItemsPlugin>(this, "item") {
             @Override
-            public void loadConfig(String id, ConfigurationSection config) {
+            public void loadConfig(String id, ConfigurationBase<ItemsPlugin> config) {
                 registerNamedCustomItem(id, config);
             }
 
@@ -111,9 +111,9 @@ public class ItemsPlugin extends BasePlugin {
             }
         });
 
-        Quests.registerQuestLoader(new ConfigLoader(this, "items") {
+        Quests.registerQuestLoader(new ConfigLoader<ItemsPlugin>(this, "items") {
             @Override
-            public void loadConfig(String id, ConfigurationSection config) {
+            public void loadConfig(String id, ConfigurationBase<ItemsPlugin> config) {
                 registerCustomItemAlias(id, config);
             }
 
